@@ -3,15 +3,15 @@
   "doc": "Returns 'True' if exactly one of it's two inputs is 'True'.",
   "steps": [
     {
-      "module_type": "or",
+      "module_type": "logic.or",
       "step_id": "or"
     },
     {
-      "module_type": "nand",
+      "module_type": "logic.nand",
       "step_id": "nand"
     },
     {
-      "module_type": "and",
+      "module_type": "logic.and",
       "step_id": "and",
       "input_links": {
         "a": "or.y",

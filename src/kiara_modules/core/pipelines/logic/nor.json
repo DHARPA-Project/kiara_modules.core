@@ -3,11 +3,11 @@
   "doc": "Returns 'True' if both inputs are 'False'.",
   "steps": [
     {
-      "module_type": "or",
+      "module_type": "logic.or",
       "step_id": "or"
     },
     {
-      "module_type": "not",
+      "module_type": "logic.not",
       "step_id": "not",
       "input_links": {
         "a": "or.y"
