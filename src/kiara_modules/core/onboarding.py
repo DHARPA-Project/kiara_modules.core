@@ -59,12 +59,12 @@ class ImportLocalFolderModule(KiaraModule):
         return {
             "path": {"type": "string", "doc": "The path to the folder."},
             "included_files": {
-                "type": "array",
+                "type": "list",
                 "doc": "A list of strings, include all files where the filename ends with that string.",
                 "optional": True,
             },
             "excluded_dirs": {
-                "type": "array",
+                "type": "list",
                 "doc": "A list of strings, exclude all folders whose name ends with that string.",
                 "optional": True,
             },

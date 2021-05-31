@@ -4,12 +4,90 @@ import typing
 from abc import abstractmethod
 from pprint import pformat
 
+import pyarrow
 from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
-from kiara.utils.pretty_print import pretty_print_arrow_table
+from kiara.modules.type_conversion import TypeConversionModule
+from kiara.utils import StringYAML
+from kiara.utils.output import pretty_print_arrow_table
 from pydantic import Field
+from rich.console import RenderableType, RenderGroup
+from rich.panel import Panel
+
+
+def convert_to_renderable(
+    value_type: str, data: typing.Any, render_config: typing.Mapping[str, typing.Any]
+) -> typing.List[RenderableType]:
+
+    if value_type == "table":
+
+        max_rows = render_config.get("max_no_rows")
+        max_row_height = render_config.get("max_row_height")
+        max_cell_length = render_config.get("max_cell_length")
+
+        half_lines: typing.Optional[int] = None
+        if max_rows:
+            half_lines = int(max_rows / 2)
+
+        result = [
+            pretty_print_arrow_table(
+                data,
+                rows_head=half_lines,
+                rows_tail=half_lines,
+                max_row_height=max_row_height,
+                max_cell_length=max_cell_length,
+            )
+        ]
+    elif value_type == "value_set":
+        value: Value
+        result_dict = {}
+        for field_name, value in data.items():
+            _vt = value.value_schema.type
+            _data = value.get_value_data()
+            _strings = convert_to_renderable(
+                value_type=_vt, data=_data, render_config=render_config
+            )
+            result_dict[field_name] = _strings
+
+        result = []
+        for k, v in result_dict.items():
+            result.append(
+                Panel(RenderGroup(*v), title=f"field: [b]{k}[/b]", title_align="left")
+            )
+
+    else:
+        result = [pformat(data)]
+
+    return result
+
+
+def convert_to_string(
+    value_type: str, data: typing.Any, render_config: typing.Mapping[str, typing.Any]
+) -> str:
+
+    if value_type == "dict":
+        yaml = StringYAML()
+        result_string = yaml.dump(data)
+    if value_type == "value_set":
+        value: Value
+        result = {}
+        for field_name, value in data.items():
+            _vt = value.value_schema.type
+            _data = value.get_value_data()
+            _string = convert_to_string(
+                value_type=_vt, data=_data, render_config=render_config
+            )
+            result[field_name] = _string
+
+        result_string = convert_to_string(
+            value_type="dict", data=result, render_config=render_config
+        )
+    else:
+        result_string = pformat(data)
+
+    return result_string
 
 
 class StringManipulationModule(KiaraModule):
@@ -52,6 +130,7 @@ class RegexModule(KiaraModule):
     """Check whether the input string matches a provided regular expression."""
 
     _config_cls = RegexModuleConfig
+    _module_type_name = "match_regex"
 
     def create_input_schema(
         self,
@@ -149,10 +228,20 @@ class PrettyPrintModule(KiaraModule):
                 "type": "any",
                 "doc": "The object to convert into a pretty string.",
             },
-            "max_lines": {
+            "max_no_rows": {
                 "type": "integer",
                 "doc": "Maximum number of lines the output should have.",
                 "optional": True,
+            },
+            "max_row_height": {
+                "type": "integer",
+                "doc": "If the data has rows (like a table or array), this option can limit the height of each row (if the value specified is > 0).",
+                "default": -1,
+            },
+            "max_cell_length": {
+                "type": "integer",
+                "doc": "If the data has cells in some way (like cells in a table), this option can limit the length of each cell (if the value specified is > 0).",
+                "default": -1,
             },
         }
         return inputs
@@ -164,30 +253,62 @@ class PrettyPrintModule(KiaraModule):
     ]:
 
         outputs = {
-            "pretty_string": {
-                "type": "string",
-                "doc": "Pretty string output for the input object.",
+            "renderables": {
+                "type": "list",
+                "doc": "A list of (rich) renderables.",
             }
         }
         return outputs
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
-        value_type = inputs.get_value_obj("item").type_name
         input_value: Value = inputs.get_value_data("item")
 
-        max_lines = inputs.get_value_data("max_lines")
-
-        if value_type == "table":
-
-            half_lines: typing.Optional[int] = None
-            if max_lines:
-                half_lines = int(max_lines / 2)
-
-            input_value_str = pretty_print_arrow_table(
-                input_value, num_head=half_lines, num_tail=half_lines
-            )
+        if isinstance(input_value, pyarrow.Table):
+            value_type = "table"
+        elif isinstance(input_value, ValueSet):
+            value_type = "value_set"
         else:
-            input_value_str = pformat(input_value)
+            value_type = "any"
 
-        outputs.set_value("pretty_string", input_value_str)
+        render_config = {}
+        for field, value in inputs.items():
+            if field == "item":
+                continue
+            render_config[field] = value.get_value_data()
+
+        input_value_str = convert_to_renderable(
+            value_type=value_type, data=input_value, render_config=render_config
+        )
+        outputs.set_value("renderables", input_value_str)
+
+
+class ToStringModule(TypeConversionModule):
+
+    ALLOWED_FORMATS = ["json", "pretty_string"]
+
+    @classmethod
+    def _get_supported_source_types(self) -> typing.Union[typing.Iterable[str], str]:
+        return ["*"]
+
+    @classmethod
+    def _get_target_types(self) -> typing.Union[typing.Iterable[str], str]:
+        return ["string"]
+
+    def convert(
+        self, value: Value, config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        input_value: typing.Any = value.get_value_data()
+
+        if isinstance(input_value, pyarrow.Table):
+            value_type = "table"
+        elif isinstance(input_value, ValueSet):
+            value_type = "value_set"
+        else:
+            value_type = "any"
+
+        input_value_str = convert_to_string(
+            value_type=value_type, data=input_value, render_config=config
+        )
+        return input_value_str

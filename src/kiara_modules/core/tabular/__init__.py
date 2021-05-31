@@ -1,14 +1,33 @@
 # -*- coding: utf-8 -*-
+
+
 import typing
 
+import pyarrow
 import pyarrow as pa
 from kiara import KiaraModule
+from kiara.data import Value, ValueSet
 from kiara.data.types.files import FileBundleModel, FileModel
-from kiara.data.values import ValueSchema, ValueSet
+from kiara.data.values import ValueSchema
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
+from kiara.modules.metadata import ExtractMetadataModule
 from pyarrow import csv
-from pydantic import Field, validator
+from pydantic import BaseModel, Field, validator
+
+AVAILABLE_FILE_COLUMNS = [
+    "id",
+    "rel_path",
+    "orig_filename",
+    "orig_path",
+    "import_time",
+    "mime_type",
+    "size",
+    "content",
+    "path",
+    "file_name",
+]
+DEFAULT_COLUMNS = ["id", "rel_path", "content"]
 
 
 class CreateTableModuleConfig(KiaraModuleConfig):
@@ -68,21 +87,6 @@ class CreateTableFromFileModule(KiaraModule):
         outputs.set_value("table", imported_data)
 
 
-AVAILABLE_FILE_COLUMNS = [
-    "id",
-    "rel_path",
-    "orig_filename",
-    "orig_path",
-    "import_time",
-    "mime_type",
-    "size",
-    "content",
-    "path",
-    "file_name",
-]
-DEFAULT_COLUMNS = ["id", "rel_path", "content"]
-
-
 class CreateTableFromTextFilesConfig(KiaraModuleConfig):
 
     columns: typing.List[str] = Field(
@@ -115,6 +119,10 @@ class CreateTableFromTextFilesConfig(KiaraModuleConfig):
 class CreateTableFromTextFilesModule(KiaraModule):
 
     _config_cls = CreateTableFromTextFilesConfig
+
+    _convert_profiles = {
+        "file_bundle": {"table": {"constants": {"columns": AVAILABLE_FILE_COLUMNS}}}
+    }
 
     def create_input_schema(
         self,
@@ -298,3 +306,62 @@ class FilterTableModule(KiaraModule):
         filtered = input_table.filter(filter_array)
 
         outputs.set_value("table", filtered)
+
+
+class ColumnSchema(BaseModel):
+
+    arrow_type_name: str = Field(description="The arrow type name of the column.")
+    arrow_type_id: int = Field(description="The arrow type id of the column.")
+    metadata: typing.Dict[str, typing.Any] = Field(
+        description="Other metadata for the column.", default_factory=dict
+    )
+
+
+class TableMetadata(BaseModel):
+    column_names: typing.List[str] = Field(
+        description="The name of the columns of the table."
+    )
+    column_schema: typing.Dict[str, ColumnSchema] = Field(
+        description="The schema description of the table.", alias="schema"
+    )
+    rows: int = Field(description="The number of rows the table contains.")
+    size: int = Field(description="The tables size in bytes.")
+
+
+class TableMetadataModule(ExtractMetadataModule):
+    @classmethod
+    def _get_supported_types(cls) -> str:
+        return "table"
+
+    @classmethod
+    def get_metadata_key(cls) -> str:
+        return "table"
+
+    def _get_metadata_schema(
+        self, type: str
+    ) -> typing.Union[str, typing.Type[BaseModel]]:
+        return TableMetadata
+
+    def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
+
+        table: pyarrow.Table = value.get_value_data()
+        table_schema = {}
+        for name in table.schema.names:
+            field = table.schema.field(name)
+            md = field.metadata
+            if not md:
+                md = {}
+            _type = field.type
+            _d = {
+                "arrow_type_name": str(_type),
+                "arrow_type_id": _type.id,
+                "metadata": md,
+            }
+            table_schema[name] = _d
+
+        return {
+            "column_names": table.column_names,
+            "schema": table_schema,
+            "rows": table.num_rows,
+            "size": table.nbytes,
+        }
