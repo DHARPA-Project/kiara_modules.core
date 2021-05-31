@@ -29,14 +29,13 @@ def convert_to_json(
         value_type_name = data_type
     else:
         if isinstance(data, Value):
-            value_type = data.value_schema.type
+            value_type_name = data.value_schema.type
         else:
-            value_type = kiara.determine_type(data)
+            _value_type = kiara.determine_type(data)
+            value_type_name = _value_type.type_name()
 
-        if not value_type:
+        if not value_type_name:
             value_type_name = "any"
-        else:
-            value_type_name = value_type.type_name()
 
     if value_type_name == "value_set":
         result = {}
