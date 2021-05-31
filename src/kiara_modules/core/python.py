@@ -22,7 +22,8 @@ def convert_to_py_obj(
             value_type_name = data.value_schema.type
         else:
             _value_type = kiara.determine_type(data)
-            value_type_name = _value_type.type_name()
+            if _value_type:
+                value_type_name = _value_type.type_name()
 
         if not value_type_name:
             value_type_name = "any"

@@ -272,7 +272,8 @@ class PrettyPrintModule(KiaraModule):
             value_type = "any"
 
         render_config = {}
-        for field, value in inputs.items():
+        for field in inputs.get_all_field_names():
+            value = inputs.get_value_obj(field)
             if field == "item":
                 continue
             render_config[field] = value.get_value_data()
