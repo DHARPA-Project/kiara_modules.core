@@ -403,7 +403,7 @@ class WriteArrowTable(KiaraModule):
         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
     ]:
 
-        outputs: typing.Mapping[str, typing.Union[str, typing.Any]] = {
+        outputs: typing.Mapping[str, typing.Any] = {
             "load_config": {
                 "type": "load_config",
                 "doc": "The configuration to use with kiara to load the saved value.",
@@ -430,7 +430,7 @@ class WriteArrowTable(KiaraModule):
         feather.write_feather(table, full_path)
 
         result = {
-            "module_type": "tabular.read_table",
+            "module_type": "tabular.load_table",
             "inputs": {"path": full_path, "format": "feather"},
             "output_name": "table",
         }
@@ -439,7 +439,7 @@ class WriteArrowTable(KiaraModule):
 
 class ReadArrowTable(KiaraModule):
 
-    _module_type_name = "read_table"
+    _module_type_name = "load_table"
 
     def create_input_schema(
         self,
