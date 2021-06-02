@@ -1,0 +1,20 @@
+{
+  "module_type_name": "import_table_from_file",
+  "doc": "Create a table from a csv file.",
+  "steps": [
+    {
+      "module_type": "onboarding.load_file",
+      "step_id": "load_file"
+    },
+    {
+      "module_type": "tabular.create_table_from_file",
+      "step_id": "create_table",
+      "input_links": {
+        "file": "load_file.file"
+      }
+    }
+  ],
+  "input_aliases": "auto",
+  "output_aliases": "auto"
+}
+

@@ -20,6 +20,7 @@ class ImportLocalFileModule(KiaraModule):
     """Read a file into the data registry."""
 
     _config_cls = ImportLocalPathConfig
+    _module_type_name = "load_file"
 
     def create_input_schema(
         self,
