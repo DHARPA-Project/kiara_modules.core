@@ -16,8 +16,9 @@ def convert_to_py_obj(
 ) -> typing.Any:
 
     if data_type:
-        value_type_name = data_type
+        value_type_name: typing.Optional[str] = data_type
     else:
+        value_type_name = None
         if isinstance(data, Value):
             value_type_name = data.value_schema.type
         else:

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import typing
 
-import pyarrow
+import pyarrow as pa
 from kiara.data.types import ValueType
 
 
 class TableType(ValueType):
     @classmethod
-    def get_type_transformation_configs(
+    def transformation_configs(
         self,
     ) -> typing.Optional[typing.Mapping[str, typing.Mapping[str, typing.Any]]]:
         """Return a dictionary of configuration for modules that can transform this type.
@@ -25,38 +25,49 @@ class TableType(ValueType):
         }
 
     @classmethod
-    def relevant_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-        return [pyarrow.Table]
+    def python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        return [pa.Table]
 
     @classmethod
-    def check_data_type(cls, data: typing.Any) -> typing.Optional["ValueType"]:
+    def save_config(cls) -> typing.Mapping[str, typing.Any]:
 
-        if isinstance(data, pyarrow.Table):
+        return {
+            "module_type": "tabular.write_table",
+            "module_config": {
+                "constants": {
+                    "format": "feather",
+                    "force_overwrite": False,
+                    "file_name": "table.feather",
+                }
+            },
+            "input_name": "table",
+            "target_name": "folder_path",
+            "load_config_output": "load_config",
+        }
+
+    @classmethod
+    def check_data(cls, data: typing.Any) -> typing.Optional["ValueType"]:
+
+        if isinstance(data, pa.Table):
             return TableType()
 
         return None
 
+    # @classmethod
+    # def generate_load_inputs(self, value_id: str, persistance_mgmt: PersistanceMgmt):
+    #
+    #     path = persistance_mgmt.get_path(value_id=value_id) / "table.feather"
+    #     return {
+    #         "path": path
+    #     }
+
+    # @classmethod
+    # def generate_save_inputs(self, value: Value, persistance_mgmt: PersistanceMgmt):
+    #
+    #     path = persistance_mgmt.get_path(value_id=value.id) / "table.feather"
+    #     return {
+    #         "path": path
+    #     }
+
     def validate(cls, value: typing.Any) -> None:
-        assert isinstance(value, pyarrow.Table)
-
-    def extract_type_metadata(
-        cls, value: typing.Any
-    ) -> typing.Mapping[str, typing.Any]:
-
-        table: pyarrow.Table = value
-        table_schema = {}
-        for name in table.schema.names:
-            field = table.schema.field(name)
-            md = field.metadata
-            if not md:
-                md = {}
-            _type = field.type
-            _d = {"item_type": str(_type), "arrow_type_id": _type.id, "metadata": md}
-            table_schema[name] = _d
-
-        return {
-            "column_names": table.column_names,
-            "schema": table_schema,
-            "rows": table.num_rows,
-            "size_in_bytes": table.nbytes,
-        }
+        assert isinstance(value, pa.Table)

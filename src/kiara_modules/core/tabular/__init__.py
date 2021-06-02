@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-
+import os
 import typing
 
 import pyarrow
@@ -13,6 +12,7 @@ from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
 from kiara.modules.metadata import ExtractMetadataModule
 from pyarrow import csv
+from pyarrow import feather as feather
 from pydantic import BaseModel, Field, validator
 
 AVAILABLE_FILE_COLUMNS = [
@@ -365,3 +365,116 @@ class TableMetadataModule(ExtractMetadataModule):
             "rows": table.num_rows,
             "size": table.nbytes,
         }
+
+
+class WriteArrowTable(KiaraModule):
+
+    _module_type_name = "write_table"
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        inputs: typing.Mapping[str, typing.Any] = {
+            "table": {"type": "table", "doc": "The table object."},
+            "folder_path": {
+                "type": "string",
+                "doc": "The path to the folder to write the file.",
+            },
+            "file_name": {"type": "string", "doc": "The file name."},
+            "format": {
+                "type": "string",
+                "doc": "The format of the table file ('feather' or 'parquet').",
+                "default": "feather",
+            },
+            "force_overwrite": {
+                "type": "boolean",
+                "doc": "Whether to overwrite an existing file.",
+                "default": False,
+            },
+        }
+        return inputs
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        outputs: typing.Mapping[str, typing.Union[str, typing.Any]] = {
+            "load_config": {
+                "type": "load_config",
+                "doc": "The configuration to use with kiara to load the saved value.",
+            }
+        }
+
+        return outputs
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        table: pa.Table = inputs.get_value_data("table")
+        path: str = inputs.get_value_data("folder_path")
+        file_name: str = inputs.get_value_data("file_name")
+        full_path = os.path.join(path, file_name)
+        force_overwrite = inputs.get_value_data("force_overwrite")
+
+        if os.path.exists(full_path) and not force_overwrite:
+            raise KiaraProcessingException(
+                f"Can't write table to file, file already exists: {full_path}"
+            )
+
+        os.makedirs(path, exist_ok=True)
+
+        feather.write_feather(table, full_path)
+
+        result = {
+            "module_type": "tabular.read_table",
+            "inputs": {"path": full_path, "format": "feather"},
+            "output_name": "table",
+        }
+        outputs.set_value("load_config", result)
+
+
+class ReadArrowTable(KiaraModule):
+
+    _module_type_name = "read_table"
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        inputs: typing.Mapping[str, typing.Any] = {
+            "path": {"type": "string", "doc": "The path to the table file."},
+            "format": {
+                "type": "string",
+                "doc": "The format of the table file ('feather' or 'parquet').",
+                "default": "feather",
+            },
+        }
+        return inputs
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        outputs: typing.Mapping[str, typing.Any] = {
+            "table": {"type": "table", "doc": "The pyarrow table object."}
+        }
+        return outputs
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        path = inputs.get_value_data("path")
+        format = inputs.get_value_data("format")
+
+        if format != "feather":
+            raise NotImplementedError()
+
+        table = feather.read_table(path)
+        outputs.set_value("table", table)
