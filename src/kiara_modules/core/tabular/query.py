@@ -41,7 +41,7 @@ class QueryTableGraphQL(KiaraModule):
 
         inputs: typing.Mapping[str, typing.Any] = {
             "table": {"type": "table", "doc": "The table to query."},
-            "query": {"type": "string", "doc": "The query.", "optional": True},
+            "query": {"type": "string", "doc": "The query."},
         }
         return inputs
 
