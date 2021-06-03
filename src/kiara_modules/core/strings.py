@@ -216,6 +216,13 @@ class ReplaceStringModule(KiaraModule):
         outputs.set_value("text", result)
 
 
+DEFAULT_PRETTY_PRINT_CONFIG = {
+    "max_no_rows": 32,
+    "max_row_height": 2,
+    "max_cell_length": 80,
+}
+
+
 class PrettyPrintModule(KiaraModule):
     def create_input_schema(
         self,

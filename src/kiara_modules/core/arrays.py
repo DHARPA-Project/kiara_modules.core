@@ -1,14 +1,92 @@
 # -*- coding: utf-8 -*-
 import copy
+import os
 import typing
 from concurrent.futures import ThreadPoolExecutor
 
 import pyarrow as pa
 from kiara import KiaraModule
-from kiara.data.values import ValueSchema, ValueSet
+from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
-from pydantic import Field
+from kiara.modules.metadata import ExtractMetadataModule
+from pyarrow import feather
+from pydantic import BaseModel, Field
+
+
+class SaveArrayModule(KiaraModule):
+    """Save an Arrow array to a file.
+
+    This will wrap the array into an Arrow Table, and save this table as a feather file.
+    """
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+        inputs: typing.Mapping[str, typing.Any] = {
+            "array": {"type": "array", "doc": "The array to save."},
+            "column_name": {
+                "type": "string",
+                "doc": "The name of the column in the wrapping table.",
+                "default": "array",
+            },
+            "folder_path": {
+                "type": "string",
+                "doc": "The base folder for storing the array.",
+            },
+            "file_name": {
+                "type": "string",
+                "doc": "The name of the file.",
+                "default": "array.feather",
+            },
+        }
+        return inputs
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        outputs: typing.Mapping[str, typing.Any] = {
+            "load_config": {
+                "type": "load_config",
+                "doc": "The load config for the array.",
+            }
+        }
+        return outputs
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        array: pa.Array = inputs.get_value_data("array")
+        folder = inputs.get_value_data("folder_path")
+        file_name = inputs.get_value_data("file_name")
+        column_name = inputs.get_value_data("column_name")
+
+        if not column_name:
+            raise KiaraProcessingException(
+                "Can't save array, column name not provided."
+            )
+
+        path = os.path.join(folder, file_name)
+        if os.path.exists(path):
+            raise KiaraProcessingException(
+                f"Can't write file, path already exists: {path}"
+            )
+
+        os.makedirs(os.path.dirname(path))
+
+        table = pa.Table.from_arrays([array], names=[column_name])
+        feather.write_feather(table, path)
+
+        load_config = {
+            "module_type": "arrays.load_array_from_table_file",
+            "inputs": {"path": path, "format": "feather", "column_name": column_name},
+            "output_name": "array",
+        }
+        outputs.set_value("load_config", load_config)
 
 
 class MapModuleConfig(KiaraModuleConfig):
@@ -177,3 +255,35 @@ class MapModule(KiaraModule):
 
         assert len(result_types) == 1
         outputs.set_value("array", pa.array(result_list))
+
+
+class ArrayMetadata(BaseModel):
+
+    length: int = Field(description="The number of elements the array contains.")
+    size: int = Field(
+        description="Total number of bytes consumed by the elements of the array."
+    )
+
+
+class ArrayMetadataModule(ExtractMetadataModule):
+    @classmethod
+    def _get_supported_types(cls) -> str:
+        return "array"
+
+    @classmethod
+    def get_metadata_key(cls) -> str:
+        return "array"
+
+    def _get_metadata_schema(
+        self, type: str
+    ) -> typing.Union[str, typing.Type[BaseModel]]:
+        return ArrayMetadata
+
+    def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
+
+        array: pa.Array = value.get_value_data()
+
+        return {
+            "length": len(array),
+            "size": array.nbytes,
+        }

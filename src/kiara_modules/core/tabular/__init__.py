@@ -325,7 +325,7 @@ class TableMetadataModule(ExtractMetadataModule):
         }
 
 
-class WriteArrowTable(KiaraModule):
+class SaveArrowTable(KiaraModule):
 
     _module_type_name = "write_table"
 
@@ -436,3 +436,50 @@ class ReadArrowTable(KiaraModule):
 
         table = feather.read_table(path)
         outputs.set_value("table", table)
+
+
+class CutColumnModule(KiaraModule):
+
+    _module_type_name = "cut_column"
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        inputs: typing.Mapping[str, typing.Any] = {
+            "table": {"type": "table", "doc": "A table."},
+            "column_name": {
+                "type": "string",
+                "doc": "The name of the column to extract.",
+            },
+        }
+        return inputs
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        outputs: typing.Mapping[str, typing.Any] = {
+            "array": {"type": "array", "doc": "The column."}
+        }
+        return outputs
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        table_value = inputs.get_value_obj("table")
+
+        column_name: str = inputs.get_value_data("column_name")
+        available = table_value.get_metadata("table")["table"]["column_names"]
+        if column_name not in available:
+            raise KiaraProcessingException(
+                f"Invalid column name '{column_name}'. Available column names: {available}"
+            )
+
+        table: pa.Table = inputs.get_value_data("table")
+        column = table.column(column_name)
+
+        outputs.set_value("array", column)
