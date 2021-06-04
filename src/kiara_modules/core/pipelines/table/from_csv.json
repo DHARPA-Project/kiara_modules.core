@@ -1,0 +1,19 @@
+{
+  "module_type_name": "from_csv",
+  "doc": "Import a csv file and create a table from it.",
+  "steps": [
+    {
+      "module_type": "onboarding.file.import",
+      "step_id": "read_file"
+    },
+    {
+      "module_type": "table.from_file",
+      "step_id": "create_table_from_file",
+      "input_links": {
+        "file": "read_file.file"
+      }
+    }
+  ],
+  "input_aliases": "auto",
+  "output_aliases": "auto"
+}

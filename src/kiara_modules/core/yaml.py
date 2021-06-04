@@ -65,6 +65,13 @@ DEFAULT_TO_YAML_CONFIG: typing.Mapping[str, typing.Any] = {}
 
 
 class ToYamlModule(TypeConversionModule):
+    """Convert arbitrary types into YAML format.
+
+    Early days for this module, it doesn't support a whole lot of types yet.
+    """
+
+    _module_type_name = "to_yaml"
+
     @classmethod
     def _get_supported_source_types(self) -> typing.Union[typing.Iterable[str], str]:
         return YAML_SUPPORTED_SOURCE_TYPES

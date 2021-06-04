@@ -8,6 +8,8 @@ from kiara.data.values import ValueSchema, ValueSet
 class IncludedInListCheckModule(KiaraModule):
     """Check whether an element is in a list."""
 
+    _module_type_name = "contains"
+
     def create_input_schema(
         self,
     ) -> typing.Mapping[

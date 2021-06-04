@@ -15,8 +15,9 @@ class TableFilterModuleConfig(KiaraModuleConfig):
 
 
 class CreateFilteredTableModule(KiaraModule):
+    """Filter a table using a mask array."""
 
-    _module_type_name = "create_filtered_table"
+    _module_type_name = "with_mask"
 
     _config_cls = TableFilterModuleConfig
 

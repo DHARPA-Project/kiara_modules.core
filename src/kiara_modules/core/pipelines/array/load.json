@@ -1,13 +1,13 @@
 {
-  "module_type_name": "load_array_from_table_file",
-  "doc": "Load a column from a table, returning an array.",
+  "module_type_name": "load",
+  "doc": "Load a column from a table object, returning an array.",
   "steps": [
     {
-      "module_type": "tabular.load_table",
+      "module_type": "table.load",
       "step_id": "load_table"
     },
     {
-      "module_type": "tabular.cut_column",
+      "module_type": "table.cut_column",
       "step_id": "cut_column",
       "input_links": {
         "table": "load_table.table"

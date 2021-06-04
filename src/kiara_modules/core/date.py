@@ -14,8 +14,20 @@ from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 
+# flake8: noqa
+
 
 class ExtractDateModule(KiaraModule):
+    """Extract a date object from a string.
+
+    This module is not really smart yet, currently it uses the following regex to extract a date (which might fail in a lot of cases):
+
+        r"_(\d{4}-\d{2}-\d{2})_"
+
+    """
+
+    _module_type_name = "extract_from_string"
+
     def create_input_schema(
         self,
     ) -> typing.Mapping[
@@ -52,6 +64,8 @@ class DateRangeCheckModule(KiaraModule):
 
     Return ``True`` if that's the case, otherwise ``False``.
     """
+
+    _module_type_name = "range_check"
 
     def create_input_schema(
         self,
@@ -95,6 +109,9 @@ class DateRangeCheckModule(KiaraModule):
 
         if hasattr(d, "as_py"):
             d = d.as_py()
+
+        if isinstance(d, str):
+            d = parser.parse(d)
 
         if not earliest and not latest:
             raise KiaraProcessingException(

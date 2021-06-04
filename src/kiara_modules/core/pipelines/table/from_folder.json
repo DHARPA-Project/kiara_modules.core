@@ -1,13 +1,13 @@
 {
-  "module_type_name": "folder_to_table",
+  "module_type_name": "from_folder",
   "doc": "Import a folder of text files and create a table from file metadata and content.",
   "steps": [
     {
-      "module_type": "onboarding.import_local_folder",
+      "module_type": "onboarding.folder.import",
       "step_id": "read_files_in_folder"
     },
     {
-      "module_type": "tabular.create_table_from_text_files",
+      "module_type": "table.from_file_bundle",
       "module_config": {
         "columns": ["id", "rel_path", "file_name", "content"]
       },

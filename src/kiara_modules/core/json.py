@@ -69,6 +69,13 @@ DEFAULT_TO_JSON_CONFIG: typing.Mapping[str, typing.Any] = {
 
 
 class ToJsonModule(TypeConversionModule):
+    """Convert arbitrary types into json.
+
+    Very early days for this module, it doesn't support a lot of types yet.
+    """
+
+    _module_type_name = "to_json"
+
     @classmethod
     def _get_supported_source_types(self) -> typing.Union[typing.Iterable[str], str]:
         return JSON_SUPPORTED_SOURCE_TYPES

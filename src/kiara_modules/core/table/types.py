@@ -17,7 +17,7 @@ class TableType(ValueType):
         """
         return {
             "string": {
-                "module_type": "strings.pretty_print",
+                "module_type": "string.pretty_print",
                 "input_name": "item",
                 "defaults": {"max_cell_length": 240, "max_no_rows": 20},
             },
@@ -32,7 +32,7 @@ class TableType(ValueType):
     def save_config(cls) -> typing.Mapping[str, typing.Any]:
 
         return {
-            "module_type": "tabular.write_table",
+            "module_type": "table.save",
             "module_config": {
                 "constants": {
                     "format": "feather",

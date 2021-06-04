@@ -91,6 +91,8 @@ def convert_to_string(
 
 
 class StringManipulationModule(KiaraModule):
+    """Base module to simplify creating other modules that do string manipulation."""
+
     def create_input_schema(
         self,
     ) -> typing.Mapping[
@@ -127,7 +129,7 @@ class RegexModuleConfig(KiaraModuleConfig):
 
 
 class RegexModule(KiaraModule):
-    """Check whether the input string matches a provided regular expression."""
+    """Match a string using a regular expression."""
 
     _config_cls = RegexModuleConfig
     _module_type_name = "match_regex"
@@ -181,8 +183,10 @@ class ReplaceModuleConfig(KiaraModuleConfig):
 
 
 class ReplaceStringModule(KiaraModule):
+    """Replace a string if it matches a key in a mapping dictionary."""
 
     _config_cls = ReplaceModuleConfig
+    _module_type_name = "replace"
 
     def create_input_schema(
         self,
@@ -224,6 +228,13 @@ DEFAULT_PRETTY_PRINT_CONFIG = {
 
 
 class PrettyPrintModule(KiaraModule):
+    """Pretty print arbitrary types.
+
+    For now, this module only supports a few selected types.
+    """
+
+    _module_type_name = "pretty_print"
+
     def create_input_schema(
         self,
     ) -> typing.Mapping[
@@ -292,8 +303,13 @@ class PrettyPrintModule(KiaraModule):
 
 
 class ToStringModule(TypeConversionModule):
+    """Convert arbitrary types into strings.
+
+    Early days for this module, not a lot of source types are supported just yet.
+    """
 
     ALLOWED_FORMATS = ["json", "pretty_string"]
+    _module_type_name = "to_string"
 
     @classmethod
     def _get_supported_source_types(self) -> typing.Union[typing.Iterable[str], str]:
