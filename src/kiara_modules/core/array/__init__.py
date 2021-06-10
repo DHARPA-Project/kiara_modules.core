@@ -129,7 +129,7 @@ class MapModule(KiaraModule):
         module_config = config.module_config
 
         m = self._kiara.create_module(
-            "id", module_type=module_type, module_config=module_config
+            module_type=module_type, module_config=module_config
         )
         doc = m.doc()
         link = m.source_link()
@@ -160,7 +160,7 @@ class MapModule(KiaraModule):
         module_name = self.get_config_value("module_type")
         module_config = self.get_config_value("module_config")
         self._child_module = self._kiara.create_module(
-            "_map_module", module_name, module_config=module_config
+            id="map_module_child", module_type=module_name, module_config=module_config
         )
         return self._child_module
 

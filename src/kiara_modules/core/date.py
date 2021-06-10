@@ -12,7 +12,6 @@ import typing
 from dateutil import parser
 from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
-from kiara.exceptions import KiaraProcessingException
 
 # flake8: noqa
 
@@ -60,7 +59,7 @@ class ExtractDateModule(KiaraModule):
 class DateRangeCheckModule(KiaraModule):
     """Check whether a date falls within a specified date range.
 
-    At least one of the inputs 'earliest' or 'latest' must be set, it's allowed to set both, though.
+    If none one of the inputs 'earliest' or 'latest' is set, this module will always return 'True'.
 
     Return ``True`` if that's the case, otherwise ``False``.
     """
@@ -107,17 +106,17 @@ class DateRangeCheckModule(KiaraModule):
         earliest: typing.Optional[datetime.datetime] = inputs.get_value_data("earliest")
         latest: typing.Optional[datetime.datetime] = inputs.get_value_data("latest")
 
+        if not earliest and not latest:
+            outputs.set_value("within_range", True)
+            return
+
         if hasattr(d, "as_py"):
             d = d.as_py()
 
         if isinstance(d, str):
             d = parser.parse(d)
 
-        if not earliest and not latest:
-            raise KiaraProcessingException(
-                "Can't process date range check: need at least one of 'earliest' or 'latest'"
-            )
-        elif earliest and latest:
+        if earliest and latest:
             matches = earliest <= d <= latest
         elif earliest:
             matches = earliest <= d
