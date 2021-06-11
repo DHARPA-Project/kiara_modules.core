@@ -3,10 +3,11 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
-from kiara.data.types.files import FileBundleModel
 from kiara.data.values import ValueSchema
 from kiara.modules.metadata import ExtractMetadataModule
 from pydantic import BaseModel
+
+from kiara_modules.core.metadata_models import FileBundleModel
 
 
 class SaveFileBundle(KiaraModule):

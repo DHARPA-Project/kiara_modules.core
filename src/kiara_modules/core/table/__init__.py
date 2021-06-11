@@ -6,7 +6,6 @@ import pyarrow
 import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
-from kiara.data.types.files import FileBundleModel, FileModel
 from kiara.data.values import ValueSchema
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
@@ -16,6 +15,7 @@ from pyarrow import feather as feather
 from pydantic import BaseModel, Field, validator
 
 from kiara_modules.core.array import map_with_module
+from kiara_modules.core.metadata_models import FileBundleModel, FileModel, TableMetadata
 
 AVAILABLE_FILE_COLUMNS = [
     "id",
@@ -273,26 +273,6 @@ class MergeTableModule(KiaraModule):
         table = pa.Table.from_arrays(arrays=arrays, names=column_names)
 
         outputs.set_value("table", table)
-
-
-class ColumnSchema(BaseModel):
-
-    arrow_type_name: str = Field(description="The arrow type name of the column.")
-    arrow_type_id: int = Field(description="The arrow type id of the column.")
-    metadata: typing.Dict[str, typing.Any] = Field(
-        description="Other metadata for the column.", default_factory=dict
-    )
-
-
-class TableMetadata(BaseModel):
-    column_names: typing.List[str] = Field(
-        description="The name of the columns of the table."
-    )
-    column_schema: typing.Dict[str, ColumnSchema] = Field(
-        description="The schema description of the table.", alias="schema"
-    )
-    rows: int = Field(description="The number of rows the table contains.")
-    size: int = Field(description="The tables size in bytes.")
 
 
 class TableMetadataModule(ExtractMetadataModule):

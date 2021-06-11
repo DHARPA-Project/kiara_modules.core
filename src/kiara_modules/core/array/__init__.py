@@ -12,6 +12,7 @@ from pyarrow import feather
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array.utils import map_with_module
+from kiara_modules.core.metadata_models import ArrayMetadata
 
 
 class SaveArrayModule(KiaraModule):
@@ -252,15 +253,6 @@ class MapModule(KiaraModule):
             module_output_name=self.module_output_name,
         )
         outputs.set_value("array", pa.array(result_list))
-
-
-class ArrayMetadata(BaseModel):
-    """Model to contain metadata information for the 'array' type."""
-
-    length: int = Field(description="The number of elements the array contains.")
-    size: int = Field(
-        description="Total number of bytes consumed by the elements of the array."
-    )
 
 
 class ArrayMetadataModule(ExtractMetadataModule):

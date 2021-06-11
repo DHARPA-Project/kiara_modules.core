@@ -3,9 +3,9 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data import ValueSet
-from kiara.data.types.files import FileBundleModel, FolderImportConfig
 from kiara.data.values import ValueSchema
 
+from kiara_modules.core.metadata_models import FileBundleModel, FolderImportConfig
 from kiara_modules.core.onboarding import ImportLocalPathConfig
 
 

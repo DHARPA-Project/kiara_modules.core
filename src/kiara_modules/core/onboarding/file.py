@@ -3,9 +3,11 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data import ValueSet
-from kiara.data.types.files import FileModel
-from kiara.data.values import ValueSchema
+from kiara.data.values import Value, ValueSchema
+from kiara.modules.metadata import ExtractMetadataModule
+from pydantic import BaseModel
 
+from kiara_modules.core.metadata_models import FileModel
 from kiara_modules.core.onboarding import ImportLocalPathConfig
 
 
@@ -40,3 +42,25 @@ class ImportLocalFileModule(KiaraModule):
         path = inputs.get_value_data("path")
         file_model = FileModel.import_file(path)
         outputs.set_value("file", file_model)
+
+
+class FileMetadataModule(ExtractMetadataModule):
+
+    _module_type_name = "metadata"
+
+    @classmethod
+    def _get_supported_types(cls) -> str:
+        return "file"
+
+    @classmethod
+    def get_metadata_key(cls) -> str:
+        return "file"
+
+    def _get_metadata_schema(
+        self, type: str
+    ) -> typing.Union[str, typing.Type[BaseModel]]:
+        return FileModel
+
+    def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
+
+        return value.get_value_data().dict()
