@@ -17,8 +17,17 @@ __email__ = "markus.binsteiner@uni.lu"
 
 log = logging.getLogger("kiara_modules")
 
+metadata_schemas: KiaraEntryPointItem = (
+    find_kiara_modules_under,
+    ["kiara_modules.core.metadata_schemas"],
+)
 modules: KiaraEntryPointItem = (find_kiara_modules_under, ["kiara_modules.core"])
 pipelines: KiaraEntryPointItem = (find_kiara_pipelines_under, ["kiara_modules.core"])
+value_types: KiaraEntryPointItem = (
+    find_kiara_modules_under,
+    ["kiara_modules.core.value_types"],
+)
+
 
 module_package_metadata = {
     "description": "Core modules for kiara.",

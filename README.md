@@ -55,7 +55,7 @@ you'll need to navigate to the directory again (wherever that is, in your case),
 ```console
 cd path/to/kiara_modules.core
 source .venv/bin/activate
-kiara --help  # or whatever, point is, kiara should be available for you now
+kiara --help  # or whatever, point is, kiara should be available for you now,
 ```
 
 ### ``make`` targets
