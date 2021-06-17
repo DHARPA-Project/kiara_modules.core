@@ -47,6 +47,17 @@ kiara run core_example text_1="xxx" text_2="yyy"
 ...
 ```
 
+### Re-activate the development environment
+
+The 'prepare' step from above only has to be done once. After that, to re-enable your virtual environment,
+you'll need to navigate to the directory again (wherever that is, in your case), and run the ``source`` command from before again:
+
+```console
+cd path/to/kiara_modules.core
+source .venv/bin/activate
+kiara --help  # or whatever, point is, kiara should be available for you now
+```
+
 ### ``make`` targets
 
 - ``init``: init development project (install project & dev dependencies into virtualenv, as well as pre-commit git hook)
