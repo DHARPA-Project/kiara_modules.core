@@ -15,7 +15,11 @@ from pyarrow import feather as feather
 from pydantic import BaseModel, Field, validator
 
 from kiara_modules.core.array import map_with_module
-from kiara_modules.core.metadata_models import FileBundleModel, FileModel, TableMetadata
+from kiara_modules.core.metadata_schemas import (
+    FileBundleModel,
+    FileModel,
+    TableMetadata,
+)
 
 AVAILABLE_FILE_COLUMNS = [
     "id",

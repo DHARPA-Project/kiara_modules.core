@@ -12,7 +12,7 @@ from pyarrow import feather
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array.utils import map_with_module
-from kiara_modules.core.metadata_models import ArrayMetadata
+from kiara_modules.core.metadata_schemas import ArrayMetadata
 
 
 class SaveArrayModule(KiaraModule):

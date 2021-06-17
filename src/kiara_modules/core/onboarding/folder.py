@@ -5,7 +5,7 @@ from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import ValueSchema
 
-from kiara_modules.core.metadata_models import FileBundleModel, FolderImportConfig
+from kiara_modules.core.metadata_schemas import FileBundleModel, FolderImportConfig
 from kiara_modules.core.onboarding import ImportLocalPathConfig
 
 

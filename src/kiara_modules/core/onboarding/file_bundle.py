@@ -7,7 +7,7 @@ from kiara.data.values import ValueSchema
 from kiara.modules.metadata import ExtractMetadataModule
 from pydantic import BaseModel
 
-from kiara_modules.core.metadata_models import FileBundleModel
+from kiara_modules.core.metadata_schemas import FileBundleModel
 
 
 class SaveFileBundle(KiaraModule):
