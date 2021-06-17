@@ -20,6 +20,20 @@ log = logging.getLogger("kiara_modules")
 modules: KiaraEntryPointItem = (find_kiara_modules_under, ["kiara_modules.core"])
 pipelines: KiaraEntryPointItem = (find_kiara_pipelines_under, ["kiara_modules.core"])
 
+module_package_metadata = {
+    "description": "Core modules for kiara.",
+    "references": {
+        "homepage": {
+            "desc": "The module package homepage.",
+            "url": "https://github.com/DHARPA-Project/kiara_modules.core",
+        },
+        "documentation": {
+            "desc": "The url for the module package documentation.",
+            "url": "https://dharpa.org/kiara_modules.core/",
+        },
+    },
+}
+
 
 def get_version():
     from pkg_resources import DistributionNotFound, get_distribution

@@ -7,7 +7,7 @@ from kiara.data.values import ValueSchema, ValueSet
 
 
 class QueryTableGraphQL(KiaraModule):
-    """Execute a graphql aggregation queries against an arrow table.
+    """Execute a graphql aggregation query against an (Arrow) table.
 
     References:
         - https://vaex.io/docs/example_graphql.html
