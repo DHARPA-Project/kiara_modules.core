@@ -15,19 +15,23 @@ from kiara import (
 __author__ = """Markus Binsteiner"""
 __email__ = "markus.binsteiner@uni.lu"
 
+from kiara.utils.class_loading import (
+    find_metadata_schemas_under,
+    find_value_types_under,
+)
+
 log = logging.getLogger("kiara_modules")
 
 metadata_schemas: KiaraEntryPointItem = (
-    find_kiara_modules_under,
+    find_metadata_schemas_under,
     ["kiara_modules.core.metadata_schemas"],
 )
 modules: KiaraEntryPointItem = (find_kiara_modules_under, ["kiara_modules.core"])
 pipelines: KiaraEntryPointItem = (find_kiara_pipelines_under, ["kiara_modules.core"])
 value_types: KiaraEntryPointItem = (
-    find_kiara_modules_under,
+    find_value_types_under,
     ["kiara_modules.core.value_types"],
 )
-
 
 module_package_metadata = {
     "description": "Core modules for kiara.",
