@@ -8,7 +8,14 @@ import typing
 
 import pyarrow as pa
 from dateutil import parser
+from kiara import KiaraEntryPointItem
 from kiara.data.types import ValueHashMarker, ValueType
+from kiara.utils.class_loading import find_value_types_under
+
+value_types: KiaraEntryPointItem = (
+    find_value_types_under,
+    ["kiara_modules.core.value_types"],
+)
 
 
 class TableType(ValueType):

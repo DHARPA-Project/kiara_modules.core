@@ -18,11 +18,21 @@ import typing
 
 import filetype
 from anyio import create_task_group, open_file, start_blocking_portal
+from kiara import KiaraEntryPointItem
 from kiara.metadata import MetadataModel
+from kiara.utils.class_loading import find_metadata_schemas_under
 from pydantic import BaseModel, Field
+
+metadata_schemas: KiaraEntryPointItem = (
+    find_metadata_schemas_under,
+    ["kiara_modules.core.metadata_schemas"],
+)
 
 
 class ColumnSchema(BaseModel):
+    """Describes properties of a single column of the 'table' data type."""
+
+    _metadata_key: typing.ClassVar[str] = "column"
 
     arrow_type_name: str = Field(description="The arrow type name of the column.")
     arrow_type_id: int = Field(description="The arrow type id of the column.")
@@ -32,18 +42,24 @@ class ColumnSchema(BaseModel):
 
 
 class TableMetadata(MetadataModel):
+    """Describes properties for the 'table' data type."""
+
+    _metadata_key: typing.ClassVar[str] = "table"
+
     column_names: typing.List[str] = Field(
         description="The name of the columns of the table."
     )
     column_schema: typing.Dict[str, ColumnSchema] = Field(
-        description="The schema description of the table.", alias="schema"
+        description="The schema description of the table."
     )
     rows: int = Field(description="The number of rows the table contains.")
     size: int = Field(description="The tables size in bytes.")
 
 
 class ArrayMetadata(MetadataModel):
-    """Model to contain metadata information for the 'array' type."""
+    """Describes properties fo the 'array' type."""
+
+    _metadata_key: typing.ClassVar[str] = "array"
 
     length: int = Field(description="The number of elements the array contains.")
     size: int = Field(
@@ -55,7 +71,7 @@ log = logging.getLogger("kiara")
 
 
 class FileModel(MetadataModel):
-    """A class to hold details and metadata about a file."""
+    """Describes properties for the 'file' value type."""
 
     @classmethod
     def import_file(cls, source: str, target: typing.Optional[str] = None):
@@ -139,6 +155,8 @@ class FolderImportConfig(BaseModel):
 
 
 class FileBundleModel(MetadataModel):
+    """Describes properties for the 'file_bundle' value type."""
+
     @classmethod
     def import_folder(
         cls,
