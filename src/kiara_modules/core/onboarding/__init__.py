@@ -3,6 +3,8 @@
 from kiara.module_config import KiaraModuleConfig
 from pydantic import Field
 
+KIARA_METADATA = {"tags": ["onboarding"]}
+
 
 class ImportLocalPathConfig(KiaraModuleConfig):
 

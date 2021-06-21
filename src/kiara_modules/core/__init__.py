@@ -21,7 +21,8 @@ log = logging.getLogger("kiara_modules")
 modules: KiaraEntryPointItem = (find_kiara_modules_under, ["kiara_modules.core"])
 pipelines: KiaraEntryPointItem = (find_kiara_pipelines_under, ["kiara_modules.core"])
 
-module_package_metadata = {
+KIARA_METADATA = {
+    "authors": [{"name": "Markus Binsteiner", "email": "markus.binsteiner@uni.lu"}],
     "description": "Core modules for kiara.",
     "references": {
         "homepage": {
@@ -33,6 +34,8 @@ module_package_metadata = {
             "url": "https://dharpa.org/kiara_modules.core/",
         },
     },
+    "tags": ["core"],
+    "labels": {"package": "kiara_modules.core"},
 }
 
 
