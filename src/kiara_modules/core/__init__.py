@@ -15,15 +15,15 @@ from kiara import (
 __author__ = """Markus Binsteiner"""
 __email__ = "markus.binsteiner@uni.lu"
 
-
 log = logging.getLogger("kiara_modules")
 
 modules: KiaraEntryPointItem = (find_kiara_modules_under, ["kiara_modules.core"])
 pipelines: KiaraEntryPointItem = (find_kiara_pipelines_under, ["kiara_modules.core"])
 
+
 KIARA_METADATA = {
-    "authors": [{"name": "Markus Binsteiner", "email": "markus.binsteiner@uni.lu"}],
-    "description": "Core modules for kiara.",
+    "authors": [{"name": __author__, "email": __email__}],
+    "description": "Kiara modules for: core",
     "references": {
         "homepage": {
             "desc": "The module package homepage.",
