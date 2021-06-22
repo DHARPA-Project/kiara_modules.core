@@ -70,7 +70,7 @@ class ArrayMetadata(MetadataModel):
 log = logging.getLogger("kiara")
 
 
-class FileModel(MetadataModel):
+class FileMetadata(MetadataModel):
     """Describes properties for the 'file' value type."""
 
     @classmethod
@@ -104,7 +104,7 @@ class FileModel(MetadataModel):
         if not mime_type:
             mime_type = "application/octet-stream"
 
-        m = FileModel(
+        m = FileMetadata(
             orig_filename=orig_filename,
             orig_path=orig_path,
             import_time=file_import_time,
@@ -129,14 +129,14 @@ class FileModel(MetadataModel):
 
     def save(self, target: str):
 
-        fm = FileModel.import_file(self.path, target)
+        fm = FileMetadata.import_file(self.path, target)
         fm.orig_path = self.orig_path
         fm.orig_filename = (self.orig_filename,)
         fm.import_time = self.import_time
         return fm
 
     def __repr__(self):
-        return f"FileModel(name={self.file_name})"
+        return f"FileMetadata(name={self.file_name})"
 
     def __str__(self):
         return self.__repr__()
@@ -154,7 +154,7 @@ class FolderImportConfig(BaseModel):
     )
 
 
-class FileBundleModel(MetadataModel):
+class FileBundleMetadata(MetadataModel):
     """Describes properties for the 'file_bundle' value type."""
 
     @classmethod
@@ -196,7 +196,7 @@ class FileBundleModel(MetadataModel):
                 f"Invalid type for folder import config: {type(import_config)}."
             )
 
-        included_files: typing.Dict[str, FileModel] = {}
+        included_files: typing.Dict[str, FileMetadata] = {}
         exclude_dirs = _import_config.exclude_dirs
         valid_extensions = _import_config.include_files
 
@@ -224,7 +224,7 @@ class FileBundleModel(MetadataModel):
                 else:
                     target_path = None
 
-                file_model = FileModel.import_file(full_path, target_path)
+                file_model = FileMetadata.import_file(full_path, target_path)
                 sum_size = sum_size + file_model.size
                 included_files[rel_path] = file_model
 
@@ -235,7 +235,7 @@ class FileBundleModel(MetadataModel):
         else:
             path = source
 
-        return FileBundleModel.create_from_file_models(
+        return FileBundleMetadata.create_from_file_models(
             files=included_files,
             orig_bundle_name=orig_bundle_name,
             orig_path=orig_path,
@@ -246,7 +246,7 @@ class FileBundleModel(MetadataModel):
     @classmethod
     def create_from_file_models(
         self,
-        files: typing.Mapping[str, FileModel],
+        files: typing.Mapping[str, FileMetadata],
         orig_bundle_name: str,
         orig_path: typing.Optional[str],
         path: str,
@@ -270,7 +270,7 @@ class FileBundleModel(MetadataModel):
                 sum_size = sum_size + f.size
         result["size"] = sum_size
 
-        return FileBundleModel(**result)
+        return FileBundleMetadata(**result)
 
     orig_bundle_name: str = Field(
         description="The original name of this folder at the time of import."
@@ -284,13 +284,13 @@ class FileBundleModel(MetadataModel):
     number_of_files: int = Field(
         description="How many files are included in this bundle."
     )
-    included_files: typing.Dict[str, FileModel] = Field(
+    included_files: typing.Dict[str, FileMetadata] = Field(
         description="A map of all the included files, incl. their properties."
     )
     size: int = Field(description="The size of all files in this folder, combined.")
     path: str = Field(description="The archive path of the folder.")
 
-    def get_relative_path(self, file: FileModel):
+    def get_relative_path(self, file: FileMetadata):
 
         return os.path.relpath(file.path, self.path)
 
@@ -300,7 +300,7 @@ class FileBundleModel(MetadataModel):
 
         with start_blocking_portal() as portal:
 
-            async def read_file(rel_path: str, fm: FileModel):
+            async def read_file(rel_path: str, fm: FileMetadata):
                 async with await open_file(fm.path) as f:
                     content = await f.read()
                     content_dict[rel_path] = content  # type: ignore
@@ -316,7 +316,7 @@ class FileBundleModel(MetadataModel):
 
         return content_dict
 
-    def save(self, target_path: str) -> "FileBundleModel":
+    def save(self, target_path: str) -> "FileBundleMetadata":
 
         if target_path == self.path:
             raise Exception(f"Target path and current path are the same: {target_path}")
@@ -327,7 +327,7 @@ class FileBundleModel(MetadataModel):
             new_fm = item.save(_target_path)
             result[rel_path] = new_fm
 
-        fb = FileBundleModel.create_from_file_models(
+        fb = FileBundleMetadata.create_from_file_models(
             result,
             orig_bundle_name=self.orig_bundle_name,
             orig_path=self.orig_path,

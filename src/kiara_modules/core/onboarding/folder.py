@@ -5,7 +5,7 @@ from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import ValueSchema
 
-from kiara_modules.core.metadata_schemas import FileBundleModel, FolderImportConfig
+from kiara_modules.core.metadata_schemas import FileBundleMetadata, FolderImportConfig
 from kiara_modules.core.onboarding import ImportLocalPathConfig
 
 
@@ -63,6 +63,8 @@ class ImportFolderModule(KiaraModule):
             include_files=included_files, exclude_dirs=excluded_dirs
         )
 
-        bundle = FileBundleModel.import_folder(source=path, import_config=import_config)
+        bundle = FileBundleMetadata.import_folder(
+            source=path, import_config=import_config
+        )
 
         outputs.set_values(file_bundle=bundle)

@@ -16,8 +16,8 @@ from pydantic import BaseModel, Field, validator
 
 from kiara_modules.core.array import map_with_module
 from kiara_modules.core.metadata_schemas import (
-    FileBundleModel,
-    FileModel,
+    FileBundleMetadata,
+    FileMetadata,
     TableMetadata,
 )
 
@@ -82,7 +82,7 @@ class CreateTableFromFileModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
-        input_file: FileModel = inputs.get_value_data("file")
+        input_file: FileMetadata = inputs.get_value_data("file")
         imported_data = csv.read_csv(input_file.path)
 
         if self.get_config_value("allow_column_filter"):
@@ -165,7 +165,7 @@ class CreateTableFromTextFilesModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
-        bundle: FileBundleModel = inputs.get_value_data("files")
+        bundle: FileBundleMetadata = inputs.get_value_data("files")
 
         columns = self.get_config_value("columns")
         if not columns:

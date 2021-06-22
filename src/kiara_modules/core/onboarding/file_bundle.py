@@ -7,7 +7,7 @@ from kiara.data.values import ValueSchema
 from kiara.modules.metadata import ExtractMetadataModule
 from pydantic import BaseModel
 
-from kiara_modules.core.metadata_schemas import FileBundleModel
+from kiara_modules.core.metadata_schemas import FileBundleMetadata
 
 
 class SaveFileBundle(KiaraModule):
@@ -44,7 +44,7 @@ class SaveFileBundle(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
-        bundle: FileBundleModel = inputs.get_value_data("files")
+        bundle: FileBundleMetadata = inputs.get_value_data("files")
         target: str = inputs.get_value_data("target")
         fm = bundle.save(target)
         outputs.set_value("files", fm)
@@ -73,7 +73,7 @@ class FileBundleMetadataModule(ExtractMetadataModule):
     def _get_metadata_schema(
         self, type: str
     ) -> typing.Union[str, typing.Type[BaseModel]]:
-        return FileBundleModel
+        return FileBundleMetadata
 
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
 
