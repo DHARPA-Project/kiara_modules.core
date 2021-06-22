@@ -6,19 +6,12 @@
 import logging
 import os
 
-from kiara import (
-    KiaraEntryPointItem,
-    find_kiara_modules_under,
-    find_kiara_pipelines_under,
-)
+from kiara import KiaraEntryPointItem, find_kiara_modules_under
 
 __author__ = """Markus Binsteiner"""
 __email__ = "markus.binsteiner@uni.lu"
 
 log = logging.getLogger("kiara_modules")
-
-modules: KiaraEntryPointItem = (find_kiara_modules_under, ["kiara_modules.core"])
-pipelines: KiaraEntryPointItem = (find_kiara_pipelines_under, ["kiara_modules.core"])
 
 
 KIARA_METADATA = {
@@ -37,6 +30,8 @@ KIARA_METADATA = {
     "tags": ["core"],
     "labels": {"package": "kiara_modules.core"},
 }
+
+modules: KiaraEntryPointItem = (find_kiara_modules_under, ["kiara_modules.core"])
 
 
 def get_version():
