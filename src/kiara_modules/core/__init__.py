@@ -18,7 +18,7 @@ KIARA_METADATA = {
     "authors": [{"name": __author__, "email": __email__}],
     "description": "Kiara modules for: core",
     "references": {
-        "homepage": {
+        "source_repo": {
             "desc": "The module package homepage.",
             "url": "https://github.com/DHARPA-Project/kiara_modules.core",
         },

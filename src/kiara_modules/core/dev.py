@@ -14,7 +14,7 @@ from pydantic import Field
 class DummyProcessingModuleConfig(KiaraModuleConfig):
     """Configuration for the 'dummy' processing module."""
 
-    doc: typing.Optional[str] = None
+    documentation: typing.Optional[str] = None
 
     input_schema: typing.Dict[str, typing.Dict] = Field(
         description="The input schema for this module."

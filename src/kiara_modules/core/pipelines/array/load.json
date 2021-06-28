@@ -1,6 +1,6 @@
 {
   "module_type_name": "load",
-  "doc": "Load a column from a table object, returning an array.",
+  "documentation":  "Load a column from a table object, returning an array.",
   "steps": [
     {
       "module_type": "table.load",

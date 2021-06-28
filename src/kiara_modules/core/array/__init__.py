@@ -14,6 +14,11 @@ from pydantic import BaseModel, Field
 from kiara_modules.core.array.utils import map_with_module
 from kiara_modules.core.metadata_schemas import ArrayMetadata
 
+KIARA_METADATA = {
+    "description": "Array-related kiara modules",
+    "tags": ["array"],
+}
+
 
 class SaveArrayModule(KiaraModule):
     """Save an Arrow array to a file.

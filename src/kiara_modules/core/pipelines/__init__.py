@@ -2,9 +2,10 @@
 
 """Virtual module that is used as base for [PipelineModule][kiara.pipeline.module.PipelineModule] classes that are auto-generated
 from pipeline descriptions under this folder."""
-from kiara import KiaraEntryPointItem, find_kiara_pipelines_under
+from kiara import KiaraEntryPointItem, find_pipeline_base_path_for_module
 
 pipelines: KiaraEntryPointItem = (
-    find_kiara_pipelines_under,
+    find_pipeline_base_path_for_module,
     ["kiara_modules.core.pipelines"],
 )
+KIARA_METADATA = {"tags": ["pipeline"], "labels": {"pipeline": "true"}}
