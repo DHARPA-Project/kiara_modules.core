@@ -38,7 +38,6 @@ class ImportLocalFileModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
-        print("path")
         path = inputs.get_value_data("path")
         file_model = FileMetadata.import_file(path)
         outputs.set_value("file", file_model)
