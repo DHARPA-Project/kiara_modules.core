@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import typing
 
-from dataprofiler import Profiler
 from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
 from pyarrow import Table
@@ -35,6 +34,8 @@ class DataProfilerModule(KiaraModule):
         return outputs
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        from dataprofiler import Profiler
 
         item: Table = inputs.get_value_data("item")
         pd = item.to_pandas()
