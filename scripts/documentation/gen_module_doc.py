@@ -17,8 +17,12 @@ The formatting here will be improved later on, for now this should be enough to 
 
 """
 
+BASE_PACKAGE = "kiara_modules.core"
 
-for module_type in kiara.available_non_pipeline_module_types:
+
+for module_type in kiara.module_mgmt.find_modules_for_package(
+    BASE_PACKAGE, include_pipelines=False
+).keys():
 
     if module_type == "pipeline":
         continue
@@ -44,7 +48,9 @@ The formatting here will be improved later on, for now this should be enough to 
 
 """
 
-for module_type in kiara.available_pipeline_module_types:
+for module_type in kiara.module_mgmt.find_modules_for_package(
+    BASE_PACKAGE, include_core_modules=False
+):
 
     if module_type == "pipeline":
         continue
