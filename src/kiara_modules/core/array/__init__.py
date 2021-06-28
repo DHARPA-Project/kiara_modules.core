@@ -137,8 +137,9 @@ class MapModule(KiaraModule):
         m = self._kiara.create_module(
             module_type=module_type, module_config=module_config
         )
-        doc = m.doc()
-        link = m.source_link()
+        type_md = m.get_type_metadata()
+        doc = type_md.documentation.full_doc
+        link = type_md.context.get_url_for_reference("module_doc")
         if not link:
             link_str = f"``{module_type}``"
         else:
