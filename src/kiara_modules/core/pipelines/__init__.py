@@ -8,4 +8,5 @@ pipelines: KiaraEntryPointItem = (
     find_pipeline_base_path_for_module,
     ["kiara_modules.core.pipelines"],
 )
+
 KIARA_METADATA = {"tags": ["pipeline"], "labels": {"pipeline": "true"}}

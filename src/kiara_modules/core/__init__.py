@@ -19,7 +19,7 @@ KIARA_METADATA = {
     "description": "Kiara modules for: core",
     "references": {
         "source_repo": {
-            "desc": "The module package homepage.",
+            "desc": "The module package git repository.",
             "url": "https://github.com/DHARPA-Project/kiara_modules.core",
         },
         "documentation": {
