@@ -24,7 +24,7 @@ class SaveFileModule(SaveValueModule):
 
     def save_value(
         self, value: Value, value_id: str, base_path: str
-    ) -> typing.Mapping[str, typing.Any]:
+    ) -> typing.Dict[str, typing.Any]:
 
         file_obj = value.get_value_data()
 

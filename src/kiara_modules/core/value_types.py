@@ -87,7 +87,8 @@ class BooleanType(ValueType):
 class IntegerType(ValueType):
     """An integer."""
 
-    def calculate_value_hash(self, value: typing.Any) -> str:
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
         return str(hash(value))
 
     def validate(cls, value: typing.Any) -> None:
@@ -105,7 +106,8 @@ class IntegerType(ValueType):
 class FloatType(ValueType):
     "A float."
 
-    def calculate_value_hash(self, value: typing.Any) -> str:
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
         return str(hash(value))
 
     def validate(cls, value: typing.Any) -> typing.Any:
@@ -117,7 +119,8 @@ class FloatType(ValueType):
 class DictType(ValueType):
     """A dict-like object."""
 
-    def calculate_value_hash(self, value: typing.Any) -> str:
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
 
         dh = DeepHash(value)
         return str(dh[value])
@@ -140,6 +143,7 @@ class DictType(ValueType):
 class ListType(ValueType):
     """A list-like object."""
 
+    @classmethod
     def calculate_value_hash(self, value: typing.Any) -> str:
 
         dh = DeepHash(value)

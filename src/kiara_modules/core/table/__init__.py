@@ -47,7 +47,7 @@ class SaveArrowTable(SaveValueModule):
 
     def save_value(
         self, value: Value, value_id: str, base_path: str
-    ) -> typing.Mapping[str, typing.Any]:
+    ) -> typing.Dict[str, typing.Any]:
 
         table: pa.Table = value.get_value_data()
         full_path: str = os.path.join(base_path, DEFAULT_SAVE_TABLE_FILE_NAME)

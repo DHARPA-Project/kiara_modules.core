@@ -67,7 +67,8 @@ class OnboardFileModule(KiaraModule):
         file_schema = ValueSchema(
             type="file", optional=False, doc=f"Onboarded item from: {path}"
         )
-        value = NonRegistryValue(
+
+        value = NonRegistryValue(  # type: ignore
             _init_value=file_model,
             value_schema=file_schema,
             is_constant=True,
@@ -143,7 +144,7 @@ class OnboardFolderModule(KiaraModule):
         file_bundle_schema = ValueSchema(
             type="file_bundle", optional=False, doc=f"Onboarded item from: {path}"
         )
-        value = NonRegistryValue(
+        value = NonRegistryValue(  # type: ignore
             _init_value=bundle,
             value_schema=file_bundle_schema,
             is_constant=True,
