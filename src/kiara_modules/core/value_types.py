@@ -10,8 +10,10 @@ import pyarrow as pa
 from dateutil import parser
 from deepdiff import DeepHash
 from kiara import KiaraEntryPointItem
-from kiara.data.types import ValueHashMarker, ValueType, get_type_name
+from kiara.data.types import ValueType
 from kiara.utils.class_loading import find_value_types_under
+
+from kiara_modules.core.metadata_schemas import FileBundleMetadata, FileMetadata
 
 value_types: KiaraEntryPointItem = (
     find_value_types_under,
@@ -25,16 +27,36 @@ class AnyType(ValueType):
     _value_type_name = "any"
 
 
+class BytesType(ValueType):
+    """An array of bytes."""
+
+    _value_type_name = "bytes"
+
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
+        return str(hash(value))
+
+    # @classmethod
+    # def get_operations(
+    #     cls,
+    # ) -> typing.Mapping[str, typing.Mapping[str, typing.Mapping[str, typing.Any]]]:
+    #
+    #     return {
+    #         "save_value": {
+    #             "default": {
+    #                 "module_type": "bytes.save",
+    #                 "input_name": "bytes",
+    #             }
+    #         }
+    #     }
+
+
 class StringType(ValueType):
     """A string."""
 
-    def defer_hash_calc(self) -> bool:
-        return False
-
-    def calculate_value_hash(
-        self, value: typing.Any
-    ) -> typing.Union[int, ValueHashMarker]:
-        return hash(value)
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
+        return str(hash(value))
 
     def validate(cls, value: typing.Any) -> None:
 
@@ -45,13 +67,9 @@ class StringType(ValueType):
 class BooleanType(ValueType):
     "A boolean."
 
-    def defer_hash_calc(self) -> bool:
-        return False
-
-    def calculate_value_hash(
-        self, value: typing.Any
-    ) -> typing.Union[int, ValueHashMarker]:
-        return hash(value)
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
+        return str(hash(value))
 
     def validate(cls, value: typing.Any):
         if not isinstance(value, bool):
@@ -69,13 +87,8 @@ class BooleanType(ValueType):
 class IntegerType(ValueType):
     """An integer."""
 
-    def defer_hash_calc(self) -> bool:
-        return False
-
-    def calculate_value_hash(
-        self, value: typing.Any
-    ) -> typing.Union[int, ValueHashMarker]:
-        return hash(value)
+    def calculate_value_hash(self, value: typing.Any) -> str:
+        return str(hash(value))
 
     def validate(cls, value: typing.Any) -> None:
 
@@ -92,13 +105,8 @@ class IntegerType(ValueType):
 class FloatType(ValueType):
     "A float."
 
-    def defer_hash_calc(self) -> bool:
-        return False
-
-    def calculate_value_hash(
-        self, value: typing.Any
-    ) -> typing.Union[int, ValueHashMarker]:
-        return hash(value)
+    def calculate_value_hash(self, value: typing.Any) -> str:
+        return str(hash(value))
 
     def validate(cls, value: typing.Any) -> typing.Any:
 
@@ -109,54 +117,44 @@ class FloatType(ValueType):
 class DictType(ValueType):
     """A dict-like object."""
 
-    def defer_hash_calc(self) -> bool:
-        return True
-
-    def calculate_value_hash(
-        self, value: typing.Any
-    ) -> typing.Union[int, ValueHashMarker]:
+    def calculate_value_hash(self, value: typing.Any) -> str:
 
         dh = DeepHash(value)
-        return dh[value]
+        return str(dh[value])
 
     def validate(cls, value: typing.Any) -> None:
 
         if not isinstance(value, typing.Mapping):
             raise ValueError(f"Invalid type '{type(value)}', not a mapping.")
 
-    def extract_type_metadata(
-        cls, value: typing.Any
-    ) -> typing.Mapping[str, typing.Any]:
-        value_types = set()
-        for val in value.values():
-            value_types.add(get_type_name(val))
-        result = {"keys": list(value.keys()), "value_types.py": list(value_types)}
-        return result
+    # def extract_type_metadata(
+    #     cls, value: typing.Any
+    # ) -> typing.Mapping[str, typing.Any]:
+    #     value_types = set()
+    #     for val in value.values():
+    #         value_types.add(get_type_name(val))
+    #     result = {"keys": list(value.keys()), "value_types.py": list(value_types)}
+    #     return result
 
 
 class ListType(ValueType):
     """A list-like object."""
 
-    def defer_hash_calc(self) -> bool:
-        return True
-
-    def calculate_value_hash(
-        self, value: typing.Any
-    ) -> typing.Union[int, ValueHashMarker]:
+    def calculate_value_hash(self, value: typing.Any) -> str:
 
         dh = DeepHash(value)
-        return dh[value]
+        return str(dh[value])
 
     def validate(cls, value: typing.Any) -> None:
 
         assert isinstance(value, typing.Iterable)
 
-    def extract_type_metadata(
-        cls, value: typing.Any
-    ) -> typing.Mapping[str, typing.Any]:
-
-        metadata = {"length": len(value)}
-        return metadata
+    # def extract_type_metadata(
+    #     cls, value: typing.Any
+    # ) -> typing.Mapping[str, typing.Any]:
+    #
+    #     metadata = {"length": len(value)}
+    #     return metadata
 
 
 class TableType(ValueType):
@@ -166,43 +164,8 @@ class TableType(ValueType):
     """
 
     @classmethod
-    def transformation_configs(
-        self,
-    ) -> typing.Optional[typing.Mapping[str, typing.Mapping[str, typing.Any]]]:
-        """Return a dictionary of configuration for modules that can transform this type.
-
-        The name of the transformation is the key of the result dictionary, the configuration is a module configuration
-        (dictionary wth 'module_type' and optional 'module_config', 'input_name' and 'output_name' keys).
-        """
-        return {
-            "string": {
-                "module_type": "string.pretty_print",
-                "input_name": "item",
-                "defaults": {"max_cell_length": 240, "max_no_rows": 20},
-            },
-            "json": {"module_type": "json.to_json", "input_name": "item"},
-        }
-
-    @classmethod
-    def python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
         return [pa.Table]
-
-    @classmethod
-    def save_config(cls) -> typing.Mapping[str, typing.Any]:
-
-        return {
-            "module_type": "table.save",
-            "module_config": {
-                "constants": {
-                    "format": "feather",
-                    "force_overwrite": False,
-                    "file_name": "table.feather",
-                }
-            },
-            "input_name": "table",
-            "target_name": "folder_path",
-            "load_config_output": "load_config",
-        }
 
     @classmethod
     def check_data(cls, data: typing.Any) -> typing.Optional["ValueType"]:
@@ -219,29 +182,16 @@ class TableType(ValueType):
 class ArrayType(ValueType):
     """An Apache arrow array."""
 
-    @classmethod
-    def save_config(cls) -> typing.Optional[typing.Mapping[str, typing.Any]]:
-
-        return {
-            "module_type": "array.save",
-            "module_config": {
-                "constants": {"column_name": "array", "file_name": "array.feather"}
-            },
-            "input_name": "array",
-            "target_name": "folder_path",
-            "load_config_output": "load_config",
-        }
-
-    def extract_type_metadata(
-        cls, value: typing.Any
-    ) -> typing.Mapping[str, typing.Any]:
-
-        metadata = {
-            "item_type": str(value.type),
-            "arrow_type_id": value.type.id,
-            "length": len(value),
-        }
-        return metadata
+    # def extract_type_metadata(
+    #     cls, value: typing.Any
+    # ) -> typing.Mapping[str, typing.Any]:
+    #
+    #     metadata = {
+    #         "item_type": str(value.type),
+    #         "arrow_type_id": value.type.id,
+    #         "length": len(value),
+    #     }
+    #     return metadata
 
 
 class DateType(ValueType):
@@ -251,14 +201,10 @@ class DateType(ValueType):
     be as string, in which case the [``dateutils.parser.parse``](https://dateutil.readthedocs.io/en/stable/parser.html#dateutil.parser.parse) method will be used to parse the string into a datetime object.
     """
 
-    def defer_hash_calc(self) -> bool:
-        return False
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
 
-    def calculate_value_hash(
-        self, value: typing.Any
-    ) -> typing.Union[int, ValueHashMarker]:
-
-        return hash(value)
+        return str(hash(value))
 
     def parse_value(self, v: typing.Any) -> typing.Any:
 
@@ -277,6 +223,16 @@ class FileType(ValueType):
 
     This means the file can be considered immutable, and it can be accessed via a *kiara* dataset id and *kiara* value metadata is available for it."""
 
+    @classmethod
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        return [FileType]
+
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any) -> str:
+
+        assert isinstance(value, FileMetadata)
+        return value.file_hash
+
 
 class FileBundleType(ValueType):
     """Represents a set of files that were imported into the *kiara* data store.
@@ -285,15 +241,11 @@ class FileBundleType(ValueType):
     """
 
     @classmethod
-    def python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
         return [FileBundleType]
 
     @classmethod
-    def save_config(cls) -> typing.Optional[typing.Mapping[str, typing.Any]]:
+    def calculate_value_hash(cls, value: typing.Any) -> str:
 
-        return {
-            "module_type": "onboarding.file_bundle.save",
-            "input_name": "files",
-            "target_name": "target",
-            "load_config_output": "load_config",
-        }
+        assert isinstance(value, FileBundleMetadata)
+        return value.file_bundle_hash

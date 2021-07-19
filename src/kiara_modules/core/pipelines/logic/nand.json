@@ -1,6 +1,6 @@
 {
   "module_type_name": "nand",
-  "doc": "Returns 'False' if both inputs are 'True'.",
+  "documentation": "Returns 'False' if both inputs are 'True'.",
   "steps": [
     {
       "module_type": "logic.and",

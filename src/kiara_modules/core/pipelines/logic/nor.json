@@ -1,6 +1,6 @@
 {
   "module_type_name": "nor",
-  "doc": "Returns 'True' if both inputs are 'False'.",
+  "documentation": "Returns 'True' if both inputs are 'False'.",
   "steps": [
     {
       "module_type": "logic.or",

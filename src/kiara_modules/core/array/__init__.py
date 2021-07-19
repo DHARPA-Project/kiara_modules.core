@@ -4,6 +4,7 @@ import typing
 
 import pyarrow as pa
 from kiara import KiaraModule
+from kiara.data.operations.save_value import SaveValueModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
@@ -19,8 +20,11 @@ KIARA_METADATA = {
     "tags": ["array"],
 }
 
+ARRAY_SAVE_COLUM_NAME = "array"
+ARRAY_SAVE_FILE_NAME = "array.feather"
 
-class SaveArrayModule(KiaraModule):
+
+class SaveArrayModule(SaveValueModule):
     """Save an Arrow array to a file.
 
     This module wraps the input array into an Arrow Table, and saves this table as a feather file.
@@ -31,57 +35,18 @@ class SaveArrayModule(KiaraModule):
 
     _module_type_name = "save"
 
-    def create_input_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-        inputs: typing.Mapping[str, typing.Any] = {
-            "array": {"type": "array", "doc": "The array to save."},
-            "column_name": {
-                "type": "string",
-                "doc": "The name of the column in the wrapping table.",
-                "default": "array",
-            },
-            "folder_path": {
-                "type": "string",
-                "doc": "The base folder for storing the array.",
-            },
-            "file_name": {
-                "type": "string",
-                "doc": "The name of the file.",
-                "default": "array.feather",
-            },
-        }
-        return inputs
+    @classmethod
+    def _get_supported_types(self) -> typing.Union[str, typing.Iterable[str]]:
+        return "array"
 
-    def create_output_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
+    def save_value(self, value: Value, value_id: str, base_path: str):
 
-        outputs: typing.Mapping[str, typing.Any] = {
-            "load_config": {
-                "type": "load_config",
-                "doc": "The load config for the array.",
-            }
-        }
-        return outputs
+        array: pa.Array = value.get_value_data()
+        # folder = inputs.get_value_data("folder_path")
+        # file_name = inputs.get_value_data("file_name")
+        # column_name = inputs.get_value_data("column_name")
 
-    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
-
-        array: pa.Array = inputs.get_value_data("array")
-        folder = inputs.get_value_data("folder_path")
-        file_name = inputs.get_value_data("file_name")
-        column_name = inputs.get_value_data("column_name")
-
-        if not column_name:
-            raise KiaraProcessingException(
-                "Can't save array, column name not provided."
-            )
-
-        path = os.path.join(folder, file_name)
+        path = os.path.join(base_path, ARRAY_SAVE_FILE_NAME)
         if os.path.exists(path):
             raise KiaraProcessingException(
                 f"Can't write file, path already exists: {path}"
@@ -89,15 +54,20 @@ class SaveArrayModule(KiaraModule):
 
         os.makedirs(os.path.dirname(path))
 
-        table = pa.Table.from_arrays([array], names=[column_name])
+        table = pa.Table.from_arrays([array], names=[ARRAY_SAVE_COLUM_NAME])
         feather.write_feather(table, path)
 
         load_config = {
-            "module_type": "array.load_array_from_table_file",
-            "inputs": {"path": path, "format": "feather", "column_name": column_name},
+            "module_type": "array.load",
+            "inputs": {
+                "base_path": base_path,
+                "rel_path": ARRAY_SAVE_FILE_NAME,
+                "format": "feather",
+                "column_name": ARRAY_SAVE_FILE_NAME,
+            },
             "output_name": "array",
         }
-        outputs.set_value("load_config", load_config)
+        return load_config
 
 
 class MapModuleConfig(KiaraModuleConfig):

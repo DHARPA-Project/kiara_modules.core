@@ -6,7 +6,9 @@ import pyarrow
 import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
+from kiara.data.operations.save_value import SaveValueModule
 from kiara.data.values import ValueSchema
+from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
 from kiara.modules.metadata import ExtractMetadataModule
@@ -34,6 +36,173 @@ AVAILABLE_FILE_COLUMNS = [
     "file_name",
 ]
 DEFAULT_COLUMNS = ["id", "rel_path", "content"]
+
+DEFAULT_SAVE_TABLE_FILE_NAME = "table.feather"
+
+
+class SaveArrowTable(SaveValueModule):
+    @classmethod
+    def _get_supported_types(self) -> typing.Union[str, typing.Iterable[str]]:
+        return "table"
+
+    def save_value(
+        self, value: Value, value_id: str, base_path: str
+    ) -> typing.Mapping[str, typing.Any]:
+
+        table: pa.Table = value.get_value_data()
+        full_path: str = os.path.join(base_path, DEFAULT_SAVE_TABLE_FILE_NAME)
+
+        if os.path.exists(full_path):
+            raise KiaraProcessingException(
+                f"Can't save table, file already exists: {full_path}"
+            )
+
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+        feather.write_feather(table, full_path)
+
+        result = {
+            "module_type": "table.load",
+            "base_path_input_name": "base_path",
+            "inputs": {
+                "base_path": os.path.dirname(full_path),
+                "rel_path": os.path.basename(full_path),
+                "format": "feather",
+            },
+            "output_name": "table",
+        }
+        return result
+
+
+class LoadArrowTable(KiaraModule):
+    """Load a table object from disk."""
+
+    _module_type_name = "load"
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        inputs: typing.Mapping[str, typing.Any] = {
+            "base_path": {"type": "string", "doc": "The path to the table file."},
+            "rel_path": {
+                "type": "string",
+                "doc": "The relative path to the table file within base_path.",
+            },
+            "format": {
+                "type": "string",
+                "doc": "The format of the table file ('feather' or 'parquet').",
+                "default": "feather",
+            },
+        }
+        return inputs
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        outputs: typing.Mapping[str, typing.Any] = {
+            "table": {"type": "table", "doc": "The pyarrow table object."}
+        }
+        return outputs
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        base_path = inputs.get_value_data("base_path")
+        rel_path = inputs.get_value_data("rel_path")
+        format = inputs.get_value_data("format")
+
+        if format != "feather":
+            raise NotImplementedError()
+
+        path = os.path.join(base_path, rel_path)
+
+        table = feather.read_table(path)
+        outputs.set_value("table", table)
+
+
+class ExportArrowTable(KiaraModule):
+    """Export a table object to disk."""
+
+    _module_type_name = "export"
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        inputs: typing.Mapping[str, typing.Any] = {
+            "table": {"type": "table", "doc": "The table object."},
+            "path": {
+                "type": "string",
+                "doc": "The path to the file to write.",
+            },
+            "format": {
+                "type": "string",
+                "doc": "The format of the table file ('feather' or 'parquet').",
+                "default": "feather",
+            },
+            "force_overwrite": {
+                "type": "boolean",
+                "doc": "Whether to overwrite an existing file.",
+                "default": False,
+            },
+        }
+        return inputs
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        outputs: typing.Mapping[str, typing.Any] = {
+            "load_config": {
+                "type": "load_config",
+                "doc": "The configuration to use with kiara to load the saved value.",
+            }
+        }
+
+        return outputs
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        table: pa.Table = inputs.get_value_data("table")
+        full_path: str = inputs.get_value_data("path")
+        force_overwrite = inputs.get_value_data("force_overwrite")
+        format: str = inputs.get_value_data("format")
+
+        if format != "feather":
+            raise KiaraProcessingException(
+                f"Can't export table to format '{format}': only 'feather' supported at the moment."
+            )
+
+        if os.path.exists(full_path) and not force_overwrite:
+            raise KiaraProcessingException(
+                f"Can't write table to file, file already exists: {full_path}"
+            )
+
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+        feather.write_feather(table, full_path)
+
+        result = {
+            "module_type": "table.load",
+            "base_path_input_name": "base_path",
+            "inputs": {
+                "base_path": os.path.dirname(full_path),
+                "rel_path": os.path.basename(full_path),
+                "format": format,
+            },
+            "value_id": NO_VALUE_ID_MARKER,
+            "output_name": "table",
+        }
+        outputs.set_value("load_config", result)
 
 
 class CreateTableModuleConfig(KiaraModuleConfig):
@@ -320,121 +489,6 @@ class TableMetadataModule(ExtractMetadataModule):
             "rows": table.num_rows,
             "size": table.nbytes,
         }
-
-
-class SaveArrowTable(KiaraModule):
-    """Save a table object to disk."""
-
-    _module_type_name = "save"
-
-    def create_input_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-
-        inputs: typing.Mapping[str, typing.Any] = {
-            "table": {"type": "table", "doc": "The table object."},
-            "folder_path": {
-                "type": "string",
-                "doc": "The path to the folder to write the file.",
-            },
-            "file_name": {"type": "string", "doc": "The file name."},
-            "format": {
-                "type": "string",
-                "doc": "The format of the table file ('feather' or 'parquet').",
-                "default": "feather",
-            },
-            "force_overwrite": {
-                "type": "boolean",
-                "doc": "Whether to overwrite an existing file.",
-                "default": False,
-            },
-        }
-        return inputs
-
-    def create_output_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-
-        outputs: typing.Mapping[str, typing.Any] = {
-            "load_config": {
-                "type": "load_config",
-                "doc": "The configuration to use with kiara to load the saved value.",
-            }
-        }
-
-        return outputs
-
-    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
-
-        table: pa.Table = inputs.get_value_data("table")
-        path: str = inputs.get_value_data("folder_path")
-        file_name: str = inputs.get_value_data("file_name")
-        full_path = os.path.join(path, file_name)
-        force_overwrite = inputs.get_value_data("force_overwrite")
-
-        if os.path.exists(full_path) and not force_overwrite:
-            raise KiaraProcessingException(
-                f"Can't write table to file, file already exists: {full_path}"
-            )
-
-        os.makedirs(path, exist_ok=True)
-
-        feather.write_feather(table, full_path)
-
-        result = {
-            "module_type": "table.load",
-            "inputs": {"path": full_path, "format": "feather"},
-            "output_name": "table",
-        }
-        outputs.set_value("load_config", result)
-
-
-class LoadArrowTable(KiaraModule):
-    """Load a table object from disk."""
-
-    _module_type_name = "load"
-
-    def create_input_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-
-        inputs: typing.Mapping[str, typing.Any] = {
-            "path": {"type": "string", "doc": "The path to the table file."},
-            "format": {
-                "type": "string",
-                "doc": "The format of the table file ('feather' or 'parquet').",
-                "default": "feather",
-            },
-        }
-        return inputs
-
-    def create_output_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-
-        outputs: typing.Mapping[str, typing.Any] = {
-            "table": {"type": "table", "doc": "The pyarrow table object."}
-        }
-        return outputs
-
-    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
-
-        path = inputs.get_value_data("path")
-        format = inputs.get_value_data("format")
-
-        if format != "feather":
-            raise NotImplementedError()
-
-        table = feather.read_table(path)
-        outputs.set_value("table", table)
 
 
 class CutColumnModule(KiaraModule):

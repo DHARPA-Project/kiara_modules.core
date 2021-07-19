@@ -220,6 +220,13 @@ class ReplaceStringModule(KiaraModule):
         outputs.set_value("text", result)
 
 
+class PrettyPrintModuleConfig(KiaraModuleConfig):
+
+    target_profile: str = Field(
+        description="The target output profile.", default="default"
+    )
+
+
 class PrettyPrintModule(KiaraModule):
     """Pretty print arbitrary types.
 

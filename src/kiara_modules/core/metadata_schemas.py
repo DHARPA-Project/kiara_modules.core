@@ -11,7 +11,9 @@ Metadata models must be a sub-class of [kiara.metadata.MetadataModel][kiara.meta
 
 
 import datetime
+import hashlib
 import logging
+import mimetypes
 import os.path
 import shutil
 import typing
@@ -21,7 +23,7 @@ from anyio import create_task_group, open_file, start_blocking_portal
 from kiara import KiaraEntryPointItem
 from kiara.metadata import MetadataModel
 from kiara.utils.class_loading import find_metadata_schemas_under
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PrivateAttr
 
 metadata_schemas: KiaraEntryPointItem = (
     find_metadata_schemas_under,
@@ -74,7 +76,7 @@ class FileMetadata(MetadataModel):
     """Describes properties for the 'file' value type."""
 
     @classmethod
-    def import_file(cls, source: str, target: typing.Optional[str] = None):
+    def load_file(cls, source: str, target: typing.Optional[str] = None):
         """Utility method to read metadata of a file from disk and optionally move it into a data archive location."""
 
         if not source:
@@ -100,9 +102,16 @@ class FileMetadata(MetadataModel):
             shutil.copy2(source, target)
         else:
             target = orig_path
-        mime_type = filetype.guess(target)
-        if not mime_type:
-            mime_type = "application/octet-stream"
+
+        r = mimetypes.guess_type(target)
+        if r[0] is not None:
+            mime_type = r[0]
+        else:
+            _mime_type = filetype.guess(target)
+            if not _mime_type:
+                mime_type = "application/octet-stream"
+            else:
+                mime_type = _mime_type.MIME
 
         m = FileMetadata(
             orig_filename=orig_filename,
@@ -115,6 +124,8 @@ class FileMetadata(MetadataModel):
         )
         return m
 
+    _file_hash: typing.Optional[str] = PrivateAttr(default=None)
+
     orig_filename: str = Field(
         description="The original filename of this file at the time of import."
     )
@@ -126,14 +137,36 @@ class FileMetadata(MetadataModel):
     file_name: str = Field("The name of the file.")
     size: int = Field(description="The size of the file.")
     path: str = Field(description="The archive path of the file.")
+    is_onboarded: bool = Field(
+        description="Whether the file is imported into the kiara data store.",
+        default=False,
+    )
 
-    def save(self, target: str):
+    def copy_file(self, target: str):
 
-        fm = FileMetadata.import_file(self.path, target)
+        fm = FileMetadata.load_file(self.path, target)
         fm.orig_path = self.orig_path
-        fm.orig_filename = (self.orig_filename,)
+        fm.orig_filename = self.orig_filename
         fm.import_time = self.import_time
+        if self._file_hash is not None:
+            fm._file_hash = self._file_hash
+
         return fm
+
+    @property
+    def file_hash(self):
+
+        if self._file_hash is not None:
+            return self._file_hash
+
+        sha256_hash = hashlib.sha3_256()
+        with open(self.path, "rb") as f:
+            # Read and update hash string value in blocks of 4K
+            for byte_block in iter(lambda: f.read(4096), b""):
+                sha256_hash.update(byte_block)
+
+        self._file_hash = sha256_hash.hexdigest()
+        return self._file_hash
 
     def __repr__(self):
         return f"FileMetadata(name={self.file_name})"
@@ -224,7 +257,7 @@ class FileBundleMetadata(MetadataModel):
                 else:
                     target_path = None
 
-                file_model = FileMetadata.import_file(full_path, target_path)
+                file_model = FileMetadata.load_file(full_path, target_path)
                 sum_size = sum_size + file_model.size
                 included_files[rel_path] = file_model
 
@@ -272,6 +305,8 @@ class FileBundleMetadata(MetadataModel):
 
         return FileBundleMetadata(**result)
 
+    _file_bundle_hash: typing.Optional[str] = PrivateAttr(default=None)
+
     orig_bundle_name: str = Field(
         description="The original name of this folder at the time of import."
     )
@@ -289,6 +324,10 @@ class FileBundleMetadata(MetadataModel):
     )
     size: int = Field(description="The size of all files in this folder, combined.")
     path: str = Field(description="The archive path of the folder.")
+    is_onboarded: bool = Field(
+        description="Whether this bundle is imported into the kiara data store.",
+        default=False,
+    )
 
     def get_relative_path(self, file: FileMetadata):
 
@@ -316,7 +355,23 @@ class FileBundleMetadata(MetadataModel):
 
         return content_dict
 
-    def save(self, target_path: str) -> "FileBundleMetadata":
+    @property
+    def file_bundle_hash(self):
+
+        if self._file_bundle_hash is not None:
+            return self._file_bundle_hash
+
+        # hash_format ="sha3-256"
+
+        hashes = ""
+        for path in sorted(self.included_files.keys()):
+            fm = self.included_files[path]
+            hashes = hashes + "_" + path + "_" + fm.file_hash
+
+        self._file_bundle_hash = hashlib.sha3_256(hashes.encode("utf-8")).hexdigest()
+        return self._file_bundle_hash
+
+    def copy_bundle(self, target_path: str) -> "FileBundleMetadata":
 
         if target_path == self.path:
             raise Exception(f"Target path and current path are the same: {target_path}")
@@ -324,7 +379,7 @@ class FileBundleMetadata(MetadataModel):
         result = {}
         for rel_path, item in self.included_files.items():
             _target_path = os.path.join(target_path, rel_path)
-            new_fm = item.save(_target_path)
+            new_fm = item.copy_file(_target_path)
             result[rel_path] = new_fm
 
         fb = FileBundleMetadata.create_from_file_models(
@@ -334,6 +389,9 @@ class FileBundleMetadata(MetadataModel):
             path=target_path,
             sum_size=self.size,
         )
+        if self._file_bundle_hash is not None:
+            fb._file_bundle_hash = self._file_bundle_hash
+
         return fb
 
     def __repr__(self):

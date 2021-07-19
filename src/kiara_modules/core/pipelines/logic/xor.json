@@ -1,6 +1,6 @@
 {
   "module_type_name": "xor",
-  "doc": "Returns 'True' if exactly one of it's two inputs is 'True'.",
+  "documentation": "Returns 'True' if exactly one of it's two inputs is 'True'.",
   "steps": [
     {
       "module_type": "logic.or",

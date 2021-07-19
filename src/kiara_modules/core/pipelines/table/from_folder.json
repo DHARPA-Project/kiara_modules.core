@@ -1,6 +1,6 @@
 {
   "module_type_name": "from_folder",
-  "doc": "Import a folder of text files and create a table from file metadata and content.",
+  "documentation": "Import a folder of text files and create a table from file metadata and content.",
   "steps": [
     {
       "module_type": "onboarding.folder.import",
