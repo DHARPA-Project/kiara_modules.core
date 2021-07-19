@@ -223,9 +223,10 @@ class DateType(ValueType):
 
 
 class FileType(ValueType):
-    """Represents a file that was imported into the *kiara* data store.
+    """A representation of a file.
 
-    This means the file can be considered immutable, and it can be accessed via a *kiara* dataset id and *kiara* value metadata is available for it."""
+    It is recommended to 'onboard' files before working with them, otherwise metadata consistency can not be guaranteed.
+    """
 
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
@@ -239,9 +240,9 @@ class FileType(ValueType):
 
 
 class FileBundleType(ValueType):
-    """Represents a set of files that were imported into the *kiara* data store.
+    """A representation of a set of files (folder, archive, etc.).
 
-    This means the files can be considered immutable, and they can be accessed via a *kiara* dataset id and *kiara value metadata is availble for the file_bundle dataset.
+    It is recommended to 'onboard' files before working with them, otherwise metadata consistency can not be guaranteed.
     """
 
     @classmethod
