@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import base64
 import os
 import typing
 
@@ -6,13 +7,14 @@ import pyarrow
 import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
-from kiara.data.operations.save_value import SaveValueModule
+from kiara.data.operations.save_value import SaveValueModule, SaveValueModuleConfig
+from kiara.data.operations.type_convert import TypeConversionModule
 from kiara.data.values import ValueSchema
 from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
 from kiara.modules.metadata import ExtractMetadataModule
-from pyarrow import csv
+from pyarrow import Buffer, csv
 from pyarrow import feather as feather
 from pydantic import BaseModel, Field, validator
 
@@ -40,7 +42,17 @@ DEFAULT_COLUMNS = ["id", "rel_path", "content"]
 DEFAULT_SAVE_TABLE_FILE_NAME = "table.feather"
 
 
+class SaveArrowTableConfig(SaveValueModuleConfig):
+
+    compression: str = Field(
+        description="The compression to use when saving the table.", default="zstd"
+    )
+
+
 class SaveArrowTable(SaveValueModule):
+
+    _config_cls = SaveArrowTableConfig
+
     @classmethod
     def _get_supported_types(self) -> typing.Union[str, typing.Iterable[str]]:
         return "table"
@@ -59,7 +71,9 @@ class SaveArrowTable(SaveValueModule):
 
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
-        feather.write_feather(table, full_path)
+        compression = self.get_config_value("compression")
+
+        feather.write_feather(table, full_path, compression=compression)
 
         result = {
             "module_type": "table.load",
@@ -708,3 +722,35 @@ class MapColumnModule(KiaraModule):
             module_output_name=self.module_output_name,
         )
         outputs.set_value("array", pa.array(result_list))
+
+
+class TableConversionModule(TypeConversionModule):
+    @classmethod
+    def _get_supported_value_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+        return "table"
+
+    def to_bytes(self, value: Value) -> bytes:
+
+        table_val: Value = value
+        table: pa.Table = table_val.get_value_data()
+
+        batches = table.to_batches()
+
+        sink = pa.BufferOutputStream()
+        writer = pa.ipc.new_stream(sink, batches[0].schema)
+
+        for batch in batches:
+            writer.write_batch(batch)
+        writer.close()
+
+        buf: Buffer = sink.getvalue()
+        return memoryview(buf)
+
+    def to_string(self, value: Value):
+
+        _bytes: bytes = self.to_bytes(value)
+        string = base64.b64encode(_bytes)
+        return string
+
+    def from_string(self, value: Value):
+        pass

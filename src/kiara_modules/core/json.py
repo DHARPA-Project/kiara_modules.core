@@ -5,7 +5,7 @@ import typing
 from kiara import Kiara
 from kiara.data.types import ValueType
 from kiara.data.values import Value
-from kiara.modules.type_conversion import TypeConversionModule
+from kiara.modules.type_conversion import OldTypeConversionModule
 
 from kiara_modules.core.python import convert_to_py_obj
 
@@ -68,7 +68,7 @@ DEFAULT_TO_JSON_CONFIG: typing.Mapping[str, typing.Any] = {
 }
 
 
-class ToJsonModule(TypeConversionModule):
+class ToJsonModuleOld(OldTypeConversionModule):
     """Convert arbitrary types into json.
 
     Very early days for this module, it doesn't support a lot of types yet.

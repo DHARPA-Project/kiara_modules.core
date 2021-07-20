@@ -9,7 +9,7 @@ from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
-from kiara.modules.type_conversion import TypeConversionModule
+from kiara.modules.type_conversion import OldTypeConversionModule
 from kiara.utils import StringYAML
 from kiara.utils.output import pretty_print_arrow_table
 from pydantic import Field
@@ -302,7 +302,7 @@ class PrettyPrintModule(KiaraModule):
         outputs.set_value("renderables", input_value_str)
 
 
-class ToStringModule(TypeConversionModule):
+class ToStringModuleOld(OldTypeConversionModule):
     """Convert arbitrary types into strings.
 
     Early days for this module, not a lot of source types are supported just yet.

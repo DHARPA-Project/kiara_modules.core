@@ -4,7 +4,7 @@ import typing
 from kiara import Kiara
 from kiara.data.types import ValueType
 from kiara.data.values import Value
-from kiara.modules.type_conversion import TypeConversionModule
+from kiara.modules.type_conversion import OldTypeConversionModule
 from kiara.utils import StringYAML
 
 from kiara_modules.core.python import convert_to_py_obj
@@ -64,7 +64,7 @@ def convert_to_yaml(
 DEFAULT_TO_YAML_CONFIG: typing.Mapping[str, typing.Any] = {}
 
 
-class ToYamlModule(TypeConversionModule):
+class ToYamlModuleOld(OldTypeConversionModule):
     """Convert arbitrary types into YAML format.
 
     Early days for this module, it doesn't support a whole lot of types yet.
