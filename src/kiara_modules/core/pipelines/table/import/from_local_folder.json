@@ -1,9 +1,9 @@
 {
-  "module_type_name": "from_folder",
+  "module_type_name": "from_local_folder",
   "documentation": "Import a folder of text files and create a table from file metadata and content.",
   "steps": [
     {
-      "module_type": "onboard.folder",
+      "module_type": "import.local_folder",
       "step_id": "read_files_in_folder"
     },
     {

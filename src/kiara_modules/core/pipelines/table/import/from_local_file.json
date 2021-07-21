@@ -1,8 +1,8 @@
 {
-  "module_type_name": "from_file",
+  "module_type_name": "from_local_file",
   "steps": [
     {
-      "module_type": "onboard.file",
+      "module_type": "import.local_file",
       "step_id": "read_file"
     },
     {

@@ -11,18 +11,18 @@ from kiara_modules.core.metadata_schemas import (
     FolderImportConfig,
 )
 
-KIARA_METADATA = {"tags": ["onboarding"]}
+KIARA_METADATA = {"tags": ["onboarding", "import"]}
 
 
 class OnboardFileModule(KiaraModule):
     """Import (copy) a file and its metadata into the internal data store.
 
-    This module is usually the first step to import a local folder into the *kiara* data store. It is necessary,
-    because the folder needs to be copied to a different location, so we can be sure it isn't modified outside of
-    *kiara*. In most cases, this step will be followed by a ``onboarding.file_bundle.save`` step.
+    This module is used to import a local file into the *kiara* data store. It is necessary,
+    because the file needs to be copied to a different location, so we can be sure it isn't modified outside of
+    *kiara*.
     """
 
-    _module_type_name = "file"
+    _module_type_name = "local_file"
 
     def create_input_schema(
         self,
@@ -85,10 +85,10 @@ class OnboardFolderModule(KiaraModule):
 
     This module is usually the first step to import a local folder into the *kiara* data store. It is necessary,
     because the folder needs to be copied to a different location, so we can be sure it isn't modified outside of
-    *kiara*. In most cases, this step will be followed by a ``onboarding.file_bundle.save`` step.
+    *kiara*.
     """
 
-    _module_type_name = "folder"
+    _module_type_name = "local_folder"
 
     def create_input_schema(
         self,
