@@ -4,7 +4,7 @@ import typing
 
 import pyarrow as pa
 from kiara import KiaraModule
-from kiara.data.operations.save_value import SaveValueModule
+from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
@@ -24,7 +24,7 @@ ARRAY_SAVE_COLUM_NAME = "array"
 ARRAY_SAVE_FILE_NAME = "array.feather"
 
 
-class SaveArrayModule(SaveValueModule):
+class SaveArrayTypeModule(SaveValueTypeModule):
     """Save an Arrow array to a file.
 
     This module wraps the input array into an Arrow Table, and saves this table as a feather file.

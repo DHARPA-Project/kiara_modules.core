@@ -4,7 +4,7 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data import ValueSet
-from kiara.data.operations.save_value import SaveValueModule
+from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import Value, ValueSchema
 from kiara.exceptions import KiaraProcessingException
 from kiara.modules.metadata import ExtractMetadataModule
@@ -13,7 +13,7 @@ from pydantic import BaseModel
 from kiara_modules.core.metadata_schemas import FileMetadata
 
 
-class SaveFileModule(SaveValueModule):
+class SaveFileTypeModule(SaveValueTypeModule):
     """Save a file to disk."""
 
     _module_type_name = "save"

@@ -4,7 +4,7 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
-from kiara.data.operations.save_value import SaveValueModule
+from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import ValueSchema
 from kiara.modules.metadata import ExtractMetadataModule
 from pydantic import BaseModel
@@ -12,7 +12,7 @@ from pydantic import BaseModel
 from kiara_modules.core.metadata_schemas import FileBundleMetadata, FolderImportConfig
 
 
-class SaveFileBundle(SaveValueModule):
+class SaveFileBundleType(SaveValueTypeModule):
     """Save a file bundle to disk."""
 
     _module_type_name = "save"

@@ -3,11 +3,11 @@
   "documentation": "Import a folder of text files and create a table from file metadata and content.",
   "steps": [
     {
-      "module_type": "onboarding.folder.import",
+      "module_type": "onboard.folder",
       "step_id": "read_files_in_folder"
     },
     {
-      "module_type": "table.from_file_bundle",
+      "module_type": "table.create.from_file_bundle",
       "module_config": {
         "columns": ["id", "rel_path", "file_name", "content"]
       },

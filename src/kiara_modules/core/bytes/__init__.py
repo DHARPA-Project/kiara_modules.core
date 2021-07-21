@@ -3,7 +3,7 @@ import os
 import typing
 
 from kiara import KiaraModule
-from kiara.data.operations.save_value import SaveValueModule
+from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 
@@ -12,7 +12,7 @@ KIARA_METADATA = {"tags": ["bytes", "serialization"]}
 BYTES_SAVE_FILE_NAME = "bytes.bin"
 
 
-class SaveBytesModule(SaveValueModule):
+class SaveBytesTypeModule(SaveValueTypeModule):
 
     _module_type_name = "save"
 
