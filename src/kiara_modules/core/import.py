@@ -75,7 +75,7 @@ class OnboardFileModule(KiaraModule):
             kiara=self._kiara,
         )
 
-        dataset_id = self._kiara.data_store.save_value(value=value)
+        dataset_id = self._kiara.data_store.save_value(value=value, aliases=aliases)
 
         outputs.set_values(file=file_model, dataset_id=dataset_id)
 
