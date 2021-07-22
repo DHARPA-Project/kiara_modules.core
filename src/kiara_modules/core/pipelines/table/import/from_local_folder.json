@@ -15,8 +15,28 @@
       "input_links": {
         "files": "read_files_in_folder.file_bundle"
       }
+    },
+    {
+      "module_type": "value.save",
+      "module_config": {
+        "value_type": "table"
+      },
+      "step_id": "save_table",
+      "input_links": {
+        "value_item": "create_table_from_files.table"
+      }
     }
   ],
-  "input_aliases": "auto",
-  "output_aliases": "auto"
+  "input_aliases": {
+    "read_files_in_folder__path": "path",
+    "read_files_in_folder__aliases": "file_bundle_aliases",
+    "read_files_in_folder__included_files": "included_files",
+    "read_files_in_folder__excluded_dirs": "excluded_dirs",
+    "save_table__aliases": "aliases"
+  },
+  "output_aliases": {
+    "create_table_from_files__table": "table",
+    "save_table__value_id": "value_id",
+    "read_files_in_folder__dataset_id": "file_bundle_value_id"
+  }
 }

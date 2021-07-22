@@ -59,9 +59,6 @@ class OnboardFileModule(KiaraModule):
         path = inputs.get_value_data("path")
         aliases = inputs.get_value_data("aliases")
 
-        if aliases:
-            pass
-
         file_model = FileMetadata.load_file(path)
 
         file_schema = ValueSchema(
@@ -107,6 +104,11 @@ class OnboardFolderModule(KiaraModule):
                 "doc": "A list of strings, exclude all folders whose name ends with that string.",
                 "optional": True,
             },
+            "aliases": {
+                "type": "list",
+                "doc": "A list of aliases to give the dataset in the internal data store.",
+                "optional": True,
+            },
         }
 
     def create_output_schema(
@@ -129,6 +131,7 @@ class OnboardFolderModule(KiaraModule):
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
         path = inputs.get_value_data("path")
+        aliases = inputs.get_value_data("aliases")
 
         included_files = inputs.get_value_data("included_files")
         excluded_dirs = inputs.get_value_data("excluded_dirs")
@@ -151,6 +154,6 @@ class OnboardFolderModule(KiaraModule):
             kiara=self._kiara,
         )
 
-        dataset_id = self._kiara.data_store.save_value(value)
+        dataset_id = self._kiara.data_store.save_value(value, aliases=aliases)
 
         outputs.set_values(file_bundle=bundle, dataset_id=dataset_id)

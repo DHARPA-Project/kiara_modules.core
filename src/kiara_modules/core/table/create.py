@@ -141,14 +141,14 @@ class CreateTableFromTextFilesModule(KiaraModule):
         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
     ]:
 
-        id_column = "id"
-        path_column = "rel_path"
-        content = "content"
+        columns = self.get_config_value("columns")
+        if not columns:
+            columns = DEFAULT_COLUMNS
 
         outputs = {
             "table": {
                 "type": "table",
-                "doc": f"A table with the index column '{id_column}', a column '{path_column}' that indicates the relative path of the file in the bundle, and a column '{content}' that holds the (text) content of every file.",
+                "doc": f"A table with the the columns: {', '.join(columns)}.",
             }
         }
 
