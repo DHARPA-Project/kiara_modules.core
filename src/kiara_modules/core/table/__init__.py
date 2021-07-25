@@ -149,6 +149,11 @@ class ExportArrowTable(KiaraModule):
                 "doc": "Whether to overwrite an existing file.",
                 "default": False,
             },
+            "compression": {
+                "type": "string",
+                "doc": "The compression to use. Use either: 'zstd' (default), 'lz4', or 'uncompressed'.",
+                "default": "zstd",
+            },
         }
         return inputs
 
@@ -173,6 +178,12 @@ class ExportArrowTable(KiaraModule):
         full_path: str = inputs.get_value_data("path")
         force_overwrite = inputs.get_value_data("force_overwrite")
         format: str = inputs.get_value_data("format")
+        compression = inputs.get_value_data("compression")
+
+        if compression not in ["zstd", "lz4", "uncompressed"]:
+            raise KiaraProcessingException(
+                f"Invalid compression format '{compression}'. Allowed: 'zstd', 'lz4', 'uncompressed'."
+            )
 
         if format != "feather":
             raise KiaraProcessingException(
@@ -185,8 +196,7 @@ class ExportArrowTable(KiaraModule):
             )
 
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
-
-        feather.write_feather(table, full_path)
+        feather.write_feather(table, full_path, compression=compression)
 
         result = {
             "module_type": "table.load",

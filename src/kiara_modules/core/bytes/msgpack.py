@@ -76,13 +76,10 @@ class SerializeToMsgPackModule(KiaraModule):
         table_val: Value = value
         table: Table = table_val.get_value_data()
 
-        batches = table.to_batches()
-
         sink = pa.BufferOutputStream()
-        writer = pa.ipc.new_stream(sink, batches[0].schema)
+        writer = pa.ipc.new_stream(sink, table.schema)
 
-        for batch in batches:
-            writer.write_batch(batch)
+        writer.write(table)
         writer.close()
 
         buf: Buffer = sink.getvalue()

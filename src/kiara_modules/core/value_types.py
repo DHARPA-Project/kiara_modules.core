@@ -179,6 +179,21 @@ class TableType(ValueType):
 
         return None
 
+    @classmethod
+    def get_supported_hash_types(cls) -> typing.Iterable[str]:
+
+        return ["pandas_df_hash"]
+
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
+
+        # this is only for testing, and will be replaced with a native arrow table hush function, once I figure out how to do that efficiently
+        table: pa.Table = value
+        from pandas.util import hash_pandas_object
+
+        hash_result = hash_pandas_object(table.to_pandas()).sum()
+
+        return str(hash_result)
+
     def validate(cls, value: typing.Any) -> None:
         assert isinstance(value, pa.Table)
 
@@ -233,8 +248,13 @@ class FileType(ValueType):
         return [FileType]
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def get_supported_hash_types(cls) -> typing.Iterable[str]:
+        return ["sha3_256"]
 
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
+
+        assert hash_type == "sha3_256"
         assert isinstance(value, FileMetadata)
         return value.file_hash
 
@@ -250,7 +270,13 @@ class FileBundleType(ValueType):
         return [FileBundleType]
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def get_supported_hash_types(cls) -> typing.Iterable[str]:
+        return ["sha3_256"]
+
+    @classmethod
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
+
+        assert hash_type == "sha3_256"
 
         assert isinstance(value, FileBundleMetadata)
         return value.file_bundle_hash

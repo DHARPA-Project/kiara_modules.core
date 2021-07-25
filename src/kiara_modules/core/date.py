@@ -49,7 +49,6 @@ class ExtractDateModule(KiaraModule):
         text = inputs.get_value_data("text")
         date_match = re.findall(r"_(\d{4}-\d{2}-\d{2})_", text)
         assert date_match
-
         d_obj = parser.parse(date_match[0])  # type: ignore
 
         outputs.set_value("date", d_obj)
