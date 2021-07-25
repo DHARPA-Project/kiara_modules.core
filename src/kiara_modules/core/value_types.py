@@ -6,9 +6,6 @@
 import datetime
 import typing
 
-import pyarrow as pa
-from dateutil import parser
-from deepdiff import DeepHash
 from kiara import KiaraEntryPointItem
 from kiara.data.types import ValueType
 from kiara.utils.class_loading import find_value_types_under
@@ -33,7 +30,7 @@ class BytesType(ValueType):
     _value_type_name = "bytes"
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
         return str(hash(value))
 
     # @classmethod
@@ -55,7 +52,7 @@ class StringType(ValueType):
     """A string."""
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
         return str(hash(value))
 
     def validate(cls, value: typing.Any) -> None:
@@ -68,7 +65,7 @@ class BooleanType(ValueType):
     "A boolean."
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
         return str(hash(value))
 
     def validate(cls, value: typing.Any):
@@ -88,7 +85,7 @@ class IntegerType(ValueType):
     """An integer."""
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
         return str(hash(value))
 
     def validate(cls, value: typing.Any) -> None:
@@ -107,7 +104,7 @@ class FloatType(ValueType):
     "A float."
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
         return str(hash(value))
 
     def validate(cls, value: typing.Any) -> typing.Any:
@@ -120,7 +117,9 @@ class DictType(ValueType):
     """A dict-like object."""
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
+
+        from deepdiff import DeepHash
 
         dh = DeepHash(value)
         return str(dh[value])
@@ -144,7 +143,9 @@ class ListType(ValueType):
     """A list-like object."""
 
     @classmethod
-    def calculate_value_hash(self, value: typing.Any) -> str:
+    def calculate_value_hash(self, value: typing.Any, hash_type: str) -> str:
+
+        from deepdiff import DeepHash
 
         dh = DeepHash(value)
         return str(dh[value])
@@ -169,10 +170,14 @@ class TableType(ValueType):
 
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        import pyarrow as pa
+
         return [pa.Table]
 
     @classmethod
     def check_data(cls, data: typing.Any) -> typing.Optional["ValueType"]:
+
+        import pyarrow as pa
 
         if isinstance(data, pa.Table):
             return TableType()
@@ -186,6 +191,8 @@ class TableType(ValueType):
 
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
 
+        import pyarrow as pa
+
         # this is only for testing, and will be replaced with a native arrow table hush function, once I figure out how to do that efficiently
         table: pa.Table = value
         from pandas.util import hash_pandas_object
@@ -195,6 +202,8 @@ class TableType(ValueType):
         return str(hash_result)
 
     def validate(cls, value: typing.Any) -> None:
+        import pyarrow as pa
+
         assert isinstance(value, pa.Table)
 
 
@@ -221,11 +230,13 @@ class DateType(ValueType):
     """
 
     @classmethod
-    def calculate_value_hash(cls, value: typing.Any) -> str:
+    def calculate_value_hash(cls, value: typing.Any, hash_typpe: str) -> str:
 
         return str(hash(value))
 
     def parse_value(self, v: typing.Any) -> typing.Any:
+
+        from dateutil import parser
 
         if isinstance(v, str):
             d = parser.parse(v)

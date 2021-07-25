@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import typing
 
-import pyarrow
-import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import ValueSchema
 from kiara.module_config import KiaraModuleConfig
-from pyarrow import csv
 from pydantic import Field, validator
 
 from kiara_modules.core.metadata_schemas import FileBundleMetadata, FileMetadata
@@ -72,6 +69,8 @@ class CreateTableFromFileModule(KiaraModule):
         return {"table": {"type": "table", "doc": "the imported table"}}
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        from pyarrow import csv
 
         input_file: FileMetadata = inputs.get_value_data("file")
         imported_data = csv.read_csv(input_file.path)
@@ -155,6 +154,8 @@ class CreateTableFromTextFilesModule(KiaraModule):
         return outputs
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        import pyarrow as pa
 
         bundle: FileBundleMetadata = inputs.get_value_data("files")
 

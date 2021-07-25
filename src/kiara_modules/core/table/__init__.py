@@ -3,8 +3,6 @@ import base64
 import os
 import typing
 
-import pyarrow
-import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
 from kiara.data.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
@@ -14,8 +12,6 @@ from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
 from kiara.modules.metadata import ExtractMetadataModule
-from pyarrow import Buffer
-from pyarrow import feather as feather
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
@@ -43,6 +39,9 @@ class SaveArrowTableType(SaveValueTypeModule):
     def save_value(
         self, value: Value, value_id: str, base_path: str
     ) -> typing.Dict[str, typing.Any]:
+
+        import pyarrow as pa
+        from pyarrow import feather
 
         table: pa.Table = value.get_value_data()
         full_path: str = os.path.join(base_path, DEFAULT_SAVE_TABLE_FILE_NAME)
@@ -109,6 +108,8 @@ class LoadArrowTable(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        from pyarrow import feather
+
         base_path = inputs.get_value_data("base_path")
         rel_path = inputs.get_value_data("rel_path")
         format = inputs.get_value_data("format")
@@ -173,6 +174,9 @@ class ExportArrowTable(KiaraModule):
         return outputs
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        import pyarrow as pa
+        from pyarrow import feather
 
         table: pa.Table = inputs.get_value_data("table")
         full_path: str = inputs.get_value_data("path")
@@ -244,6 +248,8 @@ class MergeTableModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import pyarrow as pa
+
         sources = inputs.get_value_data("sources")
 
         len_dict = {}
@@ -312,7 +318,9 @@ class TableMetadataModule(ExtractMetadataModule):
 
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
 
-        table: pyarrow.Table = value.get_value_data()
+        import pyarrow as pa
+
+        table: pa.Table = value.get_value_data()
         table_schema = {}
         for name in table.schema.names:
             field = table.schema.field(name)
@@ -367,6 +375,8 @@ class CutColumnModule(KiaraModule):
         return outputs
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        import pyarrow as pa
 
         table_value = inputs.get_value_obj("table")
 
@@ -527,6 +537,8 @@ class MapColumnModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import pyarrow as pa
+
         table: pa.Table = inputs.get_value_data("table")
         column_name = inputs.get_value_data("column_name")
 
@@ -564,6 +576,8 @@ class TableConversionModule(TypeConversionModule):
 
     def to_bytes(self, value: Value) -> bytes:
 
+        import pyarrow as pa
+
         table_val: Value = value
         table: pa.Table = table_val.get_value_data()
 
@@ -576,7 +590,7 @@ class TableConversionModule(TypeConversionModule):
             writer.write_batch(batch)
         writer.close()
 
-        buf: Buffer = sink.getvalue()
+        buf: pa.Buffer = sink.getvalue()
         return memoryview(buf)
 
     def to_string(self, value: Value):

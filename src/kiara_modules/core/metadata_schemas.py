@@ -13,12 +13,10 @@ Metadata models must be a sub-class of [kiara.metadata.MetadataModel][kiara.meta
 import datetime
 import hashlib
 import logging
-import mimetypes
 import os.path
 import shutil
 import typing
 
-import filetype
 from anyio import create_task_group, open_file, start_blocking_portal
 from kiara import KiaraEntryPointItem
 from kiara.metadata import MetadataModel
@@ -78,6 +76,10 @@ class FileMetadata(MetadataModel):
     @classmethod
     def load_file(cls, source: str, target: typing.Optional[str] = None):
         """Utility method to read metadata of a file from disk and optionally move it into a data archive location."""
+
+        import mimetypes
+
+        import filetype
 
         if not source:
             raise ValueError("No source path provided.")

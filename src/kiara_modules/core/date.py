@@ -9,7 +9,6 @@ import datetime
 import re
 import typing
 
-from dateutil import parser
 from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
 
@@ -99,6 +98,8 @@ class DateRangeCheckModule(KiaraModule):
         return outputs
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        from dateutil import parser
 
         d = inputs.get_value_data("date")
         earliest: typing.Optional[datetime.datetime] = inputs.get_value_data("earliest")

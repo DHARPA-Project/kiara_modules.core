@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import typing
 
-import duckdb
-import vaex
 from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
@@ -147,6 +145,8 @@ class QueryTableGraphQL(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import vaex
+
         table = inputs.get_value_data("table")
         query = inputs.get_value_data("query")
 
@@ -208,6 +208,8 @@ class QueryTableSQL(KiaraModule):
         return {"query_result": {"type": "table", "doc": "The query result."}}
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        import duckdb
 
         _relation_name: str = inputs.get_value_data("relation_name")
         if _relation_name.upper() in RESERVED_SQL_KEYWORDS:

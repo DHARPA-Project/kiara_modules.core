@@ -63,11 +63,6 @@ def convert_to_json(
         )
 
 
-DEFAULT_TO_JSON_CONFIG: typing.Mapping[str, typing.Any] = {
-    "indent": 2,
-}
-
-
 class ToJsonModuleOld(OldTypeConversionModule):
     """Convert arbitrary types into json.
 

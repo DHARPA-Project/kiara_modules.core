@@ -3,7 +3,6 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
-from pyarrow import Table
 
 
 class DataProfilerModule(KiaraModule):
@@ -35,9 +34,10 @@ class DataProfilerModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import pyarrow as pa
         from dataprofiler import Profiler
 
-        item: Table = inputs.get_value_data("item")
+        item: pa.Table = inputs.get_value_data("item")
         pd = item.to_pandas()
         profile = Profiler(pd)  # Calculate Statistics, Entity Recognition, etc
         report = profile.report()

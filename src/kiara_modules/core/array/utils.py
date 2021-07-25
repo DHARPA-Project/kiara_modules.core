@@ -3,12 +3,14 @@ import copy
 import typing
 from concurrent.futures import ThreadPoolExecutor
 
-import pyarrow as pa
 from kiara import KiaraModule
+
+if typing.TYPE_CHECKING:
+    import pyarrow as pa
 
 
 def map_with_module(
-    array: pa.Array,
+    array: "pa.Array",
     module_input_name: str,
     module_obj: KiaraModule,
     init_data: typing.Mapping[str, typing.Any],

@@ -3,7 +3,6 @@ import typing
 
 from kiara import Kiara
 from kiara.data import Value
-from pyarrow import Table
 
 PY_OBJ_SUPPORTED_SOURCE_TYPES = ["value_set", "table"]
 
@@ -14,6 +13,8 @@ def convert_to_py_obj(
     convert_config: typing.Mapping[str, typing.Any],
     data_type: typing.Optional[str] = None,
 ) -> typing.Any:
+
+    import pyarrow as pa
 
     if data_type:
         value_type_name: typing.Optional[str] = data_type
@@ -30,7 +31,7 @@ def convert_to_py_obj(
             value_type_name = "any"
 
     if value_type_name == "table":
-        t: Table = data
+        t: pa.Table = data
         py_dict = t.to_pydict()
         return py_dict
     else:

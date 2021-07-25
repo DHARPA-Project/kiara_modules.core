@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import typing
 
-import pyarrow
-import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import ValueSchema
@@ -45,6 +43,8 @@ class CreateFilteredTableModule(KiaraModule):
         return outputs
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        import pyarrow as pa
 
         input_table: pa.Table = inputs.get_value_data("table")
         filter_array: pa.Array = inputs.get_value_data("mask")

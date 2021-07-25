@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import typing
 
-import msgpack
-import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
-from pyarrow import Buffer, Table
 from pydantic import Field
 
 KIARA_METADATA = {"tags": ["msgpack"]}
@@ -51,6 +48,8 @@ class SerializeToMsgPackModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import msgpack
+
         type_name: str = self.get_config_value("type_name")
 
         if not hasattr(self, f"from_{type_name}"):
@@ -73,8 +72,10 @@ class SerializeToMsgPackModule(KiaraModule):
 
     def from_table(self, value: Value) -> bytes:
 
+        import pyarrow as pa
+
         table_val: Value = value
-        table: Table = table_val.get_value_data()
+        table: pa.Table = table_val.get_value_data()
 
         sink = pa.BufferOutputStream()
         writer = pa.ipc.new_stream(sink, table.schema)
@@ -82,7 +83,7 @@ class SerializeToMsgPackModule(KiaraModule):
         writer.write(table)
         writer.close()
 
-        buf: Buffer = sink.getvalue()
+        buf: pa.Buffer = sink.getvalue()
         return memoryview(buf)
 
     def from_boolean(self, value: Value) -> bytes:
@@ -119,6 +120,8 @@ class DeserializeFromMsgPackModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import msgpack
+
         msg = inputs.get_value_data("bytes")
 
         unpacked = msgpack.unpackb(msg, raw=False)
@@ -142,10 +145,12 @@ class DeserializeFromMsgPackModule(KiaraModule):
 
     def to_table(self, data: bytes) -> typing.Any:
 
+        import pyarrow as pa
+
         reader = pa.ipc.open_stream(data)
 
         batches = [b for b in reader]
-        new_table = Table.from_batches(batches)
+        new_table = pa.Table.from_batches(batches)
 
         return new_table
 

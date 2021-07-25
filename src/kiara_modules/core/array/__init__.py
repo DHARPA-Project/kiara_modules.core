@@ -2,14 +2,12 @@
 import os
 import typing
 
-import pyarrow as pa
 from kiara import KiaraModule
 from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
 from kiara.modules.metadata import ExtractMetadataModule
-from pyarrow import feather
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array.utils import map_with_module
@@ -40,6 +38,9 @@ class SaveArrayTypeModule(SaveValueTypeModule):
         return "array"
 
     def save_value(self, value: Value, value_id: str, base_path: str):
+
+        import pyarrow as pa
+        from pyarrow import feather
 
         array: pa.Array = value.get_value_data()
         # folder = inputs.get_value_data("folder_path")
@@ -212,6 +213,8 @@ class MapModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import pyarrow as pa
+
         input_array: pa.Array = inputs.get_value_data("array")
 
         init_data: typing.Dict[str, typing.Any] = {}
@@ -250,6 +253,8 @@ class ArrayMetadataModule(ExtractMetadataModule):
         return ArrayMetadata
 
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
+
+        import pyarrow as pa
 
         array: pa.Array = value.get_value_data()
 

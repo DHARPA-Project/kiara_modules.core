@@ -4,7 +4,6 @@ import typing
 from abc import abstractmethod
 from pprint import pformat
 
-import pyarrow
 from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
@@ -280,9 +279,11 @@ class PrettyPrintModule(KiaraModule):
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
+        import pyarrow as pa
+
         input_value: Value = inputs.get_value_data("item")
 
-        if isinstance(input_value, pyarrow.Table):
+        if isinstance(input_value, pa.Table):
             value_type = "table"
         elif isinstance(input_value, ValueSet):
             value_type = "value_set"
@@ -323,9 +324,11 @@ class ToStringModuleOld(OldTypeConversionModule):
         self, value: Value, config: typing.Mapping[str, typing.Any]
     ) -> typing.Any:
 
+        import pyarrow as pa
+
         input_value: typing.Any = value.get_value_data()
 
-        if isinstance(input_value, pyarrow.Table):
+        if isinstance(input_value, pa.Table):
             value_type = "table"
         elif isinstance(input_value, ValueSet):
             value_type = "value_set"
