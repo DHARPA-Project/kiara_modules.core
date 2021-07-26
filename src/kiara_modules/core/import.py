@@ -72,9 +72,9 @@ class OnboardFileModule(KiaraModule):
             kiara=self._kiara,
         )
 
-        dataset_id = self._kiara.data_store.save_value(value=value, aliases=aliases)
+        dataset_md = self._kiara.data_store.save_value(value=value, aliases=aliases)
 
-        outputs.set_values(file=file_model, dataset_id=dataset_id)
+        outputs.set_values(file=file_model, dataset_id=dataset_md.value_id)
 
 
 class OnboardFolderModule(KiaraModule):
@@ -154,6 +154,6 @@ class OnboardFolderModule(KiaraModule):
             kiara=self._kiara,
         )
 
-        dataset_id = self._kiara.data_store.save_value(value, aliases=aliases)
+        dataset_md = self._kiara.data_store.save_value(value, aliases=aliases)
 
-        outputs.set_values(file_bundle=bundle, dataset_id=dataset_id)
+        outputs.set_values(file_bundle=bundle, dataset_id=dataset_md.value_id)
