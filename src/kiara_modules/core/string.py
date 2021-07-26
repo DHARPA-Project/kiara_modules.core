@@ -6,13 +6,16 @@ from pprint import pformat
 
 from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
+from kiara.defaults import DEFAULT_NO_DESC_VALUE
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import KiaraModuleConfig
 from kiara.modules.type_conversion import OldTypeConversionModule
 from kiara.utils import StringYAML
 from kiara.utils.output import pretty_print_arrow_table
 from pydantic import Field
+from rich import box
 from rich.console import RenderableType, RenderGroup
+from rich.markdown import Markdown
 from rich.panel import Panel
 
 
@@ -45,15 +48,25 @@ def convert_to_renderable(
         for field_name, value in data.items():
             _vt = value.value_schema.type
             _data = value.get_value_data()
+            if value.value_schema.doc == DEFAULT_NO_DESC_VALUE:
+                _temp: typing.List[RenderableType] = []
+            else:
+                md = Markdown(value.value_schema.doc)
+                _temp = [Panel(md, box=box.SIMPLE)]
             _strings = convert_to_renderable(
                 value_type=_vt, data=_data, render_config=render_config
             )
-            result_dict[field_name] = _strings
+            _temp.extend(_strings)
+            result_dict[(field_name, _vt)] = _temp
 
         result = []
         for k, v in result_dict.items():
             result.append(
-                Panel(RenderGroup(*v), title=f"field: [b]{k}[/b]", title_align="left")
+                Panel(
+                    RenderGroup(*v),
+                    title=f"field: [b]{k[0]}[/b] (type: [i]{k[1]}[/i])",
+                    title_align="left",
+                )
             )
 
     else:

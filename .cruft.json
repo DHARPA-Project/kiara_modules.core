@@ -5,7 +5,7 @@
     "context": {
         "cookiecutter": {
             "full_name": "Markus Binsteiner",
-            "email": "markus.binsteiner@uni.lu",
+            "email": "markus@frkl.io",
             "project_name": "core",
             "project_slug": "core",
             "project_short_description": "Core modules and pipelines for kiara.",

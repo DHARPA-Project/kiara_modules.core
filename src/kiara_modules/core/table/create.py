@@ -66,7 +66,7 @@ class CreateTableFromFileModule(KiaraModule):
     ) -> typing.Mapping[
         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
     ]:
-        return {"table": {"type": "table", "doc": "the imported table"}}
+        return {"table": {"type": "table", "doc": "The imported table."}}
 
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
