@@ -189,6 +189,7 @@ class TableType(ValueType):
 
         return ["pandas_df_hash"]
 
+    @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
 
         import pyarrow as pa
