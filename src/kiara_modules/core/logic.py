@@ -4,11 +4,11 @@ import typing
 
 from kiara.data.values import ValueSchema, ValueSet
 from kiara.module import KiaraModule
-from kiara.module_config import KiaraModuleConfig
+from kiara.module_config import ModuleTypeConfig
 from pydantic import Field
 
 
-class LogicProcessingModuleConfig(KiaraModuleConfig):
+class LogicProcessingModuleConfig(ModuleTypeConfig):
     """Config class for all the 'logic'-related modules."""
 
     delay: float = Field(

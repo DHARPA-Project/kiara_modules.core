@@ -3,11 +3,11 @@ import os
 import typing
 
 from kiara import KiaraModule
-from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import KiaraModuleConfig
+from kiara.module_config import ModuleTypeConfig
 from kiara.modules.metadata import ExtractMetadataModule
+from kiara.operations.type_operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array.utils import map_with_module
@@ -71,7 +71,7 @@ class SaveArrayTypeModule(SaveValueTypeModule):
         return load_config
 
 
-class MapModuleConfig(KiaraModuleConfig):
+class MapModuleConfig(ModuleTypeConfig):
 
     module_type: str = Field(
         description="The name of the kiara module to use to filter the input data."

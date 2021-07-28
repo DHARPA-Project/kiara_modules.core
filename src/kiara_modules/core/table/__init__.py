@@ -5,13 +5,16 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
-from kiara.data.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
-from kiara.data.operations.type_convert import TypeConversionModule
 from kiara.data.values import ValueSchema
 from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import KiaraModuleConfig
+from kiara.module_config import ModuleTypeConfig
 from kiara.modules.metadata import ExtractMetadataModule
+from kiara.operations.type_operations.save_value import (
+    SaveValueModuleConfig,
+    SaveValueTypeModule,
+)
+from kiara.operations.type_operations.type_convert import TypeConversionModule
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
@@ -393,7 +396,7 @@ class CutColumnModule(KiaraModule):
         outputs.set_value("array", column)
 
 
-class MapColumnsModuleConfig(KiaraModuleConfig):
+class MapColumnsModuleConfig(ModuleTypeConfig):
 
     module_type: str = Field(
         description="The name of the kiara module to use to filter the input data."

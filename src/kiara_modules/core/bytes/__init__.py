@@ -3,9 +3,9 @@ import os
 import typing
 
 from kiara import KiaraModule
-from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
+from kiara.operations.type_operations.save_value import SaveValueTypeModule
 
 KIARA_METADATA = {"tags": ["bytes", "serialization"]}
 

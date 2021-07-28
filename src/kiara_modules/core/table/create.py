@@ -4,7 +4,7 @@ import typing
 from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import ValueSchema
-from kiara.module_config import KiaraModuleConfig
+from kiara.module_config import ModuleTypeConfig
 from pydantic import Field, validator
 
 from kiara_modules.core.metadata_schemas import FileBundleMetadata, FileMetadata
@@ -24,7 +24,7 @@ AVAILABLE_FILE_COLUMNS = [
 DEFAULT_COLUMNS = ["id", "rel_path", "content"]
 
 
-class CreateTableModuleConfig(KiaraModuleConfig):
+class CreateTableModuleConfig(ModuleTypeConfig):
 
     allow_column_filter: bool = Field(
         description="Whether to add an input option to filter columns.", default=False
@@ -84,7 +84,7 @@ class CreateTableFromFileModule(KiaraModule):
         outputs.set_value("table", imported_data)
 
 
-class CreateTableFromTextFilesConfig(KiaraModuleConfig):
+class CreateTableFromTextFilesConfig(ModuleTypeConfig):
 
     columns: typing.List[str] = Field(
         description=f"A list of columns to add to the table. Available properties: {', '.join(AVAILABLE_FILE_COLUMNS)}",

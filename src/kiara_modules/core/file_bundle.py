@@ -4,9 +4,9 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
-from kiara.data.operations.save_value import SaveValueTypeModule
 from kiara.data.values import ValueSchema
 from kiara.modules.metadata import ExtractMetadataModule
+from kiara.operations.type_operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel
 
 from kiara_modules.core.metadata_schemas import FileBundleMetadata, FolderImportConfig

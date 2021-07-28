@@ -4,13 +4,13 @@ import typing
 from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import KiaraModuleConfig
+from kiara.module_config import ModuleTypeConfig
 from pydantic import Field
 
 KIARA_METADATA = {"tags": ["msgpack"]}
 
 
-class SerializeToMsgPackModuleConfig(KiaraModuleConfig):
+class SerializeToMsgPackModuleConfig(ModuleTypeConfig):
 
     type_name: str = Field(description="The value type to serialize/deserialize.")
 
