@@ -9,12 +9,11 @@ from kiara.data.values import ValueSchema
 from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfig
-from kiara.modules.metadata import ExtractMetadataModule
-from kiara.operations.type_operations.save_value import (
-    SaveValueModuleConfig,
-    SaveValueTypeModule,
-)
-from kiara.operations.type_operations.type_convert import TypeConversionModule
+from kiara.operations.extract_metadata import ExtractMetadataModule
+from kiara.operations.pretty_print import PrettyPrintValueModule
+from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
+from kiara.operations.type_convert import ConvertValueModule
+from kiara.utils.output import pretty_print_arrow_table
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
@@ -30,13 +29,13 @@ class SaveArrowTableConfig(SaveValueModuleConfig):
     )
 
 
-class SaveArrowTableType(SaveValueTypeModule):
+class SaveArrowTable(SaveValueTypeModule):
 
     _config_cls = SaveArrowTableConfig
     _module_type_name = "save"
 
     @classmethod
-    def _get_supported_types(self) -> typing.Union[str, typing.Iterable[str]]:
+    def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "table"
 
     def save_value(
@@ -569,7 +568,14 @@ class MapColumnModule(KiaraModule):
         outputs.set_value("array", pa.array(result_list))
 
 
-class TableConversionModule(TypeConversionModule):
+class TableConversionModule(ConvertValueModule):
+    """Convert an Arrow table.
+
+    This module supportes two conversion targets currently:
+
+     - bytes: a memoryview of the byte-representation of the Table
+     - string: the base64-encoded byte-representation of the Table
+    """
 
     _module_type_name = "convert"
 
@@ -600,7 +606,69 @@ class TableConversionModule(TypeConversionModule):
 
         _bytes: bytes = self.to_bytes(value)
         string = base64.b64encode(_bytes)
-        return string
+        return string.decode()
+
+    def from_bytes(self, value: Value):
+        raise NotImplementedError()
 
     def from_string(self, value: Value):
-        pass
+        raise NotImplementedError()
+
+
+class PrettyPrintTableModule(PrettyPrintValueModule):
+
+    _module_type_name = "pretty_print"
+
+    @classmethod
+    def retrieve_supported_source_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+
+        return ["table"]
+
+    @classmethod
+    def retrieve_supported_target_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+
+        return ["renderables"]
+
+    def pretty_print(
+        self,
+        value: Value,
+        value_type: str,
+        target_type: str,
+        print_config: typing.Mapping[str, typing.Any],
+    ) -> typing.Dict[str, typing.Any]:
+
+        result = None
+        if value_type == "table":
+            if target_type == "renderables":
+                result = self.pretty_print_table_as_renderables(
+                    value=value, print_config=print_config
+                )
+
+        if result is None:
+            raise Exception(
+                f"Pretty printing of type '{value_type}' as '{target_type}' not supported."
+            )
+        return result
+
+    def pretty_print_table_as_renderables(
+        self, value: Value, print_config: typing.Mapping[str, typing.Any]
+    ):
+
+        max_rows = print_config.get("max_no_rows")
+        max_row_height = print_config.get("max_row_height")
+        max_cell_length = print_config.get("max_cell_length")
+
+        half_lines: typing.Optional[int] = None
+        if max_rows:
+            half_lines = int(max_rows / 2)
+
+        result = [
+            pretty_print_arrow_table(
+                value.get_value_data(),
+                rows_head=half_lines,
+                rows_tail=half_lines,
+                max_row_height=max_row_height,
+                max_cell_length=max_cell_length,
+            )
+        ]
+        return [result]

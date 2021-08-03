@@ -6,8 +6,8 @@ from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfig
-from kiara.modules.metadata import ExtractMetadataModule
-from kiara.operations.type_operations.save_value import SaveValueTypeModule
+from kiara.operations.extract_metadata import ExtractMetadataModule
+from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array.utils import map_with_module
@@ -34,7 +34,7 @@ class SaveArrayTypeModule(SaveValueTypeModule):
     _module_type_name = "save"
 
     @classmethod
-    def _get_supported_types(self) -> typing.Union[str, typing.Iterable[str]]:
+    def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "array"
 
     def save_value(self, value: Value, value_id: str, base_path: str):

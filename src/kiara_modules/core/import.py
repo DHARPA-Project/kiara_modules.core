@@ -14,6 +14,48 @@ from kiara_modules.core.metadata_schemas import (
 KIARA_METADATA = {"tags": ["onboarding", "import"]}
 
 
+# class OnboardBytesModule(KiaraModule):
+#     """Import a byte-array, and save it as 'file'."""
+#
+#     _module_type_name = "bytes"
+#
+#     def create_input_schema(
+#         self,
+#     ) -> typing.Mapping[
+#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+#     ]:
+#
+#         return {
+#             "bytes": {
+#                 "type": "bytes",
+#                 "doc": "The byte array."
+#             },
+#             "file_name": {
+#                 "type": "string",
+#                 "doc": "The name to give the file internally. This is only used in metadata.",
+#                 "optional": True
+#             },
+#             "aliases": {
+#                 "type": "list",
+#                 "doc": "A list of aliases to give the dataset in the internal data store.",
+#                 "optional": True
+#             }
+#         }
+#
+#     def create_output_schema(
+#         self,
+#     ) -> typing.Mapping[
+#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+#     ]:
+#
+#         return {
+#             "file": {
+#                 "type": "file",
+#                 "doc": "The representation of the byte-array as file/file-metadata."
+#             }
+#         }
+
+
 class OnboardFileModule(KiaraModule):
     """Import (copy) a file and its metadata into the internal data store.
 

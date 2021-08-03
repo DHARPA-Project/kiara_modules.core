@@ -5,7 +5,7 @@ import typing
 from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
-from kiara.operations.type_operations.save_value import SaveValueTypeModule
+from kiara.operations.save_value import SaveValueTypeModule
 
 KIARA_METADATA = {"tags": ["bytes", "serialization"]}
 
@@ -17,7 +17,7 @@ class SaveBytesTypeModule(SaveValueTypeModule):
     _module_type_name = "save"
 
     @classmethod
-    def _get_supported_types(self) -> typing.Union[str, typing.Iterable[str]]:
+    def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "bytes"
 
     def save_value(

@@ -9,6 +9,7 @@ import typing
 from kiara import KiaraEntryPointItem
 from kiara.data.types import ValueType
 from kiara.utils.class_loading import find_value_types_under
+from rich.console import ConsoleRenderable, RichCast
 
 from kiara_modules.core.metadata_schemas import FileBundleMetadata, FileMetadata
 
@@ -211,17 +212,6 @@ class TableType(ValueType):
 class ArrayType(ValueType):
     """An Apache arrow array."""
 
-    # def extract_type_metadata(
-    #     cls, value: typing.Any
-    # ) -> typing.Mapping[str, typing.Any]:
-    #
-    #     metadata = {
-    #         "item_type": str(value.type),
-    #         "arrow_type_id": value.type.id,
-    #         "length": len(value),
-    #     }
-    #     return metadata
-
 
 class DateType(ValueType):
     """A date.
@@ -292,3 +282,14 @@ class FileBundleType(ValueType):
 
         assert isinstance(value, FileBundleMetadata)
         return value.file_bundle_hash
+
+
+class RenderablesType(ValueType):
+    """A list of renderable objects, used in the 'rich' Python library, to print to the terminal or in Jupyter.
+
+    Internally, the result list items can be either a string, a 'rich.console.ConsoleRenderable', or a 'rich.console.RichCast'.
+    """
+
+    @classmethod
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        return [str, ConsoleRenderable, RichCast]

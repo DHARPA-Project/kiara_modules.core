@@ -6,8 +6,8 @@ from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import Value, ValueSchema
 from kiara.exceptions import KiaraProcessingException
-from kiara.modules.metadata import ExtractMetadataModule
-from kiara.operations.type_operations.save_value import SaveValueTypeModule
+from kiara.operations.extract_metadata import ExtractMetadataModule
+from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel
 
 from kiara_modules.core.metadata_schemas import FileMetadata
@@ -19,7 +19,7 @@ class SaveFileTypeModule(SaveValueTypeModule):
     _module_type_name = "save"
 
     @classmethod
-    def _get_supported_types(self) -> typing.Union[str, typing.Iterable[str]]:
+    def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "file"
 
     def save_value(
