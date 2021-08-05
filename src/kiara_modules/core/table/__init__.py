@@ -671,4 +671,4 @@ class PrettyPrintTableModule(PrettyPrintValueModule):
                 max_cell_length=max_cell_length,
             )
         ]
-        return [result]
+        return result

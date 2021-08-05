@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from kiara.operations import OperationConfig, Operations
 
-from kiara_modules.core.generic import DataProfilerModule
+from kiara_modules.core.value import DataProfilerModule
 
 
 class DataProfileOperations(Operations):
