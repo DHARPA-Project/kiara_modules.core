@@ -4,14 +4,19 @@
 """
 
 import datetime
+import pprint
 import typing
 
 from kiara import KiaraEntryPointItem
 from kiara.data.types import ValueType
 from kiara.utils.class_loading import find_value_types_under
+from kiara.utils.output import pretty_print_arrow_table
 from rich.console import ConsoleRenderable, RichCast
 
 from kiara_modules.core.metadata_schemas import FileBundleMetadata, FileMetadata
+
+if typing.TYPE_CHECKING:
+    from kiara.data.values import Value
 
 value_types: KiaraEntryPointItem = (
     find_value_types_under,
@@ -24,6 +29,13 @@ class AnyType(ValueType):
 
     _value_type_name = "any"
 
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return str(data)
+
 
 class BytesType(ValueType):
     """An array of bytes."""
@@ -33,6 +45,13 @@ class BytesType(ValueType):
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
         return str(hash(value))
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data: bytes = value.get_value_data()
+        return data.decode()
 
     # @classmethod
     # def get_operations(
@@ -61,6 +80,13 @@ class StringType(ValueType):
         if not isinstance(value, str):
             raise ValueError(f"Invalid type '{type(value)}': string required")
 
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return data
+
 
 class BooleanType(ValueType):
     "A boolean."
@@ -81,6 +107,13 @@ class BooleanType(ValueType):
             # else:
             raise ValueError(f"Invalid type '{type(value)}' for boolean: {value}")
 
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return str(data)
+
 
 class IntegerType(ValueType):
     """An integer."""
@@ -100,6 +133,13 @@ class IntegerType(ValueType):
             # else:
             raise ValueError(f"Invalid type '{type(value)}' for integer: {value}")
 
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return str(data)
+
 
 class FloatType(ValueType):
     "A float."
@@ -112,6 +152,13 @@ class FloatType(ValueType):
 
         if not isinstance(value, float):
             raise ValueError(f"Invalid type '{type(value)}' for float: {value}")
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return str(data)
 
 
 class DictType(ValueType):
@@ -130,14 +177,12 @@ class DictType(ValueType):
         if not isinstance(value, typing.Mapping):
             raise ValueError(f"Invalid type '{type(value)}', not a mapping.")
 
-    # def extract_type_metadata(
-    #     cls, value: typing.Any
-    # ) -> typing.Mapping[str, typing.Any]:
-    #     value_types = set()
-    #     for val in value.values():
-    #         value_types.add(get_type_name(val))
-    #     result = {"keys": list(value.keys()), "value_types.py": list(value_types)}
-    #     return result
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return pprint.pformat(data)
 
 
 class ListType(ValueType):
@@ -155,12 +200,12 @@ class ListType(ValueType):
 
         assert isinstance(value, typing.Iterable)
 
-    # def extract_type_metadata(
-    #     cls, value: typing.Any
-    # ) -> typing.Mapping[str, typing.Any]:
-    #
-    #     metadata = {"length": len(value)}
-    #     return metadata
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return pprint.pformat(data)
 
 
 class TableType(ValueType):
@@ -200,7 +245,6 @@ class TableType(ValueType):
         from pandas.util import hash_pandas_object
 
         hash_result = hash_pandas_object(table.to_pandas()).sum()
-
         return str(hash_result)
 
     def validate(cls, value: typing.Any) -> None:
@@ -208,9 +252,59 @@ class TableType(ValueType):
 
         assert isinstance(value, pa.Table)
 
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        max_rows = print_config.get("max_no_rows")
+        max_row_height = print_config.get("max_row_height")
+        max_cell_length = print_config.get("max_cell_length")
+
+        half_lines: typing.Optional[int] = None
+        if max_rows:
+            half_lines = int(max_rows / 2)
+
+        result = [
+            pretty_print_arrow_table(
+                value.get_value_data(),
+                rows_head=half_lines,
+                rows_tail=half_lines,
+                max_row_height=max_row_height,
+                max_cell_length=max_cell_length,
+            )
+        ]
+        return result
+
 
 class ArrayType(ValueType):
     """An Apache arrow array."""
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        max_rows = print_config.get("max_no_rows")
+        max_row_height = print_config.get("max_row_height")
+        max_cell_length = print_config.get("max_cell_length")
+
+        half_lines: typing.Optional[int] = None
+        if max_rows:
+            half_lines = int(max_rows / 2)
+
+        array = value.get_value_data()
+        import pyarrow as pa
+
+        pa.Table.from_arrays(arrays=[array], names=["array"])
+        result = [
+            pretty_print_arrow_table(
+                value.get_value_data(),
+                rows_head=half_lines,
+                rows_tail=half_lines,
+                max_row_height=max_row_height,
+                max_cell_length=max_cell_length,
+            )
+        ]
+        return result
 
 
 class DateType(ValueType):
@@ -232,11 +326,21 @@ class DateType(ValueType):
         if isinstance(v, str):
             d = parser.parse(v)
             return d
+        elif isinstance(v, datetime.date):
+            _d = datetime.datetime(year=v.year, month=v.month, day=v.day)
+            return _d
 
         return None
 
     def validate(cls, value: typing.Any):
         assert isinstance(value, datetime.datetime)
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data = value.get_value_data()
+        return str(data)
 
 
 class FileType(ValueType):
@@ -260,6 +364,13 @@ class FileType(ValueType):
         assert isinstance(value, FileMetadata)
         return value.file_hash
 
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data: FileMetadata = value.get_value_data()
+        return data.json(indent=2)
+
 
 class FileBundleType(ValueType):
     """A representation of a set of files (folder, archive, etc.).
@@ -282,6 +393,13 @@ class FileBundleType(ValueType):
 
         assert isinstance(value, FileBundleMetadata)
         return value.file_bundle_hash
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data: FileBundleMetadata = value.get_value_data()
+        return data.json(indent=2)
 
 
 class RenderablesType(ValueType):

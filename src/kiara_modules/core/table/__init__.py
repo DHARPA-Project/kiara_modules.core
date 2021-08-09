@@ -9,17 +9,32 @@ from kiara.data.values import ValueSchema
 from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfig
+from kiara.operations.data_import import DataImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
-from kiara.operations.pretty_print import PrettyPrintValueModule
 from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
 from kiara.operations.type_convert import ConvertValueModule
-from kiara.utils.output import pretty_print_arrow_table
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
-from kiara_modules.core.metadata_schemas import TableMetadata
+from kiara_modules.core.metadata_schemas import (
+    FileBundleMetadata,
+    FileMetadata,
+    TableMetadata,
+)
 
 DEFAULT_SAVE_TABLE_FILE_NAME = "table.feather"
+
+FILE_BUNDLE_IMPORT_AVAILABLE_COLUMNS = [
+    "id",
+    "rel_path",
+    "orig_filename",
+    "orig_path",
+    "import_time",
+    "mime_type",
+    "size",
+    "content",
+    "file_name",
+]
 
 
 class SaveArrowTableConfig(SaveValueModuleConfig):
@@ -123,6 +138,42 @@ class LoadArrowTable(KiaraModule):
 
         table = feather.read_table(path)
         outputs.set_value("table", table)
+
+
+class ImportArrowTable(DataImportModule):
+    @classmethod
+    def retrieve_supported_value_type(cls) -> str:
+        return "table"
+
+    def import_from_file_path_string(
+        self, source: str, base_aliases: typing.List[str]
+    ) -> FileMetadata:
+
+        op = self._kiara.operation_mgmt.profiles["file.import_from.path.string"]
+        aliases = [f"{x}.table.source_file" for x in base_aliases]
+        result = op.module.run(source=source, aliases=aliases)
+
+        file_value = result.get_value_obj("value_item")
+
+        op_convert = self._kiara.operation_mgmt.profiles["file.convert_to.table"]
+        result_table = op_convert.module.run(value_item=file_value)
+
+        return result_table.get_value_data("value_item")
+
+    def import_from_folder_path_string(
+        self, source: str, base_aliases: typing.List[str]
+    ) -> FileMetadata:
+
+        op = self._kiara.operation_mgmt.profiles["file_bundle.import_from.path.string"]
+        aliases = [f"{x}.table.source_file_bundle" for x in base_aliases]
+        result = op.module.run(source=source, aliases=aliases)
+
+        file_value = result.get_value_obj("value_item")
+
+        op_convert = self._kiara.operation_mgmt.profiles["file_bundle.convert_to.table"]
+        result_table = op_convert.module.run(value_item=file_value)
+
+        return result_table.get_value_data("value_item")
 
 
 class ExportArrowTable(KiaraModule):
@@ -614,61 +665,98 @@ class TableConversionModule(ConvertValueModule):
     def from_string(self, value: Value):
         raise NotImplementedError()
 
+    def from_file(self, value: Value):
 
-class PrettyPrintTableModule(PrettyPrintValueModule):
+        from pyarrow import csv
 
-    _module_type_name = "pretty_print"
+        input_file: FileMetadata = value.get_value_data()
+        imported_data = csv.read_csv(input_file.path)
+        return imported_data
 
-    @classmethod
-    def retrieve_supported_source_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+    def from_file_bundle(self, value: Value):
 
-        return ["table"]
+        import pyarrow as pa
 
-    @classmethod
-    def retrieve_supported_target_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+        bundle: FileBundleMetadata = value.get_value_data()
 
-        return ["renderables"]
+        columns = FILE_BUNDLE_IMPORT_AVAILABLE_COLUMNS
 
-    def pretty_print(
-        self,
-        value: Value,
-        value_type: str,
-        target_type: str,
-        print_config: typing.Mapping[str, typing.Any],
-    ) -> typing.Dict[str, typing.Any]:
+        file_dict = bundle.read_text_file_contents()
 
-        result = None
-        if value_type == "table":
-            if target_type == "renderables":
-                result = self.pretty_print_table_as_renderables(
-                    value=value, print_config=print_config
-                )
+        tabular: typing.Dict[str, typing.List[typing.Any]] = {}
+        for column in columns:
+            for index, rel_path in enumerate(sorted(file_dict.keys())):
 
-        if result is None:
-            raise Exception(
-                f"Pretty printing of type '{value_type}' as '{target_type}' not supported."
-            )
-        return result
+                if column == "content":
+                    _value: typing.Any = file_dict[rel_path]
+                elif column == "id":
+                    _value = index
+                elif column == "rel_path":
+                    _value = rel_path
+                else:
+                    file_model = bundle.included_files[rel_path]
+                    _value = getattr(file_model, column)
 
-    def pretty_print_table_as_renderables(
-        self, value: Value, print_config: typing.Mapping[str, typing.Any]
-    ):
+                tabular.setdefault(column, []).append(_value)
 
-        max_rows = print_config.get("max_no_rows")
-        max_row_height = print_config.get("max_row_height")
-        max_cell_length = print_config.get("max_cell_length")
+        table = pa.Table.from_pydict(tabular)
+        return table
 
-        half_lines: typing.Optional[int] = None
-        if max_rows:
-            half_lines = int(max_rows / 2)
 
-        result = [
-            pretty_print_arrow_table(
-                value.get_value_data(),
-                rows_head=half_lines,
-                rows_tail=half_lines,
-                max_row_height=max_row_height,
-                max_cell_length=max_cell_length,
-            )
-        ]
-        return result
+# class PrettyPrintTableModule(PrettyPrintValueModule):
+#
+#     _module_type_name = "pretty_print"
+#
+#     @classmethod
+#     def retrieve_supported_source_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+#
+#         return ["table"]
+#
+#     @classmethod
+#     def retrieve_supported_target_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+#
+#         return ["renderables"]
+#
+#     def pretty_print(
+#         self,
+#         value: Value,
+#         value_type: str,
+#         target_type: str,
+#         print_config: typing.Mapping[str, typing.Any],
+#     ) -> typing.Dict[str, typing.Any]:
+#
+#         result = None
+#         if value_type == "table":
+#             if target_type == "renderables":
+#                 result = self.pretty_print_table_as_renderables(
+#                     value=value, print_config=print_config
+#                 )
+#
+#         if result is None:
+#             raise Exception(
+#                 f"Pretty printing of type '{value_type}' as '{target_type}' not supported."
+#             )
+#         return result
+#
+#     def pretty_print_table_as_renderables(
+#         self, value: Value, print_config: typing.Mapping[str, typing.Any]
+#     ):
+#
+#         max_rows = print_config.get("max_no_rows")
+#         max_row_height = print_config.get("max_row_height")
+#         max_cell_length = print_config.get("max_cell_length")
+#
+#         half_lines: typing.Optional[int] = None
+#         if max_rows:
+#             half_lines = int(max_rows / 2)
+#
+#         result = [
+#             pretty_print_arrow_table(
+#                 value.get_value_data(),
+#                 rows_head=half_lines,
+#                 rows_tail=half_lines,
+#                 max_row_height=max_row_height,
+#                 max_cell_length=max_cell_length,
+#             )
+#         ]
+#         return result

@@ -6,11 +6,25 @@ from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import Value, ValueSchema
 from kiara.exceptions import KiaraProcessingException
+from kiara.operations.data_import import DataImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel
 
 from kiara_modules.core.metadata_schemas import FileMetadata
+
+
+class FileImportModule(DataImportModule):
+    @classmethod
+    def retrieve_supported_value_type(cls) -> str:
+        return "file"
+
+    def import_from_path_string(
+        self, source: str, base_aliases: typing.List[str]
+    ) -> FileMetadata:
+
+        file_model = FileMetadata.load_file(source)
+        return file_model
 
 
 class SaveFileTypeModule(SaveValueTypeModule):
@@ -122,51 +136,3 @@ class FileMetadataModule(ExtractMetadataModule):
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
 
         return value.get_value_data().dict()
-
-
-# class CalculateFileHash(KiaraModule):
-#     """Calculate the hash for a file item."""
-#
-#     _module_type_name = "hash"
-#
-#     def create_input_schema(
-#         self,
-#     ) -> typing.Mapping[
-#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-#     ]:
-#
-#         return {
-#             "file": {
-#                 "type": "file",
-#                 "doc": "The file item."
-#             },
-#             "hash_func": {
-#                 "type": "string",
-#                 "doc": "The hash function to use (not implemented yet).",
-#                 "default": "sha3-256"
-#             }
-#         }
-#
-#     def create_output_schema(
-#         self,
-#     ) -> typing.Mapping[
-#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-#     ]:
-#
-#         return {
-#             "hash": {
-#                 "type": "string",
-#                 "doc": "The hash for the file."
-#             }
-#         }
-#
-#     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
-#
-#         hash_func = inputs.get_value_data("hash_func")
-#         if hash_func != "sha3-256":
-#             raise KiaraProcessingException(f"Hash function not supported (yet): {hash_func}")
-#
-#         f: FileMetadata = inputs.get_value_data("file")
-#         hash = f.file_hash
-#
-#         outputs.set_value("hash", hash)

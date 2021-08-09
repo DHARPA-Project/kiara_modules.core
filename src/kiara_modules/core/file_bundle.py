@@ -5,11 +5,25 @@ import typing
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
 from kiara.data.values import ValueSchema
+from kiara.operations.data_import import DataImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel
 
 from kiara_modules.core.metadata_schemas import FileBundleMetadata, FolderImportConfig
+
+
+class FileImportModule(DataImportModule):
+    @classmethod
+    def retrieve_supported_value_type(cls) -> str:
+        return "file_bundle"
+
+    def import_from_path_string(
+        self, source: str, base_aliases: typing.List[str]
+    ) -> FileBundleMetadata:
+
+        file_bundle_model = FileBundleMetadata.import_folder(source)
+        return file_bundle_model
 
 
 class SaveFileBundleType(SaveValueTypeModule):

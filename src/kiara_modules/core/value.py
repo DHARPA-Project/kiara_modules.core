@@ -4,13 +4,11 @@ import typing
 
 from dataprofiler import Data
 from kiara import Kiara, KiaraModule
-from kiara.data.values import Value, ValueSchema, ValueSet
+from kiara.data.values import ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfig
 from kiara.operations import OperationConfig
-from kiara.operations.pretty_print import PrettyPrintValueModule
 from pydantic import Field
-from rich.pretty import Pretty
 
 from kiara_modules.core.metadata_schemas import FileMetadata
 
@@ -39,12 +37,14 @@ class DataProfilerModule(KiaraModule):
 
         supported_source_types = ["table", "file"]
 
+        doc = cls.get_type_metadata().documentation
         all_profiles = {}
         for sup_type in supported_source_types:
 
             op_config = {
                 "module_type": cls._module_type_id,  # type: ignore
                 "module_config": {"value_type": sup_type},
+                "doc": doc,
             }
             all_profiles[f"{sup_type}.data_profile"] = op_config
 
@@ -109,40 +109,40 @@ class DataProfilerModule(KiaraModule):
         outputs.set_value("report", report)
 
 
-class DefaultPrettyPrinteModule(PrettyPrintValueModule):
-
-    _module_type_name = "pretty_print"
-
-    @classmethod
-    def retrieve_supported_source_types(cls) -> typing.Union[str, typing.Iterable[str]]:
-
-        return ["string", "integer", "float", "dict", "list", "any"]
-
-    @classmethod
-    def retrieve_supported_target_types(cls) -> typing.Union[str, typing.Iterable[str]]:
-
-        return ["renderables"]
-
-    def pretty_print(
-        self,
-        value: Value,
-        value_type: str,
-        target_type: str,
-        print_config: typing.Mapping[str, typing.Any],
-    ) -> typing.Dict[str, typing.Any]:
-
-        result = None
-        if value_type == "string":
-            if target_type == "renderables":
-                result = value.get_value_data()
-        elif value_type in ["dict", "list"]:
-            result = Pretty(value.get_value_data())
-        else:
-            if target_type == "renderables":
-                result = str(value.get_value_data())
-
-        if result is None:
-            raise Exception(
-                f"Pretty printing of type '{value_type}' as '{target_type}' not supported."
-            )
-        return result
+# class DefaultPrettyPrinteModule(PrettyPrintValueModule):
+#
+#     _module_type_name = "pretty_print"
+#
+#     @classmethod
+#     def retrieve_supported_source_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+#
+#         return ["string", "integer", "float", "dict", "list", "any"]
+#
+#     @classmethod
+#     def retrieve_supported_target_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+#
+#         return ["renderables"]
+#
+#     def pretty_print(
+#         self,
+#         value: Value,
+#         value_type: str,
+#         target_type: str,
+#         print_config: typing.Mapping[str, typing.Any],
+#     ) -> typing.Dict[str, typing.Any]:
+#
+#         result = None
+#         if value_type == "string":
+#             if target_type == "renderables":
+#                 result = value.get_value_data()
+#         elif value_type in ["dict", "list"]:
+#             result = Pretty(value.get_value_data())
+#         else:
+#             if target_type == "renderables":
+#                 result = str(value.get_value_data())
+#
+#         if result is None:
+#             raise Exception(
+#                 f"Pretty printing of type '{value_type}' as '{target_type}' not supported."
+#             )
+#         return result

@@ -74,7 +74,12 @@ class FileMetadata(MetadataModel):
     """Describes properties for the 'file' value type."""
 
     @classmethod
-    def load_file(cls, source: str, target: typing.Optional[str] = None):
+    def load_file(
+        cls,
+        source: str,
+        target: typing.Optional[str] = None,
+        incl_orig_path: bool = False,
+    ):
         """Utility method to read metadata of a file from disk and optionally move it into a data archive location."""
 
         import mimetypes
@@ -91,7 +96,7 @@ class FileMetadata(MetadataModel):
             raise ValueError(f"Path is not a file: {source}")
 
         orig_filename = os.path.basename(source)
-        orig_path = os.path.abspath(source)
+        orig_path: str = os.path.abspath(source)
         file_import_time = datetime.datetime.now().isoformat()  # TODO: timezone
 
         file_stats = os.stat(orig_path)
@@ -115,9 +120,14 @@ class FileMetadata(MetadataModel):
             else:
                 mime_type = _mime_type.MIME
 
+        if not incl_orig_path:
+            _orig_path: typing.Optional[str] = None
+        else:
+            _orig_path = orig_path
+
         m = FileMetadata(
             orig_filename=orig_filename,
-            orig_path=orig_path,
+            orig_path=_orig_path,
             import_time=file_import_time,
             mime_type=mime_type,
             size=size,
@@ -131,8 +141,9 @@ class FileMetadata(MetadataModel):
     orig_filename: str = Field(
         description="The original filename of this file at the time of import."
     )
-    orig_path: str = Field(
-        description="The original path to this file at the time of import."
+    orig_path: typing.Optional[str] = Field(
+        description="The original path to this file at the time of import.",
+        default=None,
     )
     import_time: str = Field(description="The time when the file was imported.")
     mime_type: str = Field(description="The mime type of the file.")
@@ -144,10 +155,13 @@ class FileMetadata(MetadataModel):
         default=False,
     )
 
-    def copy_file(self, target: str):
+    def copy_file(self, target: str, incl_orig_path: bool = False):
 
         fm = FileMetadata.load_file(self.path, target)
-        fm.orig_path = self.orig_path
+        if incl_orig_path:
+            fm.orig_path = self.orig_path
+        else:
+            fm.orig_path = None
         fm.orig_filename = self.orig_filename
         fm.import_time = self.import_time
         if self._file_hash is not None:
@@ -200,6 +214,7 @@ class FileBundleMetadata(MetadataModel):
         import_config: typing.Union[
             None, typing.Mapping[str, typing.Any], FolderImportConfig
         ] = None,
+        incl_orig_path: bool = False,
     ):
 
         if not source:
@@ -259,12 +274,18 @@ class FileBundleMetadata(MetadataModel):
                 else:
                     target_path = None
 
-                file_model = FileMetadata.load_file(full_path, target_path)
+                file_model = FileMetadata.load_file(
+                    full_path, target_path, incl_orig_path=incl_orig_path
+                )
                 sum_size = sum_size + file_model.size
                 included_files[rel_path] = file_model
 
         orig_bundle_name = os.path.basename(source)
-        orig_path = source
+        if incl_orig_path:
+            orig_path: typing.Optional[str] = source
+        else:
+            orig_path = None
+
         if target:
             path = target
         else:
@@ -373,7 +394,9 @@ class FileBundleMetadata(MetadataModel):
         self._file_bundle_hash = hashlib.sha3_256(hashes.encode("utf-8")).hexdigest()
         return self._file_bundle_hash
 
-    def copy_bundle(self, target_path: str) -> "FileBundleMetadata":
+    def copy_bundle(
+        self, target_path: str, incl_orig_path: bool = False
+    ) -> "FileBundleMetadata":
 
         if target_path == self.path:
             raise Exception(f"Target path and current path are the same: {target_path}")
@@ -384,10 +407,14 @@ class FileBundleMetadata(MetadataModel):
             new_fm = item.copy_file(_target_path)
             result[rel_path] = new_fm
 
+        if incl_orig_path:
+            orig_path = self.orig_path
+        else:
+            orig_path = None
         fb = FileBundleMetadata.create_from_file_models(
             result,
             orig_bundle_name=self.orig_bundle_name,
-            orig_path=self.orig_path,
+            orig_path=orig_path,
             path=target_path,
             sum_size=self.size,
         )
