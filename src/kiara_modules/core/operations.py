@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-from kiara.operations import OperationConfig, Operations
+from kiara.operations import Operation, OperationType
 
 from kiara_modules.core.value import DataProfilerModule
 
 
-class DataProfileOperations(Operations):
-    def is_matching_operation(self, op_config: OperationConfig) -> bool:
+class DataProfileOperationType(OperationType):
+    def is_matching_operation(self, op_config: Operation) -> bool:
 
         return issubclass(op_config.module_cls, DataProfilerModule)
 
-    # def get_pretty_print_operation(self, value_type: str, target_type: str) -> OperationConfig:
+    # def get_pretty_print_operation(self, value_type: str, target_type: str) -> Operation:
     #
     #     result = []
     #     for op_config in self.operation_configs.values():

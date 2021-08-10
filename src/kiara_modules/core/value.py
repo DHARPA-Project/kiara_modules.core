@@ -7,7 +7,7 @@ from kiara import Kiara, KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfig
-from kiara.operations import OperationConfig
+from kiara.operations import Operation
 from pydantic import Field
 
 from kiara_modules.core.metadata_schemas import FileMetadata
@@ -31,9 +31,7 @@ class DataProfilerModule(KiaraModule):
     @classmethod
     def retrieve_module_profiles(
         cls, kiara: "Kiara"
-    ) -> typing.Mapping[
-        str, typing.Union[typing.Mapping[str, typing.Any], OperationConfig]
-    ]:
+    ) -> typing.Mapping[str, typing.Union[typing.Mapping[str, typing.Any], Operation]]:
 
         supported_source_types = ["table", "file"]
 
