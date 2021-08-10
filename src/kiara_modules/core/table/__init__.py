@@ -53,9 +53,7 @@ class SaveArrowTable(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "table"
 
-    def save_value(
-        self, value: Value, value_id: str, base_path: str
-    ) -> typing.Dict[str, typing.Any]:
+    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
 
         import pyarrow as pa
         from pyarrow import feather
@@ -99,7 +97,10 @@ class LoadArrowTable(KiaraModule):
     ]:
 
         inputs: typing.Mapping[str, typing.Any] = {
-            "base_path": {"type": "string", "doc": "The path to the table file."},
+            "base_path": {
+                "type": "string",
+                "doc": "The path to the folder that contains the table file.",
+            },
             "rel_path": {
                 "type": "string",
                 "doc": "The relative path to the table file within base_path.",
@@ -701,6 +702,77 @@ class TableConversionModule(ConvertValueModule):
 
         table = pa.Table.from_pydict(tabular)
         return table
+
+
+class SampleTableModule(KiaraModule):
+    """Sample a table.
+
+    Samples are used to randomly select a subset of a dataset, which helps test queries and workflows on smaller versions
+    of the original data, to adjust parameters before a full run.
+    """
+
+    _module_type_name = "sample"
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {
+            "table": {"type": "table", "doc": "The table to sample data from."},
+            "sample_size": {
+                "type": "integer",
+                "doc": "The percentage or number of rows to sample (depending on 'sample_unit' input).",
+            },
+            "sample_unit": {
+                "type": "string",
+                "doc": "The sample size unit ('percent' or 'rows'), defaults to 'percent'.",
+                "default": "percent",
+            },
+        }
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {"sampled_table": {"type": "table", "doc": "A sampled table."}}
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        import duckdb
+        import pyarrow as pa
+
+        table: pa.Table = inputs.get_value_data("table")
+        sample_size: int = inputs.get_value_data("sample_size")
+        sample_unit: str = inputs.get_value_data("sample_unit")
+
+        if sample_size < 0:
+            raise KiaraProcessingException(
+                f"Invalid sample size '{sample_size}': can't be negative."
+            )
+
+        if sample_unit == "percent":
+            if sample_size > 100:
+                sample_size = 100
+        elif not sample_unit == "rows":
+            raise KiaraProcessingException(
+                f"Invalid sample unit '{sample_unit}': must be 'percent' or 'rows'."
+            )
+
+        query = "SELECT * FROM data USING SAMPLE "
+        if sample_unit == "percent":
+            query = query + f"{sample_size} PERCENT (bernoulli);"
+        else:
+            query = query + str(sample_size) + ";"
+
+        print(query)
+        relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
+        result: duckdb.DuckDBPyResult = relation.query("data", query)
+
+        outputs.set_value("sampled_table", result.arrow())
 
 
 # class PrettyPrintTableModule(PrettyPrintValueModule):

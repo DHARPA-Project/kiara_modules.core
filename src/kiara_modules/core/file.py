@@ -36,9 +36,7 @@ class SaveFileTypeModule(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "file"
 
-    def save_value(
-        self, value: Value, value_id: str, base_path: str
-    ) -> typing.Dict[str, typing.Any]:
+    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
 
         file_obj = value.get_value_data()
 

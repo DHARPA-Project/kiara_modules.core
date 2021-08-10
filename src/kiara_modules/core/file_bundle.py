@@ -35,7 +35,7 @@ class SaveFileBundleType(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "file_bundle"
 
-    def save_value(self, value: Value, value_id: str, base_path: str):
+    def save_value(self, value: Value, base_path: str):
 
         bundle: FileBundleMetadata = value.get_value_data()
         rel_path = bundle.bundle_name

@@ -52,6 +52,6 @@ def map_with_module(
         result_list.append(r)
         result_types.add(type(r))
 
-    assert len(result_types) == 1
+    assert len(result_types) <= 1
 
     return result_list

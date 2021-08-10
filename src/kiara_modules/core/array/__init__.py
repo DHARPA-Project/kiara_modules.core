@@ -37,7 +37,7 @@ class SaveArrayTypeModule(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "array"
 
-    def save_value(self, value: Value, value_id: str, base_path: str):
+    def save_value(self, value: Value, base_path: str):
 
         import pyarrow as pa
         from pyarrow import feather

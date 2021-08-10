@@ -20,9 +20,7 @@ class SaveBytesTypeModule(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "bytes"
 
-    def save_value(
-        self, value: Value, value_id: str, base_path: str
-    ) -> typing.Dict[str, typing.Any]:
+    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
 
         path = os.path.join(base_path, BYTES_SAVE_FILE_NAME)
 
