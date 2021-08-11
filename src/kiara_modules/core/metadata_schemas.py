@@ -20,6 +20,7 @@ import typing
 from anyio import create_task_group, open_file, start_blocking_portal
 from kiara import KiaraEntryPointItem
 from kiara.metadata import MetadataModel
+from kiara.utils import log_message
 from kiara.utils.class_loading import find_metadata_schemas_under
 from pydantic import BaseModel, Field, PrivateAttr
 
@@ -364,11 +365,16 @@ class FileBundleMetadata(MetadataModel):
 
             async def read_file(rel_path: str, fm: FileMetadata):
                 async with await open_file(fm.path) as f:
-                    content = await f.read()
+                    try:
+                        content = await f.read()
+                    except Exception as e:
+                        log_message(f"Can't read file: {e}")
+                        log.warning(f"Ignoring file: {fm.path}")
                     content_dict[rel_path] = content  # type: ignore
 
             async def read_files():
 
+                # TODO: common ignore files and folders
                 async with create_task_group() as tg:
                     for f in self.included_files.values():
                         rel_path = self.get_relative_path(f)

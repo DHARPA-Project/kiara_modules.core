@@ -768,7 +768,6 @@ class SampleTableModule(KiaraModule):
         else:
             query = query + str(sample_size) + ";"
 
-        print(query)
         relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
         result: duckdb.DuckDBPyResult = relation.query("data", query)
 
