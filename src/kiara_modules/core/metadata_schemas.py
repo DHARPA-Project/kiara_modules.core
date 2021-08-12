@@ -357,20 +357,23 @@ class FileBundleMetadata(MetadataModel):
 
         return os.path.relpath(file.path, self.path)
 
-    def read_text_file_contents(self) -> typing.Mapping[str, str]:
+    def read_text_file_contents(self, ignore_errors: bool=False) -> typing.Mapping[str, str]:
 
         content_dict: typing.Dict[str, str] = {}
 
         with start_blocking_portal() as portal:
 
             async def read_file(rel_path: str, fm: FileMetadata):
-                async with await open_file(fm.path) as f:
+                async with await open_file(fm.path, encoding="utf-8") as f:
                     try:
                         content = await f.read()
+                        content_dict[rel_path] = content  # type: ignore
                     except Exception as e:
-                        log_message(f"Can't read file: {e}")
-                        log.warning(f"Ignoring file: {fm.path}")
-                    content_dict[rel_path] = content  # type: ignore
+                        if ignore_errors:
+                            log_message(f"Can't read file: {e}")
+                            log.warning(f"Ignoring file: {fm.path}")
+                        else:
+                            raise Exception(f"Can't read file '{fm.path}: {e}")
 
             async def read_files():
 
