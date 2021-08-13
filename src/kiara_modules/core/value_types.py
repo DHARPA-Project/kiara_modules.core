@@ -294,10 +294,10 @@ class ArrayType(ValueType):
         array = value.get_value_data()
         import pyarrow as pa
 
-        pa.Table.from_arrays(arrays=[array], names=["array"])
+        temp_table = pa.Table.from_arrays(arrays=[array], names=["array"])
         result = [
             pretty_print_arrow_table(
-                value.get_value_data(),
+                temp_table,
                 rows_head=half_lines,
                 rows_tail=half_lines,
                 max_row_height=max_row_height,
