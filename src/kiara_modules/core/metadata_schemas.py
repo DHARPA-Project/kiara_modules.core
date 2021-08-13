@@ -19,6 +19,7 @@ import typing
 
 from anyio import create_task_group, open_file, start_blocking_portal
 from kiara import KiaraEntryPointItem
+from kiara.defaults import DEFAULT_EXCLUDE_FILES
 from kiara.metadata import MetadataModel
 from kiara.utils import log_message
 from kiara.utils.class_loading import find_metadata_schemas_under
@@ -194,13 +195,17 @@ class FileMetadata(MetadataModel):
 
 class FolderImportConfig(BaseModel):
 
+    include_files: typing.Optional[typing.List[str]] = Field(
+        description="A list of strings, include all files where the filename ends with that string.",
+        default=None,
+    )
     exclude_dirs: typing.Optional[typing.List[str]] = Field(
         description="A list of strings, exclude all folders whose name ends with that string.",
         default=None,
     )
-    include_files: typing.Optional[typing.List[str]] = Field(
-        description="A list of strings, include all files where the filename ends with that string.",
-        default=None,
+    exclude_files: typing.Optional[typing.List[str]] = Field(
+        description=f"A list of strings, exclude all files that match those (takes precedence over 'include_files'). Defaults to: {DEFAULT_EXCLUDE_FILES}.",
+        default=DEFAULT_EXCLUDE_FILES,
     )
 
 
@@ -249,9 +254,22 @@ class FileBundleMetadata(MetadataModel):
 
         included_files: typing.Dict[str, FileMetadata] = {}
         exclude_dirs = _import_config.exclude_dirs
+        invalid_extensions = _import_config.exclude_files
+
         valid_extensions = _import_config.include_files
 
         sum_size = 0
+
+        def include_file(filename: str) -> bool:
+
+            if invalid_extensions and any(
+                filename.endswith(ext) for ext in invalid_extensions
+            ):
+                return False
+            if not valid_extensions:
+                return True
+            else:
+                return any(filename.endswith(ext) for ext in valid_extensions)
 
         for root, dirnames, filenames in os.walk(source, topdown=True):
 
@@ -261,11 +279,7 @@ class FileBundleMetadata(MetadataModel):
             for filename in [
                 f
                 for f in filenames
-                if os.path.isfile(os.path.join(root, f))
-                and (
-                    not valid_extensions
-                    or any(f.endswith(ext) for ext in valid_extensions)
-                )
+                if os.path.isfile(os.path.join(root, f)) and include_file(f)
             ]:
 
                 full_path = os.path.join(root, filename)
@@ -357,7 +371,9 @@ class FileBundleMetadata(MetadataModel):
 
         return os.path.relpath(file.path, self.path)
 
-    def read_text_file_contents(self, ignore_errors: bool=False) -> typing.Mapping[str, str]:
+    def read_text_file_contents(
+        self, ignore_errors: bool = False
+    ) -> typing.Mapping[str, str]:
 
         content_dict: typing.Dict[str, str] = {}
 
@@ -373,7 +389,9 @@ class FileBundleMetadata(MetadataModel):
                             log_message(f"Can't read file: {e}")
                             log.warning(f"Ignoring file: {fm.path}")
                         else:
-                            raise Exception(f"Can't read file '{fm.path}: {e}")
+                            raise Exception(
+                                f"Can't read file (as text) '{fm.path}: {e}"
+                            )
 
             async def read_files():
 

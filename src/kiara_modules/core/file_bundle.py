@@ -5,6 +5,7 @@ import typing
 from kiara import KiaraModule
 from kiara.data import Value, ValueSet
 from kiara.data.values import ValueSchema
+from kiara.defaults import DEFAULT_EXCLUDE_DIRS, DEFAULT_EXCLUDE_FILES
 from kiara.operations.data_import import DataImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueTypeModule
@@ -83,14 +84,21 @@ class LoadFileBundleModule(KiaraModule):
                 "type": "string",
                 "doc": "The relative path of the folder, within the base path location.",
             },
-            "included_files": {
+            "include_files": {
                 "type": "list",
-                "doc": "A list of strings, include all files where the filename ends with that string.",
+                "doc": "A list of strings, include all files where the filename ends with one of those strings.\n\nOnly full string matches are supported at the moment, globs and regex might be in the future.",
                 "optional": True,
             },
-            "excluded_dirs": {
+            "exclude_dirs": {
                 "type": "list",
-                "doc": "A list of strings, exclude all folders whose name ends with that string.",
+                "doc": f"A list of strings, exclude all folders whose name ends with that string. Defaults to: {DEFAULT_EXCLUDE_DIRS}.\n\nOnly full string matches are supported at the moment, globs and regex might be in the future.",
+                "default": DEFAULT_EXCLUDE_DIRS,
+                "optional": True,
+            },
+            "exclude_files": {
+                "type": "list",
+                "doc": f"A list of strings, exclude all files that end with that one of those strings (takes precedence over 'include_files'). Defaults to: {DEFAULT_EXCLUDE_FILES}\n\nOnly full string matches are supported at the moment, globs and regex might be in the future.",
+                "default": DEFAULT_EXCLUDE_FILES,
                 "optional": True,
             },
         }
@@ -115,11 +123,14 @@ class LoadFileBundleModule(KiaraModule):
 
         path = os.path.join(base_path, rel_path)
 
-        included_files = inputs.get_value_data("included_files")
-        excluded_dirs = inputs.get_value_data("excluded_dirs")
+        included_files = inputs.get_value_data("include_files")
+        excluded_dirs = inputs.get_value_data("exclude_dirs")
+        excluded_files = inputs.get_value_data("exclude_files")
 
         import_config = FolderImportConfig(
-            include_files=included_files, exclude_dirs=excluded_dirs
+            include_files=included_files,
+            exclude_dirs=excluded_dirs,
+            excluded_files=excluded_files,
         )
 
         bundle = FileBundleMetadata.import_folder(
