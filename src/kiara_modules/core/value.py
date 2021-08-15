@@ -6,14 +6,14 @@ from dataprofiler import Data
 from kiara import Kiara, KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import ModuleTypeConfig
+from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations import Operation
 from pydantic import Field
 
 from kiara_modules.core.metadata_schemas import FileMetadata
 
 
-class DataProfilerModuleConfig(ModuleTypeConfig):
+class DataProfilerModuleConfig(ModuleTypeConfigSchema):
 
     value_type: str = Field(description="The value type to profile.")
 

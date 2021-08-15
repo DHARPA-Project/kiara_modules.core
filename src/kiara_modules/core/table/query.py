@@ -4,7 +4,7 @@ import typing
 from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import ModuleTypeConfig
+from kiara.module_config import ModuleTypeConfigSchema
 from pydantic import Field
 
 RESERVED_SQL_KEYWORDS = [
@@ -156,7 +156,7 @@ class QueryTableGraphQL(KiaraModule):
         outputs.set_value("query_result", result.to_dict()["data"])
 
 
-class QueryTableSQLModuleConfig(ModuleTypeConfig):
+class QueryTableSQLModuleConfig(ModuleTypeConfigSchema):
 
     query: typing.Optional[str] = Field(
         description="The query to execute. If not specified, the user will be able to provide their own.",

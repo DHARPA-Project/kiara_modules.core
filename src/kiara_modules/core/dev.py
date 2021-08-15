@@ -7,11 +7,11 @@ import typing
 
 from kiara import KiaraModule
 from kiara.data.values import ValueSchema, ValueSet
-from kiara.module_config import ModuleTypeConfig
+from kiara.module_config import ModuleTypeConfigSchema
 from pydantic import Field
 
 
-class DummyProcessingModuleConfig(ModuleTypeConfig):
+class DummyProcessingModuleConfig(ModuleTypeConfigSchema):
     """Configuration for the 'dummy' processing module."""
 
     documentation: typing.Optional[str] = None

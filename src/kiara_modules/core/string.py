@@ -8,7 +8,7 @@ from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.defaults import DEFAULT_NO_DESC_VALUE
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import ModuleTypeConfig
+from kiara.module_config import ModuleTypeConfigSchema
 from kiara.utils import StringYAML
 from kiara.utils.output import pretty_print_arrow_table
 from pydantic import Field
@@ -130,7 +130,7 @@ class StringManipulationModule(KiaraModule):
         pass
 
 
-class RegexModuleConfig(ModuleTypeConfig):
+class RegexModuleConfig(ModuleTypeConfigSchema):
 
     regex: str = Field(description="The regex to apply.")
     only_first_match: bool = Field(
@@ -182,7 +182,7 @@ class RegexModule(KiaraModule):
         outputs.set_value("text", result)
 
 
-class ReplaceModuleConfig(ModuleTypeConfig):
+class ReplaceModuleConfig(ModuleTypeConfigSchema):
 
     replacement_map: typing.Dict[str, str] = Field(
         description="A map, containing the strings to be replaced as keys, and the replacements as values."

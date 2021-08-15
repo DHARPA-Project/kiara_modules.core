@@ -4,15 +4,15 @@ import typing
 from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema, ValueSet
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import ModuleTypeConfig
+from kiara.module_config import ModuleTypeConfigSchema
 from pydantic import Field
 
 KIARA_METADATA = {"tags": ["msgpack"]}
 
 
-class SerializeToMsgPackModuleConfig(ModuleTypeConfig):
+class SerializeToMsgPackModuleConfig(ModuleTypeConfigSchema):
 
-    type_name: str = Field(description="The value type to serialize/deserialize.")
+    value_type: str = Field(description="The value type to serialize/deserialize.")
 
 
 class SerializeToMsgPackModule(KiaraModule):
@@ -28,8 +28,8 @@ class SerializeToMsgPackModule(KiaraModule):
 
         return {
             "value_item": {
-                "type": self.config.get("type_name"),
-                "doc": f"A {self.get_config_value('type_name')} value.",
+                "type": self.config.get("value_type"),
+                "doc": f"A {self.get_config_value('value_type')} value.",
             }
         }
 
@@ -42,7 +42,7 @@ class SerializeToMsgPackModule(KiaraModule):
         return {
             "bytes": {
                 "type": "bytes",
-                "doc": f"The msgpack-serialized {self.get_config_value('type_name')} value.",
+                "doc": f"The msgpack-serialized {self.get_config_value('value_type')} value.",
             }
         }
 
@@ -50,7 +50,7 @@ class SerializeToMsgPackModule(KiaraModule):
 
         import msgpack
 
-        type_name: str = self.get_config_value("type_name")
+        type_name: str = self.get_config_value("value_type")
 
         if not hasattr(self, f"from_{type_name}"):
             raise KiaraProcessingException(
@@ -94,6 +94,7 @@ class SerializeToMsgPackModule(KiaraModule):
 class DeserializeFromMsgPackModule(KiaraModule):
 
     _module_type_name = "to_value"
+    _config_cls = SerializeToMsgPackModuleConfig
 
     def create_input_schema(
         self,
@@ -111,7 +112,7 @@ class DeserializeFromMsgPackModule(KiaraModule):
 
         return {
             "value_type": {"type": "string", "doc": "The type of the value."},
-            "value_data": {"type": "any", "doc": f"The {self.type_name} value."},
+            "value_data": {"type": "any", "doc": f"The {self.value_type} value."},
             "value_metadata": {
                 "type": "dict",
                 "doc": "A dictionary with metadata of the serialized table. The result dict has the metadata key as key, and two sub-values under each key: 'metadata_item' (the actual metadata) and 'metadata_item_schema' (the schema for the metadata).",

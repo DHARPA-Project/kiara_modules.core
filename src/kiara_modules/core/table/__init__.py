@@ -8,7 +8,7 @@ from kiara.data import Value, ValueSet
 from kiara.data.values import ValueSchema
 from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
-from kiara.module_config import ModuleTypeConfig
+from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.data_import import DataImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
@@ -447,7 +447,7 @@ class CutColumnModule(KiaraModule):
         outputs.set_value("array", column)
 
 
-class MapColumnsModuleConfig(ModuleTypeConfig):
+class MapColumnsModuleConfig(ModuleTypeConfigSchema):
 
     module_type: str = Field(
         description="The name of the kiara module to use to filter the input data."

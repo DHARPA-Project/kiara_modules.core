@@ -4,10 +4,10 @@ import typing
 from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import ValueSchema
-from kiara.module_config import ModuleTypeConfig
+from kiara.module_config import ModuleTypeConfigSchema
 
 
-class TableFilterModuleConfig(ModuleTypeConfig):
+class TableFilterModuleConfig(ModuleTypeConfigSchema):
 
     pass
 
