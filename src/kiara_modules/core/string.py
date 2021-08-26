@@ -5,7 +5,8 @@ from abc import abstractmethod
 from pprint import pformat
 
 from kiara import KiaraModule
-from kiara.data.values import Value, ValueSchema, ValueSet
+from kiara.data import ValueSet
+from kiara.data.values import Value, ValueSchema
 from kiara.defaults import DEFAULT_NO_DESC_VALUE
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema

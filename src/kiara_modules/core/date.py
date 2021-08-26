@@ -10,7 +10,8 @@ import re
 import typing
 
 from kiara import KiaraModule
-from kiara.data.values import ValueSchema, ValueSet
+from kiara.data import ValueSet
+from kiara.data.values import ValueSchema
 
 # flake8: noqa
 

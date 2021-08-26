@@ -3,7 +3,8 @@ import os
 import typing
 
 from kiara import KiaraModule
-from kiara.data.values import Value, ValueSchema, ValueSet
+from kiara.data.values import Value, ValueSchema
+from kiara.data.values.value_set import ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.operations.save_value import SaveValueTypeModule
 

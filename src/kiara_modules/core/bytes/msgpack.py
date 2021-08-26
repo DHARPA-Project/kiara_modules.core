@@ -2,7 +2,8 @@
 import typing
 
 from kiara import KiaraModule
-from kiara.data.values import Value, ValueSchema, ValueSet
+from kiara.data import ValueSet
+from kiara.data.values import Value, ValueSchema
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from pydantic import Field
@@ -112,7 +113,10 @@ class DeserializeFromMsgPackModule(KiaraModule):
 
         return {
             "value_type": {"type": "string", "doc": "The type of the value."},
-            "value_data": {"type": "any", "doc": f"The {self.value_type} value."},
+            "value_data": {
+                "type": "any",
+                "doc": f"The {self.get_config_value('value_type')} value.",
+            },
             "value_metadata": {
                 "type": "dict",
                 "doc": "A dictionary with metadata of the serialized table. The result dict has the metadata key as key, and two sub-values under each key: 'metadata_item' (the actual metadata) and 'metadata_item_schema' (the schema for the metadata).",

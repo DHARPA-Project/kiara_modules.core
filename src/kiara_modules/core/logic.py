@@ -2,7 +2,8 @@
 import time
 import typing
 
-from kiara.data.values import ValueSchema, ValueSet
+from kiara.data import ValueSet
+from kiara.data.values import ValueSchema
 from kiara.module import KiaraModule
 from kiara.module_config import ModuleTypeConfigSchema
 from pydantic import Field

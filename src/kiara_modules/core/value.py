@@ -4,7 +4,8 @@ import typing
 
 from dataprofiler import Data
 from kiara import Kiara, KiaraModule
-from kiara.data.values import ValueSchema, ValueSet
+from kiara.data import ValueSet
+from kiara.data.values import ValueSchema
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations import Operation
