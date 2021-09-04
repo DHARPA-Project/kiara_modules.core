@@ -250,7 +250,10 @@ class TableType(ValueType):
     def validate(cls, value: typing.Any) -> None:
         import pyarrow as pa
 
-        assert isinstance(value, pa.Table)
+        if not isinstance(value, pa.Table):
+            raise Exception(
+                f"invalid type '{type(value).__name__}', must be '{pa.Table.__name__}'."
+            )
 
     def pretty_print_as_renderables(
         self, value: "Value", print_config: typing.Mapping[str, typing.Any]

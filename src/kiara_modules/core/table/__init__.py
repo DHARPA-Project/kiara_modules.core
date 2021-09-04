@@ -151,7 +151,7 @@ class ImportArrowTable(DataImportModule):
     ) -> FileMetadata:
 
         op = self._kiara.operation_mgmt.profiles["file.import_from.path.string"]
-        aliases = [f"{x}.table.source_file" for x in base_aliases]
+        aliases = [f"{x}_table_source_file" for x in base_aliases]
         result = op.module.run(source=source, aliases=aliases)
 
         file_value = result.get_value_obj("value_item")
@@ -166,7 +166,7 @@ class ImportArrowTable(DataImportModule):
     ) -> FileMetadata:
 
         op = self._kiara.operation_mgmt.profiles["file_bundle.import_from.path.string"]
-        aliases = [f"{x}.table.source_file_bundle" for x in base_aliases]
+        aliases = [f"{x}_table_source_file_bundle" for x in base_aliases]
         result = op.module.run(source=source, aliases=aliases)
 
         file_value = result.get_value_obj("value_item")
@@ -270,10 +270,18 @@ class ExportArrowTable(KiaraModule):
         outputs.set_value("load_config", result)
 
 
+class MergeTableModuleConfig(ModuleTypeConfigSchema):
+
+    input_schema: typing.Dict[str, typing.Any] = Field(
+        description="A dict describing the inputs for this merge process."
+    )
+
+
 class MergeTableModule(KiaraModule):
     """Create a table from other tables and/or arrays."""
 
     _module_type_name = "merge"
+    _config_cls = MergeTableModuleConfig
 
     def create_input_schema(
         self,
@@ -281,10 +289,8 @@ class MergeTableModule(KiaraModule):
         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
     ]:
 
-        inputs = {
-            "sources": {"type": "dict", "doc": "The source tables and/or columns."}
-        }
-        return inputs
+        input_schema_dict = self.get_config_value("input_schema")
+        return input_schema_dict
 
     def create_output_schema(
         self,
@@ -304,7 +310,13 @@ class MergeTableModule(KiaraModule):
 
         import pyarrow as pa
 
-        sources = inputs.get_value_data("sources")
+        input_schema: typing.Dict[str, typing.Any] = self.get_config_value(
+            "input_schema"
+        )
+
+        sources = {}
+        for field_name in input_schema.keys():
+            sources[field_name] = inputs.get_value_data(field_name)
 
         len_dict = {}
         arrays = []
