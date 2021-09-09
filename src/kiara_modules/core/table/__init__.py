@@ -9,7 +9,6 @@ from kiara.data.values import ValueSchema
 from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
-from kiara.operations.data_import import DataImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
 from kiara.operations.type_convert import ConvertValueModule
@@ -141,40 +140,43 @@ class LoadArrowTable(KiaraModule):
         outputs.set_value("table", table)
 
 
-class ImportArrowTable(DataImportModule):
-    @classmethod
-    def retrieve_supported_value_type(cls) -> str:
-        return "table"
-
-    def import_from_file_path_string(
-        self, source: str, base_aliases: typing.List[str]
-    ) -> FileMetadata:
-
-        op = self._kiara.operation_mgmt.profiles["file.import_from.path.string"]
-        aliases = [f"{x}_table_source_file" for x in base_aliases]
-        result = op.module.run(source=source, aliases=aliases)
-
-        file_value = result.get_value_obj("value_item")
-
-        op_convert = self._kiara.operation_mgmt.profiles["file.convert_to.table"]
-        result_table = op_convert.module.run(value_item=file_value)
-
-        return result_table.get_value_data("value_item")
-
-    def import_from_folder_path_string(
-        self, source: str, base_aliases: typing.List[str]
-    ) -> FileMetadata:
-
-        op = self._kiara.operation_mgmt.profiles["file_bundle.import_from.path.string"]
-        aliases = [f"{x}_table_source_file_bundle" for x in base_aliases]
-        result = op.module.run(source=source, aliases=aliases)
-
-        file_value = result.get_value_obj("value_item")
-
-        op_convert = self._kiara.operation_mgmt.profiles["file_bundle.convert_to.table"]
-        result_table = op_convert.module.run(value_item=file_value)
-
-        return result_table.get_value_data("value_item")
+# class ImportArrowTable(DataImportModule):
+#     """Onboard tabular data as an Arrow table.
+#
+#     """
+#     @classmethod
+#     def retrieve_supported_value_type(cls) -> str:
+#         return "table"
+#
+#     def import_from_file_path__string(
+#         self, source: str, base_aliases: typing.List[str]
+#     ) -> FileMetadata:
+#
+#         op = self._kiara.operation_mgmt.profiles["file.import_from.path.string"]
+#         aliases = [f"{x}_table_source_file" for x in base_aliases]
+#         result = op.module.run(source=source, aliases=aliases)
+#
+#         file_value = result.get_value_obj("value_item")
+#
+#         op_convert = self._kiara.operation_mgmt.profiles["file.convert_to.table"]
+#         result_table = op_convert.module.run(value_item=file_value)
+#
+#         return result_table.get_value_data("value_item")
+#
+#     def import_from_folder_path__string(
+#         self, source: str, base_aliases: typing.List[str]
+#     ) -> FileMetadata:
+#
+#         op = self._kiara.operation_mgmt.profiles["file_bundle.import_from.path.string"]
+#         aliases = [f"{x}_table_source_file_bundle" for x in base_aliases]
+#         result = op.module.run(source=source, aliases=aliases)
+#
+#         file_value = result.get_value_obj("value_item")
+#
+#         op_convert = self._kiara.operation_mgmt.profiles["file_bundle.convert_to.table"]
+#         result_table = op_convert.module.run(value_item=file_value)
+#
+#         return result_table.get_value_data("value_item")
 
 
 class ExportArrowTable(KiaraModule):

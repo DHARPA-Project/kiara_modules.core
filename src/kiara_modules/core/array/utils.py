@@ -15,6 +15,7 @@ def map_with_module(
     module_obj: KiaraModule,
     init_data: typing.Mapping[str, typing.Any],
     module_output_name: typing.Optional[str] = None,
+    attache_lineage_to_result: bool = False,
 ) -> typing.List[typing.Any]:
 
     # TODO: validate that the selected module is appropriate
@@ -31,7 +32,7 @@ def map_with_module(
         def run_module(item):
             _d = copy.copy(init_data)
             _d[module_input_name] = item
-            r = module_obj.run(**_d)
+            r = module_obj.run(_attach_lineage=attache_lineage_to_result, **_d)
             return r.get_value_data(module_output_name)
 
         executor = ThreadPoolExecutor()
@@ -43,7 +44,7 @@ def map_with_module(
         for item in array:
             _d = dict(init_data)
             _d[module_input_name] = item
-            r = module_obj.run(**_d)
+            r = module_obj.run(_attach_lineage=attache_lineage_to_result, **_d)
             results.append(r.get_value_data(module_output_name))
 
     result_list = []

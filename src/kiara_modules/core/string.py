@@ -9,7 +9,9 @@ from kiara.data import ValueSet
 from kiara.data.values import Value, ValueSchema
 from kiara.defaults import DEFAULT_NO_DESC_VALUE
 from kiara.exceptions import KiaraProcessingException
+from kiara.metadata.data import DeserializeConfig
 from kiara.module_config import ModuleTypeConfigSchema
+from kiara.operations.serialize import SerializeValueModule
 from kiara.utils import StringYAML
 from kiara.utils.output import pretty_print_arrow_table
 from pydantic import Field
@@ -230,3 +232,106 @@ class ReplaceStringModule(KiaraModule):
             result = repl_map[text]
 
         outputs.set_value("text", result)
+
+
+class MagicModuleConfig(ModuleTypeConfigSchema):
+
+    source_id: str = Field(description="The id of the source value.")
+    target_type: str = Field(description="The target type.")
+
+
+class MagicModule(KiaraModule):
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {
+            "description": {
+                "type": "string",
+                "doc": "The description of the value, and where it comes from.",
+                "default": DEFAULT_NO_DESC_VALUE,
+            }
+        }
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {"value_item": {"type": self.get_config_value("target_type")}}
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        pass
+
+
+class SerializeStringModule(SerializeValueModule):
+
+    _module_type_name = "serialize"
+
+    @classmethod
+    def get_value_type(cls) -> str:
+
+        return "string"
+
+    def to_json(self, value: Value):
+
+        input_data = {
+            "serialized": value.get_value_data(),
+        }
+        ds_conf = DeserializeConfig(
+            module_type="string.deserialize",
+            module_config={"serialization_type": "json"},
+            serialization_type="json",
+            output_name="value_item",
+            input=input_data,
+        )
+        return ds_conf
+
+
+class DeserializeStringModuleConfig(ModuleTypeConfigSchema):
+
+    serialization_type: str = Field(
+        description="The serialization type that was used to serialize the value."
+    )
+
+
+class DeserializeStringModule(KiaraModule):
+
+    _module_type_name = "deserialize"
+    _config_cls = DeserializeStringModuleConfig
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {
+            "serialized": {
+                "type": "string",
+                "doc": "The serialized form of the string.",
+            }
+        }
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {"value_item": {"type": "string", "doc": "The string data."}}
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        serialization_type = self.get_config_value("serialization_type")
+        if serialization_type not in ["json"]:
+            raise KiaraProcessingException(
+                f"Can't deserialize string: serialisation type '{serialization_type}' not supported."
+            )
+
+        serialized = inputs.get_value_data("serialized")
+        outputs.set_value("value_item", serialized)

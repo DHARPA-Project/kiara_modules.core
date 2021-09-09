@@ -4,8 +4,10 @@
 """
 
 import datetime
+import os
 import pprint
 import typing
+from pathlib import Path
 
 from kiara import KiaraEntryPointItem
 from kiara.data.types import ValueType
@@ -344,6 +346,70 @@ class DateType(ValueType):
 
         data = value.get_value_data()
         return str(data)
+
+
+class FilePathType(ValueType):
+    """Represents a path to a local file."""
+
+    @classmethod
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        return [str]
+
+    def validate(cls, value: typing.Any) -> None:
+
+        if isinstance(value, Path):
+            value = value.as_posix()
+
+        value = os.path.abspath(os.path.expanduser(value))
+        assert isinstance(value, str)
+
+        if not os.path.exists(value):
+            raise Exception(
+                f"Invalid file path value: no file exists for path '{value}'."
+            )
+        if not os.path.isfile(os.path.realpath(value)):
+            raise Exception(
+                f"Invalid file path value: path '{value}' exists but does not point to a file."
+            )
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data: str = value.get_value_data()
+        return data
+
+
+class FolderPathType(ValueType):
+    """Represents a path to a local folder."""
+
+    @classmethod
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        return [str]
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        data: str = value.get_value_data()
+        return data
+
+    def validate(cls, value: typing.Any) -> None:
+
+        if isinstance(value, Path):
+            value = value.as_posix()
+
+        value = os.path.abspath(os.path.expanduser(value))
+        assert isinstance(value, str)
+
+        if not os.path.exists(value):
+            raise Exception(
+                f"Invalid folder path value: no folder exists for path '{value}'."
+            )
+        if not os.path.isdir(os.path.realpath(value)):
+            raise Exception(
+                f"Invalid file path value: path '{value}' exists but does not point to a file."
+            )
 
 
 class FileType(ValueType):

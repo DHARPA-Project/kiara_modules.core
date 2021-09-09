@@ -6,7 +6,7 @@ from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import Value, ValueSchema
 from kiara.exceptions import KiaraProcessingException
-from kiara.operations.data_import import DataImportModule
+from kiara.operations.data_import import FileImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel
@@ -14,14 +14,11 @@ from pydantic import BaseModel
 from kiara_modules.core.metadata_schemas import FileMetadata
 
 
-class FileImportModule(DataImportModule):
-    @classmethod
-    def retrieve_supported_value_type(cls) -> str:
-        return "file"
+class DefaultFileImportModule(FileImportModule):
 
-    def import_from_path_string(
-        self, source: str, base_aliases: typing.List[str]
-    ) -> FileMetadata:
+    _module_type_name = "import"
+
+    def import_from__local__file_path(self, source: str) -> FileMetadata:
 
         file_model = FileMetadata.load_file(source)
         return file_model
