@@ -22,14 +22,17 @@ TODO
 - Python (version >=3.6 -- some make targets only work for Python >=3.7 though)
 - pip, virtualenv
 - git
-- make
-- [direnv](https://direnv.net/) (optional)
+- make (on Linux / Mac OS X -- optional)
 
 
 ### Prepare development environment
 
 If you only want to work on the modules, and not the core *Kiara* codebase, follow the instructions below. Otherwise, please
 check the notes on how to setup a *Kiara* development environment under (TODO).
+
+#### Linux & Mac OS X (using make)
+
+For *NIX-like operating system, setting up a development environment is relatively easy:
 
 ```console
 git clone https://github.com/DHARPA-Project/kiara_modules.core.git
@@ -38,6 +41,22 @@ python3 -m venv .venv
 source .venv/bin/activate
 make init
 ```
+
+#### Windows (or manual pip install)
+
+It's impossible to lay out all the ways Python can be installed on a machine, and virtual- (or conda-)envs can be created, so I'll assume you know how to do this.
+One simple way is to install the [Anaconda (individual edition)](https://docs.anaconda.com/anaconda/install/index.html), then use the Anaconda navigator to create a new environment, install the 'git' package in it (if your system does not already have it), and use the 'Open Terminal' option of that environment to start up a terminal that has that virtual-/conda-environment activated.
+
+Once that is done, `cd` into a directory where you want this project folder to live, and do:
+
+```console
+# make sure your virtual env is activated!!!
+git clone https://github.com/DHARPA-Project/kiara_modules.core.git
+cd kiara_modules.core
+pip install --extra-index-url https://pypi.fury.io/dharpa/ -U -e .[all_dev]
+```
+
+#### Try it out
 
 After this is done, you should be able to run the included example module via:
 
@@ -54,11 +73,11 @@ you'll need to navigate to the directory again (wherever that is, in your case),
 
 ```console
 cd path/to/kiara_modules.core
-source .venv/bin/activate
+source .venv/bin/activate  # if it isn't activated already, for example by the Anaconda navigator
 kiara --help  # or whatever, point is, kiara should be available for you now,
 ```
 
-### ``make`` targets
+### ``make`` targets (Linux & Mac OS X)
 
 - ``init``: init development project (install project & dev dependencies into virtualenv, as well as pre-commit git hook)
 - ``update-dependencies``: update development dependencies (mainly the core ``kiara`` package from git)

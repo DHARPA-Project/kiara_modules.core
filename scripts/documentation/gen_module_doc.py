@@ -13,7 +13,7 @@ modules_page_content = """# Available module types
 This page contains a list of all available *Kiara* module types, and their details.
 
 !!! note
-The formatting here will be improved later on, for now this should be enough to get the important details of each module type.
+The formatting here will be improved later on, for now this should be enough to get the important details of each module type_name.
 
 """
 
@@ -44,7 +44,7 @@ pipelines_page_content = """# Available pipeline module types
 This page contains a list of all available *Kiara* pipeline module types, and their details.
 
 !!! note
-The formatting here will be improved later on, for now this should be enough to get the important details of each module type.
+The formatting here will be improved later on, for now this should be enough to get the important details of each module type_name.
 
 """
 
