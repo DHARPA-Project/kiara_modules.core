@@ -17,7 +17,6 @@ import os.path
 import shutil
 import typing
 
-from anyio import create_task_group, open_file, start_blocking_portal
 from kiara import KiaraEntryPointItem
 from kiara.defaults import DEFAULT_EXCLUDE_FILES
 from kiara.metadata import MetadataModel
@@ -377,31 +376,22 @@ class FileBundleMetadata(MetadataModel):
 
         content_dict: typing.Dict[str, str] = {}
 
-        with start_blocking_portal() as portal:
+        def read_file(rel_path: str, fm: FileMetadata):
+            with open(fm.path, encoding="utf-8") as f:
+                try:
+                    content = f.read()
+                    content_dict[rel_path] = content  # type: ignore
+                except Exception as e:
+                    if ignore_errors:
+                        log_message(f"Can't read file: {e}")
+                        log.warning(f"Ignoring file: {fm.path}")
+                    else:
+                        raise Exception(f"Can't read file (as text) '{fm.path}: {e}")
 
-            async def read_file(rel_path: str, fm: FileMetadata):
-                async with await open_file(fm.path, encoding="utf-8") as f:
-                    try:
-                        content = await f.read()
-                        content_dict[rel_path] = content  # type: ignore
-                    except Exception as e:
-                        if ignore_errors:
-                            log_message(f"Can't read file: {e}")
-                            log.warning(f"Ignoring file: {fm.path}")
-                        else:
-                            raise Exception(
-                                f"Can't read file (as text) '{fm.path}: {e}"
-                            )
-
-            async def read_files():
-
-                # TODO: common ignore files and folders
-                async with create_task_group() as tg:
-                    for f in self.included_files.values():
-                        rel_path = self.get_relative_path(f)
-                        tg.start_soon(read_file, rel_path, f)
-
-            portal.call(read_files)
+        # TODO: common ignore files and folders
+        for f in self.included_files.values():
+            rel_path = self.get_relative_path(f)
+            read_file(rel_path=rel_path, fm=f)
 
         return content_dict
 

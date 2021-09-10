@@ -634,6 +634,14 @@ class MapColumnModule(KiaraModule):
         outputs.set_value("array", pa.array(result_list))
 
 
+class TableConversionModuleConfig(ModuleTypeConfigSchema):
+
+    ignore_errors: bool = Field(
+        description="Whether to ignore convert errors and omit the failed items.",
+        default=False,
+    )
+
+
 class TableConversionModule(ConvertValueModule):
     """Convert an Arrow table.
 
@@ -696,7 +704,8 @@ class TableConversionModule(ConvertValueModule):
 
         columns = FILE_BUNDLE_IMPORT_AVAILABLE_COLUMNS
 
-        file_dict = bundle.read_text_file_contents()
+        ignore_errors = self.get_config_value("ignore_errors")
+        file_dict = bundle.read_text_file_contents(ignore_errors=ignore_errors)
 
         tabular: typing.Dict[str, typing.List[typing.Any]] = {}
         for column in columns:
