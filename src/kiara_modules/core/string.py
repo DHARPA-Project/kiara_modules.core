@@ -2,6 +2,7 @@
 import re
 import typing
 from abc import abstractmethod
+from pathlib import Path
 from pprint import pformat
 
 from kiara import KiaraModule
@@ -11,6 +12,7 @@ from kiara.defaults import DEFAULT_NO_DESC_VALUE
 from kiara.exceptions import KiaraProcessingException
 from kiara.metadata.data import DeserializeConfig
 from kiara.module_config import ModuleTypeConfigSchema
+from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
 from kiara.operations.serialize import SerializeValueModule
 from kiara.utils import StringYAML
 from kiara.utils.output import pretty_print_arrow_table
@@ -335,3 +337,42 @@ class DeserializeStringModule(KiaraModule):
 
         serialized = inputs.get_value_data("serialized")
         outputs.set_value("value_item", serialized)
+
+
+class PythonScalarSerializationConfig(SaveValueModuleConfig):
+
+    file_name: str = Field(
+        description="The name of the serialized file.", default="dict.json"
+    )
+
+
+class SaveStringModule(SaveValueTypeModule):
+
+    _module_type_name = "save"
+    _config_cls = PythonScalarSerializationConfig
+
+    @classmethod
+    def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+        return ["string", "file_path", "folder_path"]
+
+    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
+
+        file_name = self.get_config_value("file_name")
+
+        bp = Path(base_path)
+        bp.mkdir(parents=True, exist_ok=True)
+
+        full_path = bp / file_name
+        full_path.write_text(value.get_value_data())
+
+        load_config = {
+            "module_type": "file.read_content",
+            "base_path_input_name": "base_path",
+            "inputs": {
+                "base_path": base_path,
+                "file_name": self.get_config_value("file_name"),
+            },
+            "output_name": "value_item",
+        }
+
+        return load_config

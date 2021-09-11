@@ -6,10 +6,11 @@ from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import Value, ValueSchema
 from kiara.exceptions import KiaraProcessingException
+from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.data_import import FileImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueTypeModule
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from kiara_modules.core.metadata_schemas import FileMetadata
 
@@ -131,3 +132,76 @@ class FileMetadataModule(ExtractMetadataModule):
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
 
         return value.get_value_data().dict()
+
+
+class ReadFileContentModuleConfig(ModuleTypeConfigSchema):
+
+    read_as_text: bool = Field(
+        description="Whether to read the file as text, or binary.", default=True
+    )
+
+
+class ReadFileContentModule(KiaraModule):
+    """Import a file into the kiara data store.
+
+    This module will support multiple source types and profiles in the future, but at the moment only import from
+    local file is supported. Thus, requiring the config value 'local' for 'source_profile', and 'file_path' for 'source_type'.
+    """
+
+    _module_type_name = "read_content"
+    _config_cls = ReadFileContentModuleConfig
+
+    def create_input_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {
+            "base_path": {
+                "type": "folder_path",
+                "doc": "The folder where the file is located.",
+            },
+            "file_name": {"type": "string", "doc": "The file name."},
+        }
+
+    def create_output_schema(
+        self,
+    ) -> typing.Mapping[
+        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    ]:
+
+        return {
+            "value_item": {
+                "type": "string" if self.get_config_value("read_as_text") else "bytes",
+                "doc": "The file content.",
+            }
+        }
+
+    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+
+        as_text = self.get_config_value("read_as_text")
+        base_path = inputs.get_value_data("base_path")
+        file_name = inputs.get_value_data("file_name")
+
+        full_path = os.path.join(base_path, file_name)
+
+        if not os.path.exists(full_path):
+            raise KiaraProcessingException(
+                f"Can't read string value, path to file does not exist: {full_path}"
+            )
+
+        if not os.path.isfile(os.path.realpath(full_path)):
+            raise KiaraProcessingException(
+                f"Can't read string value, path is not a file: {full_path}"
+            )
+
+        if as_text:
+            mode = "r"
+        else:
+            mode = "rb"
+
+        with open(full_path, mode) as f:
+            content = f.read()
+
+        outputs.set_value("value_item", content)

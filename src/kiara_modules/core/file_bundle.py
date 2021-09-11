@@ -15,6 +15,11 @@ from kiara_modules.core.metadata_schemas import FileBundleMetadata, FolderImport
 
 
 class DefaultFileBundleImportModule(FileBundleImportModule):
+    """Import a file bundle into the kiara data store.
+
+    This module will support multiple source types and profiles in the future, but at the moment only import from
+    local folder is supported. Thus, requiring the config value 'local' for 'source_profile', and 'folder_path' for 'source_type'.
+    """
 
     _module_type_name = "import"
 

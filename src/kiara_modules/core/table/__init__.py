@@ -11,7 +11,7 @@ from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
-from kiara.operations.type_convert import ConvertValueModule
+from kiara.operations.type_convert import ConvertValueModule, TypeConversionModuleConfig
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
@@ -634,7 +634,7 @@ class MapColumnModule(KiaraModule):
         outputs.set_value("array", pa.array(result_list))
 
 
-class TableConversionModuleConfig(ModuleTypeConfigSchema):
+class TableConversionModuleConfig(TypeConversionModuleConfig):
 
     ignore_errors: bool = Field(
         description="Whether to ignore convert errors and omit the failed items.",
@@ -652,6 +652,7 @@ class TableConversionModule(ConvertValueModule):
     """
 
     _module_type_name = "convert"
+    _config_cls = TableConversionModuleConfig
 
     @classmethod
     def _get_supported_value_types(cls) -> typing.Union[str, typing.Iterable[str]]:

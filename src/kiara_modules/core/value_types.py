@@ -36,7 +36,7 @@ class AnyType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return str(data)
+        return [str(data)]
 
 
 class BytesType(ValueType):
@@ -53,7 +53,7 @@ class BytesType(ValueType):
     ) -> typing.Any:
 
         data: bytes = value.get_value_data()
-        return data.decode()
+        return [data.decode()]
 
     # @classmethod
     # def get_operations(
@@ -87,7 +87,7 @@ class StringType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return data
+        return [data]
 
 
 class BooleanType(ValueType):
@@ -114,7 +114,7 @@ class BooleanType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return str(data)
+        return [str(data)]
 
 
 class IntegerType(ValueType):
@@ -140,7 +140,7 @@ class IntegerType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return str(data)
+        return [str(data)]
 
 
 class FloatType(ValueType):
@@ -160,7 +160,7 @@ class FloatType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return str(data)
+        return [str(data)]
 
 
 class DictType(ValueType):
@@ -184,7 +184,7 @@ class DictType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return pprint.pformat(data)
+        return [pprint.pformat(data)]
 
 
 class ListType(ValueType):
@@ -207,7 +207,7 @@ class ListType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return pprint.pformat(data)
+        return [pprint.pformat(data)]
 
 
 class TableType(ValueType):
@@ -232,22 +232,22 @@ class TableType(ValueType):
 
         return None
 
-    @classmethod
-    def get_supported_hash_types(cls) -> typing.Iterable[str]:
-
-        return ["pandas_df_hash"]
-
-    @classmethod
-    def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
-
-        import pyarrow as pa
-
-        # this is only for testing, and will be replaced with a native arrow table hush function, once I figure out how to do that efficiently
-        table: pa.Table = value
-        from pandas.util import hash_pandas_object
-
-        hash_result = hash_pandas_object(table.to_pandas()).sum()
-        return str(hash_result)
+    # @classmethod
+    # def get_supported_hash_types(cls) -> typing.Iterable[str]:
+    #
+    #     return ["pandas_df_hash"]
+    #
+    # @classmethod
+    # def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
+    #
+    #     import pyarrow as pa
+    #
+    #     # this is only for testing, and will be replaced with a native arrow table hush function, once I figure out how to do that efficiently
+    #     table: pa.Table = value
+    #     from pandas.util import hash_pandas_object
+    #
+    #     hash_result = hash_pandas_object(table.to_pandas()).sum()
+    #     return str(hash_result)
 
     def validate(cls, value: typing.Any) -> None:
         import pyarrow as pa
@@ -345,7 +345,7 @@ class DateType(ValueType):
     ) -> typing.Any:
 
         data = value.get_value_data()
-        return str(data)
+        return [str(data)]
 
 
 class FilePathType(ValueType):
@@ -377,7 +377,7 @@ class FilePathType(ValueType):
     ) -> typing.Any:
 
         data: str = value.get_value_data()
-        return data
+        return [data]
 
 
 class FolderPathType(ValueType):
@@ -392,7 +392,7 @@ class FolderPathType(ValueType):
     ) -> typing.Any:
 
         data: str = value.get_value_data()
-        return data
+        return [data]
 
     def validate(cls, value: typing.Any) -> None:
 
@@ -438,7 +438,7 @@ class FileType(ValueType):
     ) -> typing.Any:
 
         data: FileMetadata = value.get_value_data()
-        return data.json(indent=2)
+        return [data.json(indent=2)]
 
 
 class FileBundleType(ValueType):
@@ -468,7 +468,7 @@ class FileBundleType(ValueType):
     ) -> typing.Any:
 
         data: FileBundleMetadata = value.get_value_data()
-        return data.json(indent=2)
+        return [data.json(indent=2)]
 
 
 class RenderablesType(ValueType):
