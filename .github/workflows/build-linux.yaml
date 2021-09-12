@@ -3,6 +3,16 @@ name: "linux tests and documentation builds for 'kiara_modules.core'"
 on: [push]
 
 jobs:
+
+  commitlint:
+    name: lint commit message
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v4
+
   test-linux:
     name: pytest on linux
     runs-on: ubuntu-latest
@@ -68,6 +78,7 @@ jobs:
         run: pip install -U --pre --extra-index-url https://pypi.fury.io/dharpa/ .[all,dev_testing]
       - name: Test with flake8
         run: make flake
+
 
   build-docs:
     name: build documentation
@@ -154,4 +165,4 @@ jobs:
     - name: merge tag
       run: git merge "${RELEASE_VERSION}"
     - name: push updated main branch
-      run: git push https://${{ secrets.GITHUB_TOKEN }}@github.com/DHARPA-Project/kiara.git
+      run: git push https://${{ secrets.GITHUB_TOKEN }}@github.com/DHARPA-Project/kiara_modules.core.git
