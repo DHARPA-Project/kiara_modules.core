@@ -154,4 +154,4 @@ jobs:
     - name: merge tag
       run: git merge "${RELEASE_VERSION}"
     - name: push updated main branch
-      run: git push https://${{ secrets.GITHUB_TOKEN }}@github.com/DHARPA-project/kiara.git
+      run: git push https://${{ secrets.GITHUB_TOKEN }}@github.com/DHARPA-Project/kiara.git
