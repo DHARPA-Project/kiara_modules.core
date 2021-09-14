@@ -332,7 +332,7 @@ class MergeTableModule(KiaraModule):
                     arrays.append(column)
                     column_names.append(name)
 
-            elif isinstance(table_or_column, pa.Array):
+            elif isinstance(table_or_column, (pa.Array, pa.ChunkedArray)):
                 rows = len(table_or_column)
                 arrays.append(table_or_column)
                 column_names.append(source_key)
