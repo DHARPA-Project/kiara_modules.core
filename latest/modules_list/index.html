@@ -1584,7 +1584,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, serialization               
+                          Tags         serialization, bytes, core               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1635,7 +1635,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, msgpack, bytes, serialization      
+                          Tags         serialization, bytes, msgpack, core      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1698,7 +1698,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, msgpack, bytes, serialization      
+                          Tags         serialization, bytes, msgpack, core      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1762,7 +1762,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, serialization               
+                          Tags         serialization, bytes, core               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -4059,7 +4059,7 @@
                                           arrays.append(column)                 
                                           column_names.append(name)             
 
-                                  elif isinstance(table_or_column, pa.Array):   
+                                  elif isinstance(table_or_column, (pa.Array…   
                                       rows = len(table_or_column)               
                                       arrays.append(table_or_column)            
                                       column_names.append(source_key)           
