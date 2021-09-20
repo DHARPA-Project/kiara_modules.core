@@ -65,7 +65,7 @@ class SaveArrayTypeModule(SaveValueTypeModule):
                 "base_path": base_path,
                 "rel_path": ARRAY_SAVE_FILE_NAME,
                 "format": "feather",
-                "column_name": ARRAY_SAVE_FILE_NAME,
+                "column_name": ARRAY_SAVE_COLUM_NAME,
             },
             "output_name": "array",
         }
