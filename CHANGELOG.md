@@ -2,8 +2,11 @@
 Changelog
 =========
 
-## Version 0.1.2 (Upcoming)
+## Version 0.1.3 (upcoming)
 
+## Version 0.1.2
+
+- add sample module for table & array data types
 
 ## Version 0.1.1
 
