@@ -10,6 +10,7 @@ from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.extract_metadata import ExtractMetadataModule
+from kiara.operations.sample import SampleValueModule
 from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
 from kiara.operations.type_convert import ConvertValueModule, TypeConversionModuleConfig
 from pydantic import BaseModel, Field
@@ -728,7 +729,7 @@ class TableConversionModule(ConvertValueModule):
         return table
 
 
-class SampleTableModule(KiaraModule):
+class SampleTableModule(SampleValueModule):
     """Sample a table.
 
     Samples are used to randomly select a subset of a dataset, which helps test queries and workflows on smaller versions
@@ -737,65 +738,137 @@ class SampleTableModule(KiaraModule):
 
     _module_type_name = "sample"
 
-    def create_input_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
+    @classmethod
+    def get_value_type(cls) -> str:
+        return "table"
 
-        return {
-            "table": {"type": "table", "doc": "The table to sample data from."},
-            "sample_size": {
-                "type": "integer",
-                "doc": "The percentage or number of rows to sample (depending on 'sample_unit' input).",
-            },
-            "sample_unit": {
-                "type": "string",
-                "doc": "The sample size unit ('percent' or 'rows'), defaults to 'percent'.",
-                "default": "percent",
-            },
-        }
+    # def create_input_schema(
+    #     self,
+    # ) -> typing.Mapping[
+    #     str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    # ]:
+    #
+    #     return {
+    #         "table": {"type": "table", "doc": "The table to sample data from."},
+    #         "sample_size": {
+    #             "type": "integer",
+    #             "doc": "The percentage or number of rows to sample (depending on 'sample_unit' input).",
+    #         }
+    #     }
+    #
+    # def create_output_schema(
+    #     self,
+    # ) -> typing.Mapping[
+    #     str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    # ]:
+    #
+    #     return {"sampled_table": {"type": "table", "doc": "A sampled table."}}
 
-    def create_output_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-
-        return {"sampled_table": {"type": "table", "doc": "A sampled table."}}
-
-    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+    def sample_percent(self, value: Value, sample_size: int):
 
         import duckdb
         import pyarrow as pa
 
-        table: pa.Table = inputs.get_value_data("table")
-        sample_size: int = inputs.get_value_data("sample_size")
-        sample_unit: str = inputs.get_value_data("sample_unit")
+        table: pa.Table = value.get_value_data()
 
-        if sample_size < 0:
-            raise KiaraProcessingException(
-                f"Invalid sample size '{sample_size}': can't be negative."
-            )
+        if sample_size >= 100:
+            return table
 
-        if sample_unit == "percent":
-            if sample_size > 100:
-                sample_size = 100
-        elif not sample_unit == "rows":
-            raise KiaraProcessingException(
-                f"Invalid sample unit '{sample_unit}': must be 'percent' or 'rows'."
-            )
-
-        query = "SELECT * FROM data USING SAMPLE "
-        if sample_unit == "percent":
-            query = query + f"{sample_size} PERCENT (bernoulli);"
-        else:
-            query = query + str(sample_size) + ";"
+        query = f"SELECT * FROM data USING SAMPLE {sample_size} PERCENT (bernoulli);"
 
         relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
         result: duckdb.DuckDBPyResult = relation.query("data", query)
 
-        outputs.set_value("sampled_table", result.arrow())
+        result_table: pa.Table = result.arrow()
+        return result_table
+
+    def sample_rows(self, value: Value, sample_size: int):
+
+        import duckdb
+        import pyarrow as pa
+
+        table: pa.Table = value.get_value_data()
+
+        if sample_size >= len(table):
+            return table
+
+        query = f"SELECT * FROM data USING SAMPLE {sample_size};"
+
+        relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
+        result: duckdb.DuckDBPyResult = relation.query("data", query)
+
+        result_table: pa.Table = result.arrow()
+        return result_table
+
+
+# class SampleTableModule(KiaraModule):
+#     """Sample a table.
+#
+#     Samples are used to randomly select a subset of a dataset, which helps test queries and workflows on smaller versions
+#     of the original data, to adjust parameters before a full run.
+#     """
+#
+#     _module_type_name = "sample"
+#
+#     def create_input_schema(
+#         self,
+#     ) -> typing.Mapping[
+#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+#     ]:
+#
+#         return {
+#             "table": {"type": "table", "doc": "The table to sample data from."},
+#             "sample_size": {
+#                 "type": "integer",
+#                 "doc": "The percentage or number of rows to sample (depending on 'sample_unit' input).",
+#             },
+#             "sample_unit": {
+#                 "type": "string",
+#                 "doc": "The sample size unit ('percent' or 'rows'), defaults to 'percent'.",
+#                 "default": "percent",
+#             },
+#         }
+#
+#     def create_output_schema(
+#         self,
+#     ) -> typing.Mapping[
+#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+#     ]:
+#
+#         return {"sampled_table": {"type": "table", "doc": "A sampled table."}}
+#
+#     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+#
+#         import duckdb
+#         import pyarrow as pa
+#
+#         table: pa.Table = inputs.get_value_data("table")
+#         sample_size: int = inputs.get_value_data("sample_size")
+#         sample_unit: str = inputs.get_value_data("sample_unit")
+#
+#         if sample_size < 0:
+#             raise KiaraProcessingException(
+#                 f"Invalid sample size '{sample_size}': can't be negative."
+#             )
+#
+#         if sample_unit == "percent":
+#             if sample_size > 100:
+#                 sample_size = 100
+#         elif not sample_unit == "rows":
+#             raise KiaraProcessingException(
+#                 f"Invalid sample unit '{sample_unit}': must be 'percent' or 'rows'."
+#             )
+#
+#         query = "SELECT * FROM data USING SAMPLE "
+#         if sample_unit == "percent":
+#             query = query + f"{sample_size} PERCENT (bernoulli);"
+#         else:
+#             query = query + str(sample_size) + ";"
+#
+#         relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
+#         result: duckdb.DuckDBPyResult = relation.query("data", query)
+#
+#         outputs.set_value("sampled_table", result.arrow())
 
 
 # class PrettyPrintTableModule(PrettyPrintValueModule):

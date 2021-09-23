@@ -8,6 +8,7 @@ from kiara.data.values.value_set import ValueSet
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.extract_metadata import ExtractMetadataModule
+from kiara.operations.sample import SampleValueModule
 from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel, Field
 
@@ -263,3 +264,77 @@ class ArrayMetadataModule(ExtractMetadataModule):
             "length": len(array),
             "size": array.nbytes,
         }
+
+
+class SampleArrayModule(SampleValueModule):
+    """Sample an array.
+
+    Samples are used to randomly select a subset of a dataset, which helps test queries and workflows on smaller versions
+    of the original data, to adjust parameters before a full run.
+    """
+
+    _module_type_name = "sample"
+
+    @classmethod
+    def get_value_type(cls) -> str:
+        return "array"
+
+    # def create_input_schema(
+    #     self,
+    # ) -> typing.Mapping[
+    #     str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    # ]:
+    #
+    #     return {
+    #         "table": {"type": "table", "doc": "The table to sample data from."},
+    #         "sample_size": {
+    #             "type": "integer",
+    #             "doc": "The percentage or number of rows to sample (depending on 'sample_unit' input).",
+    #         }
+    #     }
+    #
+    # def create_output_schema(
+    #     self,
+    # ) -> typing.Mapping[
+    #     str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+    # ]:
+    #
+    #     return {"sampled_table": {"type": "table", "doc": "A sampled table."}}
+
+    def sample_percent(self, value: Value, sample_size: int):
+
+        import duckdb
+        import pyarrow as pa
+
+        array: pa.Array = value.get_value_data()
+
+        if sample_size >= 100:
+            return array
+
+        table = pa.Table.from_arrays([array], names=["column"])
+        query = f"SELECT * FROM data USING SAMPLE {sample_size} PERCENT (bernoulli);"
+
+        relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
+        result: duckdb.DuckDBPyResult = relation.query("data", query)
+
+        result_table: pa.Table = result.arrow()
+        return result_table.column("column")
+
+    def sample_rows(self, value: Value, sample_size: int):
+
+        import duckdb
+        import pyarrow as pa
+
+        array: pa.Array = value.get_value_data()
+
+        if sample_size >= len(array):
+            return array
+
+        table = pa.Table.from_arrays([array], names=["column"])
+        query = f"SELECT * FROM data USING SAMPLE {sample_size};"
+
+        relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
+        result: duckdb.DuckDBPyResult = relation.query("data", query)
+
+        result_table: pa.Table = result.arrow()
+        return result_table.column("column")
