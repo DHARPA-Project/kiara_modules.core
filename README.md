@@ -1,13 +1,13 @@
-[![PyPI status](https://img.shields.io/pypi/status/kiara_modules.core.svg)](https://pypi.python.org/pypi/kiara/)
-[![PyPI version](https://img.shields.io/pypi/v/kiara_modules.core.svg)](https://pypi.python.org/pypi/kiara/)
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/kiara_modules.core.svg)](https://pypi.python.org/pypi/kiara/)
+[![PyPI status](https://img.shields.io/pypi/status/kiara_modules.core.svg)](https://pypi.python.org/pypi/kiara_modules.core/)
+[![PyPI version](https://img.shields.io/pypi/v/kiara_modules.core.svg)](https://pypi.python.org/pypi/kiara_modules.core/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/kiara_modules.core.svg)](https://pypi.python.org/pypi/kiara_modules.core/)
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FDHARPA-Project%2Fkiara%2Fbadge%3Fref%3Ddevelop&style=flat)](https://actions-badge.atrox.dev/DHARPA-Project/kiara_modules.core/goto?ref=develop)
 [![Coverage Status](https://coveralls.io/repos/github/DHARPA-Project/kiara_modules.core/badge.svg?branch=develop)](https://coveralls.io/github/DHARPA-Project/kiara_modules.core?branch=develop)
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 # *kiara* modules (core)
 
-A set of commonly used/useful default modules (and pipelines) for [*Kiara*](https://github.com/DHARPA-project/kiara).
+A set of modules (and pipelines) for [*Kiara*](https://github.com/DHARPA-project/kiara).
 
  - Documentation: [https://dharpa.org/kiara_modules.core](https://dharpa.org/kiara_modules.core)
  - Code: [https://github.com/DHARPA-Project/kiara_modules.core](https://github.com/DHARPA-Project/kiara_modules.core)
