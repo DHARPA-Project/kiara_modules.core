@@ -23,8 +23,13 @@ requirements:
     - setuptools_scm_git_archive
   run:
     - python
-    - kiara
-    - kiara_modules.core
+    - kiara>=0.1.3
+    - python-duckdb==0.2.8
+    - msgpack-python>=1.0.0,<2.0.0
+    - orjson>=3.5.0
+    - vaex-arrow
+    - vaex-core>=4.0.0,<5.0
+    # - vaex-graphql
 about:
   home: https://github.com/DHARPA-Project/kiara_modules.core
   license: "Mozilla Public 2.0 (MPL 2.0)"
