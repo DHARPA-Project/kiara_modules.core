@@ -1442,7 +1442,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1535,7 +1535,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1598,7 +1598,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1661,7 +1661,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1720,7 +1720,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, bytes               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1771,7 +1771,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, msgpack, bytes      
+                          Tags         core, serialization, bytes, msgpack      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1834,7 +1834,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, msgpack, bytes      
+                          Tags         core, serialization, bytes, msgpack      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1898,7 +1898,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, bytes               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2393,7 +2393,7 @@
 
                               path = os.path.join(base_path, rel_path)          
 
-                              file_model = FileMetadata.load_file(path)         
+                              file_model = KiaraFile.load_file(path)            
                               outputs.set_value(&quot;file&quot;, file_model)             
 
                          ─────────────────────────────────────────────────────  
@@ -2785,9 +2785,7 @@
                                   excluded_files=excluded_files,                
                               )                                                 
 
-                              bundle = FileBundleMetadata.import_folder(        
-                                  source=path, import_config=import_config      
-                              )                                                 
+                              bundle = KiaraFileBundle.import_folder(source=…   
 
                               outputs.set_values(file_bundle=bundle)            
 
@@ -3730,25 +3728,34 @@
                                        https://github.com/DHARPA-Project/kia…   
 
  Module config                                                                  
-                          Field           Type      Description      Required   
+                          Field            Type      Description     Required   
                          ─────────────────────────────────────────────────────  
-                          constants       object    Value            no         
-                                                    constants for               
-                                                    this module.                
-                          defaults        object    Value defaults   no         
-                                                    for this                    
-                                                    module.                     
-                          source_type     string    The type of      yes        
-                                                    the source                  
-                                                    value.                      
-                          target_type     string    The type of      yes        
-                                                    the converted               
-                                                    value.                      
-                          ignore_errors   boolean   Whether to       no         
-                                                    ignore convert              
-                                                    errors and                  
-                                                    omit the                    
-                                                    failed items.               
+                          constants        object    Value           no         
+                                                     constants for              
+                                                     this module.               
+                          defaults         object    Value           no         
+                                                     defaults for               
+                                                     this module.               
+                          source_type      string    The type of     yes        
+                                                     the source                 
+                                                     value.                     
+                          target_type      string    The type of     yes        
+                                                     the converted              
+                                                     value.                     
+                          allow_none_in…   boolean   Whether to      no         
+                                                     allow &#39;none&#39;               
+                                                     source                     
+                                                     values, if                 
+                                                     one is                     
+                                                     encountered                
+                                                     &#39;none&#39; is                  
+                                                     returned.                  
+                          ignore_errors    boolean   Whether to      no         
+                                                     ignore                     
+                                                     convert                    
+                                                     errors and                 
+                                                     omit the                   
+                                                     failed items.              
 
  Module config          -- no config --                                         
  Python class                                                                   
@@ -3763,11 +3770,20 @@
                               source_type: str = self.get_config_value(&quot;sour…   
                               target_type: str = self.get_config_value(&quot;targ…   
 
+                              allow_none: bool = self.get_config_value(&quot;allo…   
+
                               source: Value = inputs.get_value_obj(&quot;value_it…   
                               if source_type != source.type_name:               
                                   raise KiaraProcessingException(               
                                       f&quot;Invalid type ({source.type_name}) of…   
                                   )                                             
+
+                              if not source.is_set or source.is_none:           
+                                  if allow_none:                                
+                                      outputs.set_value(&quot;value_item&quot;, None)     
+                                      return                                    
+                                  else:                                         
+                                      raise KiaraProcessingException(&quot;No sou…   
 
                               if source_type in supported_types:                
                                   # means this is a &#39;to&#39; conversion             
@@ -4616,7 +4632,7 @@
                                   report = profile.report()                     
 
                               elif value_type == &quot;file&quot;:                        
-                                  file_item: FileMetadata = inputs.get_value…   
+                                  file_item: KiaraFile = inputs.get_value_da…   
                                   data = Data(file_item.path)                   
                                   profile = Profiler(data, options=profile_o…   
                                   report = profile.report()                     

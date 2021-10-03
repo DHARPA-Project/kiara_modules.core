@@ -1125,7 +1125,7 @@ so they can be read by a subsequent process.</p>
           <summary>Source code in <code>core/file_bundle.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 
-    <span class="n">bundle</span><span class="p">:</span> <span class="n">FileBundleMetadata</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
+    <span class="n">bundle</span><span class="p">:</span> <span class="n">KiaraFileBundle</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
     <span class="n">rel_path</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">bundle_name</span>
 
     <span class="n">target_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">)</span>

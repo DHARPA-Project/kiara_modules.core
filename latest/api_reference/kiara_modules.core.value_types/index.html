@@ -1744,7 +1744,7 @@ avoid adding or removing information from the data (e.g. by changing the resolut
 
     <span class="k">assert</span> <span class="n">hash_type</span> <span class="o">==</span> <span class="s2">&quot;sha3_256&quot;</span>
 
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">FileBundleMetadata</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">KiaraFileBundle</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">file_bundle_hash</span>
 </code></pre></div>
         </details>
@@ -1861,7 +1861,7 @@ avoid adding or removing information from the data (e.g. by changing the resolut
 <span class="k">def</span> <span class="nf">calculate_value_hash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">hash_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 
     <span class="k">assert</span> <span class="n">hash_type</span> <span class="o">==</span> <span class="s2">&quot;sha3_256&quot;</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">FileMetadata</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">KiaraFile</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">file_hash</span>
 </code></pre></div>
         </details>
