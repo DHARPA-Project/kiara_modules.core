@@ -2,8 +2,11 @@
 Changelog
 =========
 
-## Version 0.1.3 (upcoming)
+## Version 0.2.1 (upcoming)
 
+## Version 0.2.0
+
+- moved 'any' type to 'kiara' package
 - renamed 'FileMetadata' -> 'KiaraFile'
 - renamed 'FileBundleMetadata' -> 'KiaraFileBundle'
 
