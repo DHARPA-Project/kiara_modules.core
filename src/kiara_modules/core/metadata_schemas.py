@@ -71,8 +71,10 @@ class ArrayMetadata(MetadataModel):
 log = logging.getLogger("kiara")
 
 
-class FileMetadata(MetadataModel):
+class KiaraFile(MetadataModel):
     """Describes properties for the 'file' value type."""
+
+    _metadata_key: typing.ClassVar[str] = "file"
 
     @classmethod
     def load_file(
@@ -126,7 +128,7 @@ class FileMetadata(MetadataModel):
         else:
             _orig_path = orig_path
 
-        m = FileMetadata(
+        m = KiaraFile(
             orig_filename=orig_filename,
             orig_path=_orig_path,
             import_time=file_import_time,
@@ -158,7 +160,7 @@ class FileMetadata(MetadataModel):
 
     def copy_file(self, target: str, incl_orig_path: bool = False):
 
-        fm = FileMetadata.load_file(self.path, target)
+        fm = KiaraFile.load_file(self.path, target)
         if incl_orig_path:
             fm.orig_path = self.orig_path
         else:
@@ -185,6 +187,20 @@ class FileMetadata(MetadataModel):
         self._file_hash = sha256_hash.hexdigest()
         return self._file_hash
 
+    def read_content(
+        self, as_str: bool = True, max_lines: int = -1
+    ) -> typing.Union[str, bytes]:
+        """Read the content of a file."""
+
+        mode = "r" if as_str else "rb"
+
+        with open(self.path, mode) as f:
+            if not max_lines:
+                content = f.read()
+            else:
+                content = "".join((next(f) for x in range(max_lines)))
+        return content
+
     def __repr__(self):
         return f"FileMetadata(name={self.file_name})"
 
@@ -208,8 +224,10 @@ class FolderImportConfig(BaseModel):
     )
 
 
-class FileBundleMetadata(MetadataModel):
+class KiaraFileBundle(MetadataModel):
     """Describes properties for the 'file_bundle' value type."""
+
+    _metadata_key: typing.ClassVar[str] = "file_bundle"
 
     @classmethod
     def import_folder(
@@ -251,7 +269,7 @@ class FileBundleMetadata(MetadataModel):
                 f"Invalid type for folder import config: {type(import_config)}."
             )
 
-        included_files: typing.Dict[str, FileMetadata] = {}
+        included_files: typing.Dict[str, KiaraFile] = {}
         exclude_dirs = _import_config.exclude_dirs
         invalid_extensions = _import_config.exclude_files
 
@@ -288,7 +306,7 @@ class FileBundleMetadata(MetadataModel):
                 else:
                     target_path = None
 
-                file_model = FileMetadata.load_file(
+                file_model = KiaraFile.load_file(
                     full_path, target_path, incl_orig_path=incl_orig_path
                 )
                 sum_size = sum_size + file_model.size
@@ -305,7 +323,7 @@ class FileBundleMetadata(MetadataModel):
         else:
             path = source
 
-        return FileBundleMetadata.create_from_file_models(
+        return KiaraFileBundle.create_from_file_models(
             files=included_files,
             orig_bundle_name=orig_bundle_name,
             orig_path=orig_path,
@@ -316,7 +334,7 @@ class FileBundleMetadata(MetadataModel):
     @classmethod
     def create_from_file_models(
         self,
-        files: typing.Mapping[str, FileMetadata],
+        files: typing.Mapping[str, KiaraFile],
         orig_bundle_name: str,
         orig_path: typing.Optional[str],
         path: str,
@@ -340,7 +358,7 @@ class FileBundleMetadata(MetadataModel):
                 sum_size = sum_size + f.size
         result["size"] = sum_size
 
-        return FileBundleMetadata(**result)
+        return KiaraFileBundle(**result)
 
     _file_bundle_hash: typing.Optional[str] = PrivateAttr(default=None)
 
@@ -356,7 +374,7 @@ class FileBundleMetadata(MetadataModel):
     number_of_files: int = Field(
         description="How many files are included in this bundle."
     )
-    included_files: typing.Dict[str, FileMetadata] = Field(
+    included_files: typing.Dict[str, KiaraFile] = Field(
         description="A map of all the included files, incl. their properties."
     )
     size: int = Field(description="The size of all files in this folder, combined.")
@@ -366,7 +384,7 @@ class FileBundleMetadata(MetadataModel):
         default=False,
     )
 
-    def get_relative_path(self, file: FileMetadata):
+    def get_relative_path(self, file: KiaraFile):
 
         return os.path.relpath(file.path, self.path)
 
@@ -376,7 +394,7 @@ class FileBundleMetadata(MetadataModel):
 
         content_dict: typing.Dict[str, str] = {}
 
-        def read_file(rel_path: str, fm: FileMetadata):
+        def read_file(rel_path: str, fm: KiaraFile):
             with open(fm.path, encoding="utf-8") as f:
                 try:
                     content = f.read()
@@ -413,7 +431,7 @@ class FileBundleMetadata(MetadataModel):
 
     def copy_bundle(
         self, target_path: str, incl_orig_path: bool = False
-    ) -> "FileBundleMetadata":
+    ) -> "KiaraFileBundle":
 
         if target_path == self.path:
             raise Exception(f"Target path and current path are the same: {target_path}")
@@ -428,7 +446,7 @@ class FileBundleMetadata(MetadataModel):
             orig_path = self.orig_path
         else:
             orig_path = None
-        fb = FileBundleMetadata.create_from_file_models(
+        fb = KiaraFileBundle.create_from_file_models(
             result,
             orig_bundle_name=self.orig_bundle_name,
             orig_path=orig_path,

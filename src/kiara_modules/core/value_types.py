@@ -15,7 +15,7 @@ from kiara.utils.class_loading import find_value_types_under
 from kiara.utils.output import pretty_print_arrow_table
 from rich.console import ConsoleRenderable, RichCast
 
-from kiara_modules.core.metadata_schemas import FileBundleMetadata, FileMetadata
+from kiara_modules.core.metadata_schemas import KiaraFile, KiaraFileBundle
 
 if typing.TYPE_CHECKING:
     from kiara.data.values import Value
@@ -417,14 +417,14 @@ class FileType(ValueType):
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
 
         assert hash_type == "sha3_256"
-        assert isinstance(value, FileMetadata)
+        assert isinstance(value, KiaraFile)
         return value.file_hash
 
     def pretty_print_as_renderables(
         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
     ) -> typing.Any:
 
-        data: FileMetadata = value.get_value_data()
+        data: KiaraFile = value.get_value_data()
         return [data.json(indent=2)]
 
 
@@ -447,14 +447,14 @@ class FileBundleType(ValueType):
 
         assert hash_type == "sha3_256"
 
-        assert isinstance(value, FileBundleMetadata)
+        assert isinstance(value, KiaraFileBundle)
         return value.file_bundle_hash
 
     def pretty_print_as_renderables(
         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
     ) -> typing.Any:
 
-        data: FileBundleMetadata = value.get_value_data()
+        data: KiaraFileBundle = value.get_value_data()
         return [data.json(indent=2)]
 
 

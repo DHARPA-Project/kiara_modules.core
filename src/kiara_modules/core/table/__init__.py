@@ -17,8 +17,8 @@ from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
 from kiara_modules.core.metadata_schemas import (
-    FileBundleMetadata,
-    FileMetadata,
+    KiaraFile,
+    KiaraFileBundle,
     TableMetadata,
 )
 
@@ -694,7 +694,7 @@ class TableConversionModule(ConvertValueModule):
 
         from pyarrow import csv
 
-        input_file: FileMetadata = value.get_value_data()
+        input_file: KiaraFile = value.get_value_data()
         imported_data = csv.read_csv(input_file.path)
         return imported_data
 
@@ -702,7 +702,7 @@ class TableConversionModule(ConvertValueModule):
 
         import pyarrow as pa
 
-        bundle: FileBundleMetadata = value.get_value_data()
+        bundle: KiaraFileBundle = value.get_value_data()
 
         columns = FILE_BUNDLE_IMPORT_AVAILABLE_COLUMNS
 

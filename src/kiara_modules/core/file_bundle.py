@@ -11,7 +11,7 @@ from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel
 
-from kiara_modules.core.metadata_schemas import FileBundleMetadata, FolderImportConfig
+from kiara_modules.core.metadata_schemas import FolderImportConfig, KiaraFileBundle
 
 
 class DefaultFileBundleImportModule(FileBundleImportModule):
@@ -23,9 +23,9 @@ class DefaultFileBundleImportModule(FileBundleImportModule):
 
     _module_type_name = "import"
 
-    def import_from__local__folder_path(self, source: str) -> FileBundleMetadata:
+    def import_from__local__folder_path(self, source: str) -> KiaraFileBundle:
 
-        file_bundle_model = FileBundleMetadata.import_folder(source)
+        file_bundle_model = KiaraFileBundle.import_folder(source)
         return file_bundle_model
 
 
@@ -40,7 +40,7 @@ class SaveFileBundleType(SaveValueTypeModule):
 
     def save_value(self, value: Value, base_path: str):
 
-        bundle: FileBundleMetadata = value.get_value_data()
+        bundle: KiaraFileBundle = value.get_value_data()
         rel_path = bundle.bundle_name
 
         target_path = os.path.join(base_path, rel_path)
@@ -135,9 +135,7 @@ class LoadFileBundleModule(KiaraModule):
             excluded_files=excluded_files,
         )
 
-        bundle = FileBundleMetadata.import_folder(
-            source=path, import_config=import_config
-        )
+        bundle = KiaraFileBundle.import_folder(source=path, import_config=import_config)
 
         outputs.set_values(file_bundle=bundle)
 
@@ -157,7 +155,7 @@ class FileBundleMetadataModule(ExtractMetadataModule):
     def _get_metadata_schema(
         self, type: str
     ) -> typing.Union[str, typing.Type[BaseModel]]:
-        return FileBundleMetadata
+        return KiaraFileBundle
 
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
 

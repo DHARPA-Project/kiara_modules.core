@@ -12,16 +12,16 @@ from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.save_value import SaveValueTypeModule
 from pydantic import BaseModel, Field
 
-from kiara_modules.core.metadata_schemas import FileMetadata
+from kiara_modules.core.metadata_schemas import KiaraFile
 
 
 class DefaultFileImportModule(FileImportModule):
 
     _module_type_name = "import"
 
-    def import_from__local__file_path(self, source: str) -> FileMetadata:
+    def import_from__local__file_path(self, source: str) -> KiaraFile:
 
-        file_model = FileMetadata.load_file(source)
+        file_model = KiaraFile.load_file(source)
         return file_model
 
 
@@ -108,7 +108,7 @@ class LoadLocalFileModule(KiaraModule):
 
         path = os.path.join(base_path, rel_path)
 
-        file_model = FileMetadata.load_file(path)
+        file_model = KiaraFile.load_file(path)
         outputs.set_value("file", file_model)
 
 
@@ -127,7 +127,7 @@ class FileMetadataModule(ExtractMetadataModule):
     def _get_metadata_schema(
         self, type: str
     ) -> typing.Union[str, typing.Type[BaseModel]]:
-        return FileMetadata
+        return KiaraFile
 
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
 

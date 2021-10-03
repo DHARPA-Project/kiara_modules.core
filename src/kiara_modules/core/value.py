@@ -11,7 +11,7 @@ from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations import Operation
 from pydantic import Field
 
-from kiara_modules.core.metadata_schemas import FileMetadata
+from kiara_modules.core.metadata_schemas import KiaraFile
 
 
 class DataProfilerModuleConfig(ModuleTypeConfigSchema):
@@ -96,7 +96,7 @@ class DataProfilerModule(KiaraModule):
             report = profile.report()
 
         elif value_type == "file":
-            file_item: FileMetadata = inputs.get_value_data("item")
+            file_item: KiaraFile = inputs.get_value_data("item")
             data = Data(file_item.path)
             profile = Profiler(data, options=profile_options)
             report = profile.report()

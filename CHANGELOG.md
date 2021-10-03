@@ -4,6 +4,9 @@ Changelog
 
 ## Version 0.1.3 (upcoming)
 
+- renamed 'FileMetadata' -> 'KiaraFile'
+- renamed 'FileBundleMetadata' -> 'KiaraFileBundle'
+
 ## Version 0.1.2
 
 - add sample module for table & array data types
