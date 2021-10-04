@@ -212,14 +212,18 @@ class QueryTableSQL(KiaraModule):
 
         import duckdb
 
-        _relation_name: str = inputs.get_value_data("relation_name")
+        _relation_name: str = self.get_config_value("relation_name")
+        if not _relation_name:
+            _relation_name = inputs.get_value_data("relation_name")
         if _relation_name.upper() in RESERVED_SQL_KEYWORDS:
             raise KiaraProcessingException(
                 f"Invalid relation name '{_relation_name}': this is a reserved sql keyword, please select a different name."
             )
 
         _table = inputs.get_value_data("table")
-        _query = inputs.get_value_data("query")
+        _query: str = self.get_config_value("query")
+        if not _query:
+            _query = inputs.get_value_data("query")
 
         relation: duckdb.DuckDBPyRelation = duckdb.arrow(_table)
         result: duckdb.DuckDBPyResult = relation.query(_relation_name, _query)

@@ -2,7 +2,6 @@
 import logging
 import typing
 
-from dataprofiler import Data
 from kiara import Kiara, KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import ValueSchema
@@ -77,7 +76,7 @@ class DataProfilerModule(KiaraModule):
     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
 
         import pyarrow as pa
-        from dataprofiler import Profiler, ProfilerOptions, set_verbosity
+        from dataprofiler import Data, Profiler, ProfilerOptions, set_verbosity
 
         set_verbosity(logging.WARNING)
 
