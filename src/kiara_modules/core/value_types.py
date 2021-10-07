@@ -425,7 +425,28 @@ class FileType(ValueType):
     ) -> typing.Any:
 
         data: KiaraFile = value.get_value_data()
-        return [data.json(indent=2)]
+        max_lines = print_config.get("max_lines", 34)
+        try:
+            lines = []
+            with open(data.path, "r") as f:
+                for idx, l in enumerate(f):
+                    if idx > max_lines:
+                        lines.append("...\n")
+                        lines.append("...")
+                        break
+                    lines.append(l)
+
+            # TODO: syntax highlighting
+            return ["".join(lines)]
+        except UnicodeDecodeError:
+            # found non-text data
+            return [
+                "Binary file or non-utf8 enconding, not printing content...",
+                "",
+                "[b]File metadata:[/b]",
+                "",
+                data.json(indent=2),
+            ]
 
 
 class FileBundleType(ValueType):

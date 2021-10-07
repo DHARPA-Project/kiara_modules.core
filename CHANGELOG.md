@@ -4,6 +4,8 @@ Changelog
 
 ## Version 0.2.1 (upcoming)
 
+- fix for sql query module when using pre-configured query
+
 ## Version 0.2.0
 
 - moved 'any' type to 'kiara' package
