@@ -1720,7 +1720,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, serialization, bytes               
+                          Tags         bytes, serialization, core               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1771,7 +1771,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, serialization, bytes, msgpack      
+                          Tags         msgpack, bytes, serialization, core      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1834,7 +1834,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, serialization, bytes, msgpack      
+                          Tags         msgpack, bytes, serialization, core      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1898,7 +1898,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, serialization, bytes               
+                          Tags         bytes, serialization, core               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2239,15 +2239,15 @@
                                        https://github.com/DHARPA-Project/kia…   
 
  Module config                                                                  
-                          Field           Type      Description      Required   
+                          Field            Type     Description      Required   
                          ─────────────────────────────────────────────────────  
-                          constants       object    Value            no         
+                          constants        object   Value            no         
                                                     constants for               
                                                     this module.                
-                          defaults        object    Value defaults   no         
+                          defaults         object   Value defaults   no         
                                                     for this                    
                                                     module.                     
-                          source_profi…   string    The name of      yes        
+                          source_profile   string   The name of      yes        
                                                     the source                  
                                                     profile. Used               
                                                     to distinguish              
@@ -2256,27 +2256,9 @@
                                                     categories for              
                                                     the same input              
                                                     type.                       
-                          source_type     string    The type of      yes        
+                          source_type      string   The type of      yes        
                                                     the source to               
                                                     import from.                
-                          allow_save_i…   boolean   Allow the user   no         
-                                                    to choose                   
-                                                    whether to                  
-                                                    save the                    
-                                                    imported item               
-                                                    or not.                     
-                          save_default    boolean   The default of   no         
-                                                    the &#39;save&#39;                  
-                                                    input if not                
-                                                    specified by                
-                                                    the user.                   
-                          allow_aliase…   boolean   Allow the user   no         
-                                                    to choose                   
-                                                    aliases for                 
-                                                    the saved                   
-                                                    value.                      
-                          aliases_defa…   array     Default value    no         
-                                                    for aliases.                
 
  Module config          -- no config --                                         
  Python class                                                                   
@@ -2298,30 +2280,30 @@
                                       f&quot;Can&#39;t import &#39;{source_type}&#39; value: …   
                                   )                                             
 
-                              allow_save = self.get_config_value(&quot;allow_save…   
-                              if allow_save:                                    
-                                  save = inputs.get_value_data(&quot;save&quot;)          
-                              else:                                             
-                                  save = self.get_config_value(&quot;save_default…   
-
-                              allow_aliases: typing.Optional[bool] = self.ge…   
-                                  &quot;allow_aliases_input&quot;                         
-                              )                                                 
-                              if allow_aliases is None:                         
-                                  allow_aliases = allow_save                    
-
-                              if allow_aliases:                                 
-                                  aliases = inputs.get_value_data(&quot;aliases&quot;)    
-                              else:                                             
-                                  aliases = self.get_config_value(&quot;aliases_d…   
-
-                              if aliases and not save:                          
-                                  raise KiaraProcessingException(               
-                                      f&quot;Can&#39;t import file from &#39;{source}&#39;: &#39;…   
-                                  )                                             
-
-                              if aliases is None:                               
-                                  aliases = []                                  
+                              # allow_save = self.get_config_value(&quot;allow_sa…   
+                              # if allow_save:                                  
+                              #     save = inputs.get_value_data(&quot;save&quot;)        
+                              # else:                                           
+                              #     save = self.get_config_value(&quot;save_defau…   
+                              #                                                 
+                              # allow_aliases: typing.Optional[bool] = self.…   
+                              #     &quot;allow_aliases_input&quot;                       
+                              # )                                               
+                              # if allow_aliases is None:                       
+                              #     allow_aliases = allow_save                  
+                              #                                                 
+                              # if allow_aliases:                               
+                              #     aliases = inputs.get_value_data(&quot;aliases…   
+                              # else:                                           
+                              #     aliases = self.get_config_value(&quot;aliases…   
+                              #                                                 
+                              # if aliases and not save:                        
+                              #     raise KiaraProcessingException(             
+                              #         f&quot;Can&#39;t import file from &#39;{source}&#39;:…   
+                              #     )                                           
+                              #                                                 
+                              # if aliases is None:                             
+                              #     aliases = []                                
 
                               func = getattr(self, func_name)                   
                               # TODO: check signature?                          
@@ -2335,12 +2317,12 @@
                                   module=self, output_name=&quot;value_item&quot;, inp…   
                               )                                                 
                               value: Value = self._kiara.data_registry.regis…   
-                                  value_data=result, value_schema=schema, va…   
+                                  value_data=result, value_schema=schema, li…   
                               )                                                 
 
-                              if save:                                          
-                                  value_saved = self._kiara.data_store.regis…   
-                                  self._kiara.data_store.link_aliases(value_…   
+                              # if save:                                        
+                              #     value_saved = self._kiara.data_store.reg…   
+                              #     self._kiara.data_store.link_aliases(valu…   
 
                               outputs.set_values(value_item=value)              
 
@@ -2621,15 +2603,15 @@
                                        https://github.com/DHARPA-Project/kia…   
 
  Module config                                                                  
-                          Field           Type      Description      Required   
+                          Field            Type     Description      Required   
                          ─────────────────────────────────────────────────────  
-                          constants       object    Value            no         
+                          constants        object   Value            no         
                                                     constants for               
                                                     this module.                
-                          defaults        object    Value defaults   no         
+                          defaults         object   Value defaults   no         
                                                     for this                    
                                                     module.                     
-                          source_profi…   string    The name of      yes        
+                          source_profile   string   The name of      yes        
                                                     the source                  
                                                     profile. Used               
                                                     to distinguish              
@@ -2638,27 +2620,9 @@
                                                     categories for              
                                                     the same input              
                                                     type.                       
-                          source_type     string    The type of      yes        
+                          source_type      string   The type of      yes        
                                                     the source to               
                                                     import from.                
-                          allow_save_i…   boolean   Allow the user   no         
-                                                    to choose                   
-                                                    whether to                  
-                                                    save the                    
-                                                    imported item               
-                                                    or not.                     
-                          save_default    boolean   The default of   no         
-                                                    the &#39;save&#39;                  
-                                                    input if not                
-                                                    specified by                
-                                                    the user.                   
-                          allow_aliase…   boolean   Allow the user   no         
-                                                    to choose                   
-                                                    aliases for                 
-                                                    the saved                   
-                                                    value.                      
-                          aliases_defa…   array     Default value    no         
-                                                    for aliases.                
 
  Module config          -- no config --                                         
  Python class                                                                   
@@ -2680,30 +2644,30 @@
                                       f&quot;Can&#39;t import &#39;{source_type}&#39; value: …   
                                   )                                             
 
-                              allow_save = self.get_config_value(&quot;allow_save…   
-                              if allow_save:                                    
-                                  save = inputs.get_value_data(&quot;save&quot;)          
-                              else:                                             
-                                  save = self.get_config_value(&quot;save_default…   
-
-                              allow_aliases: typing.Optional[bool] = self.ge…   
-                                  &quot;allow_aliases_input&quot;                         
-                              )                                                 
-                              if allow_aliases is None:                         
-                                  allow_aliases = allow_save                    
-
-                              if allow_aliases:                                 
-                                  aliases = inputs.get_value_data(&quot;aliases&quot;)    
-                              else:                                             
-                                  aliases = self.get_config_value(&quot;aliases_d…   
-
-                              if aliases and not save:                          
-                                  raise KiaraProcessingException(               
-                                      f&quot;Can&#39;t import file from &#39;{source}&#39;: &#39;…   
-                                  )                                             
-
-                              if aliases is None:                               
-                                  aliases = []                                  
+                              # allow_save = self.get_config_value(&quot;allow_sa…   
+                              # if allow_save:                                  
+                              #     save = inputs.get_value_data(&quot;save&quot;)        
+                              # else:                                           
+                              #     save = self.get_config_value(&quot;save_defau…   
+                              #                                                 
+                              # allow_aliases: typing.Optional[bool] = self.…   
+                              #     &quot;allow_aliases_input&quot;                       
+                              # )                                               
+                              # if allow_aliases is None:                       
+                              #     allow_aliases = allow_save                  
+                              #                                                 
+                              # if allow_aliases:                               
+                              #     aliases = inputs.get_value_data(&quot;aliases…   
+                              # else:                                           
+                              #     aliases = self.get_config_value(&quot;aliases…   
+                              #                                                 
+                              # if aliases and not save:                        
+                              #     raise KiaraProcessingException(             
+                              #         f&quot;Can&#39;t import file from &#39;{source}&#39;:…   
+                              #     )                                           
+                              #                                                 
+                              # if aliases is None:                             
+                              #     aliases = []                                
 
                               func = getattr(self, func_name)                   
                               # TODO: check signature?                          
@@ -2717,12 +2681,12 @@
                                   module=self, output_name=&quot;value_item&quot;, inp…   
                               )                                                 
                               value: Value = self._kiara.data_registry.regis…   
-                                  value_data=result, value_schema=schema, va…   
+                                  value_data=result, value_schema=schema, li…   
                               )                                                 
 
-                              if save:                                          
-                                  value_saved = self._kiara.data_store.regis…   
-                                  self._kiara.data_store.link_aliases(value_…   
+                              # if save:                                        
+                              #     value_saved = self._kiara.data_store.reg…   
+                              #     self._kiara.data_store.link_aliases(valu…   
 
                               outputs.set_values(value_item=value)              
 
