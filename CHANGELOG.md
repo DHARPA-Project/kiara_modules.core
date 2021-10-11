@@ -2,7 +2,9 @@
 Changelog
 =========
 
-## Version 0.2.1 (upcoming)
+## Version 0.2.2 (upcoming)
+
+## Version 0.2.1
 
 - fix for sql query module when using pre-configured query
 
