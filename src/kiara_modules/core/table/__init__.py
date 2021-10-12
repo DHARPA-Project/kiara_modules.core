@@ -406,7 +406,7 @@ class TableMetadataModule(ExtractMetadataModule):
 
         return {
             "column_names": table.column_names,
-            "schema": table_schema,
+            "column_schema": table_schema,
             "rows": table.num_rows,
             "size": table.nbytes,
         }

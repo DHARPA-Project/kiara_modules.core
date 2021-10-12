@@ -227,4 +227,6 @@ class QueryTableSQL(KiaraModule):
         relation: duckdb.DuckDBPyRelation = duckdb.arrow(_table)
         result: duckdb.DuckDBPyResult = relation.query(_relation_name, _query)
 
+        print(result.arrow())
+
         outputs.set_value("query_result", result.arrow())
