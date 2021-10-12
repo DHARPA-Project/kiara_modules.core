@@ -159,7 +159,7 @@ class FileBundleMetadataModule(ExtractMetadataModule):
 
     def extract_metadata(self, value: Value) -> typing.Mapping[str, typing.Any]:
 
-        return value.get_value_data().dict()
+        return value.get_value_data().dict(exclude_none=True)
 
 
 # class CalculateFileBundleHash(KiaraModule):
