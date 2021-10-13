@@ -158,7 +158,9 @@ class KiaraFile(MetadataModel):
         default=False,
     )
 
-    def copy_file(self, target: str, incl_orig_path: bool = False):
+    def copy_file(
+        self, target: str, incl_orig_path: bool = False, is_onboarded: bool = False
+    ):
 
         fm = KiaraFile.load_file(self.path, target)
         if incl_orig_path:
@@ -169,6 +171,8 @@ class KiaraFile(MetadataModel):
         fm.import_time = self.import_time
         if self._file_hash is not None:
             fm._file_hash = self._file_hash
+
+        fm.is_onboarded = is_onboarded
 
         return fm
 
@@ -339,6 +343,7 @@ class KiaraFileBundle(MetadataModel):
         orig_path: typing.Optional[str],
         path: str,
         sum_size: typing.Optional[int] = None,
+        is_onboarded: bool = False,
     ):
 
         result: typing.Dict[str, typing.Any] = {}
@@ -351,6 +356,7 @@ class KiaraFileBundle(MetadataModel):
         result["number_of_files"] = len(files)
         result["bundle_name"] = os.path.basename(result["path"])
         result["orig_bundle_name"] = orig_bundle_name
+        result["is_onboarded"] = is_onboarded
 
         if sum_size is None:
             sum_size = 0
@@ -430,7 +436,7 @@ class KiaraFileBundle(MetadataModel):
         return self._file_bundle_hash
 
     def copy_bundle(
-        self, target_path: str, incl_orig_path: bool = False
+        self, target_path: str, incl_orig_path: bool = False, is_onboarded: bool = False
     ) -> "KiaraFileBundle":
 
         if target_path == self.path:
@@ -439,7 +445,7 @@ class KiaraFileBundle(MetadataModel):
         result = {}
         for rel_path, item in self.included_files.items():
             _target_path = os.path.join(target_path, rel_path)
-            new_fm = item.copy_file(_target_path)
+            new_fm = item.copy_file(_target_path, is_onboarded=is_onboarded)
             result[rel_path] = new_fm
 
         if incl_orig_path:
@@ -452,6 +458,7 @@ class KiaraFileBundle(MetadataModel):
             orig_path=orig_path,
             path=target_path,
             sum_size=self.size,
+            is_onboarded=is_onboarded,
         )
         if self._file_bundle_hash is not None:
             fb._file_bundle_hash = self._file_bundle_hash
