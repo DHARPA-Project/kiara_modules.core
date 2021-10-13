@@ -38,20 +38,22 @@ class SaveFileBundleType(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "file_bundle"
 
-    def save_value(self, value: Value, base_path: str):
+    def save_value(
+        self, value: Value, base_path: str
+    ) -> typing.Tuple[typing.Dict[str, typing.Any], typing.Any]:
 
         bundle: KiaraFileBundle = value.get_value_data()
         rel_path = bundle.bundle_name
 
         target_path = os.path.join(base_path, rel_path)
-        fb = bundle.copy_bundle(target_path)
+        fb = bundle.copy_bundle(target_path, is_onboarded=True)
 
-        # the following changes the input value, which is usually not allowed, but the file_bundle type is a special case
-        bundle.included_files = fb.included_files
-        bundle.is_onboarded = True
-        bundle.path = fb.path
-        for path, f in bundle.included_files.items():
-            f.is_onboarded = True
+        # # the following changes the input value, which is usually not allowed, but the file_bundle type is a special case
+        # bundle.included_files = fb.included_files
+        # bundle.is_onboarded = True
+        # bundle.path = fb.path
+        # for path, f in bundle.included_files.items():
+        #     f.is_onboarded = True
 
         load_config = {
             "module_type": "file_bundle.load",
@@ -60,7 +62,7 @@ class SaveFileBundleType(SaveValueTypeModule):
             "output_name": "file_bundle",
         }
 
-        return load_config
+        return (load_config, fb)
 
 
 class LoadFileBundleModule(KiaraModule):

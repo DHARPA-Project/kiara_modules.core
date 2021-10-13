@@ -34,7 +34,9 @@ class SaveFileTypeModule(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "file"
 
-    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
+    def save_value(
+        self, value: Value, base_path: str
+    ) -> typing.Tuple[typing.Dict[str, typing.Any], typing.Any]:
 
         file_obj = value.get_value_data()
 
@@ -48,11 +50,7 @@ class SaveFileTypeModule(SaveValueTypeModule):
                 f"Can't save file, path already exists: {full_target}"
             )
 
-        fm = file_obj.copy_file(full_target)
-
-        # the following changes the input value, which is usually not allowed, but the file type is a special case
-        file_obj.is_onboarded = True
-        file_obj.path = fm.path
+        fm = file_obj.copy_file(full_target, is_onboarded=True)
 
         load_config = {
             "module_type": "file.load",
@@ -60,7 +58,7 @@ class SaveFileTypeModule(SaveValueTypeModule):
             "inputs": {"base_path": base_path, "rel_path": file_name},
             "output_name": "file",
         }
-        return load_config
+        return (load_config, fm)
 
 
 class LoadLocalFileModule(KiaraModule):
