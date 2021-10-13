@@ -141,7 +141,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}""
+          password: "${{ secrets.PYPI_API_TOKEN }}"
 
   test_conda_package_build:
     name: test conda package build
