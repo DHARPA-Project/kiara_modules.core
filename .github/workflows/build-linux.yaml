@@ -79,7 +79,6 @@ jobs:
       - name: Test with flake8
         run: make flake
 
-
   build-docs:
     name: build documentation
     if: ${{ github.ref == 'refs/heads/develop' }} || ${{ github.ref == 'refs/heads/main' }} || startsWith(github.ref, 'refs/tags/')
@@ -180,6 +179,9 @@ jobs:
         run: conda install -n anaconda-build-env anaconda-client conda-build
       - name: build conda package
         shell: bash -l {0}
+#      - name: extract tag name
+#        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: build conda package
         run: conda activate anaconda-build-env && cd ci/conda/ && ./build-conda-packages.sh "kiara_modules.core" "${GITHUB_REF#refs/*/}" false
 
   merge_tag_to_main:
