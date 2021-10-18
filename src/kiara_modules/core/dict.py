@@ -3,12 +3,12 @@ import typing
 from pathlib import Path
 
 from kiara.data import Value
-from kiara.operations.store_value import StoreOperationType
+from kiara.operations.store_value import StoreValueTypeModule
 
 from kiara_modules.core.generic import JsonSerializationConfig
 
 
-class SaveDictModule(StoreOperationType):
+class SaveDictModule(StoreValueTypeModule):
 
     _config_cls = JsonSerializationConfig
     _module_type_name = "store"
