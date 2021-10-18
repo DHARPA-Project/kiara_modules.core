@@ -8,7 +8,7 @@ from kiara.data.values import ValueSchema
 from kiara.defaults import DEFAULT_EXCLUDE_DIRS, DEFAULT_EXCLUDE_FILES
 from kiara.operations.data_import import FileBundleImportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
-from kiara.operations.save_value import SaveValueTypeModule
+from kiara.operations.store_value import StoreValueTypeModule
 from pydantic import BaseModel
 
 from kiara_modules.core.metadata_schemas import FolderImportConfig, KiaraFileBundle
@@ -23,22 +23,22 @@ class DefaultFileBundleImportModule(FileBundleImportModule):
 
     _module_type_name = "import"
 
-    def import_from__local__folder_path(self, source: str) -> KiaraFileBundle:
+    def import_from__folder_path__string(self, source: str) -> KiaraFileBundle:
 
         file_bundle_model = KiaraFileBundle.import_folder(source)
         return file_bundle_model
 
 
-class SaveFileBundleType(SaveValueTypeModule):
+class StoreFileBundleType(StoreValueTypeModule):
     """Save a file bundle to disk."""
 
-    _module_type_name = "save"
+    _module_type_name = "store"
 
     @classmethod
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "file_bundle"
 
-    def save_value(
+    def store_value(
         self, value: Value, base_path: str
     ) -> typing.Tuple[typing.Dict[str, typing.Any], typing.Any]:
 

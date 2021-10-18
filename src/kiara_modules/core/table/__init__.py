@@ -11,7 +11,7 @@ from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.sample import SampleValueModule
-from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
+from kiara.operations.store_value import StoreValueModuleConfig, StoreValueTypeModule
 from kiara.operations.type_convert import ConvertValueModule, TypeConversionModuleConfig
 from pydantic import BaseModel, Field
 
@@ -37,23 +37,23 @@ FILE_BUNDLE_IMPORT_AVAILABLE_COLUMNS = [
 ]
 
 
-class SaveArrowTableConfig(SaveValueModuleConfig):
+class SaveArrowTableConfig(StoreValueModuleConfig):
 
     compression: str = Field(
         description="The compression to use when saving the table.", default="zstd"
     )
 
 
-class SaveArrowTable(SaveValueTypeModule):
+class SaveArrowTable(StoreValueTypeModule):
 
     _config_cls = SaveArrowTableConfig
-    _module_type_name = "save"
+    _module_type_name = "store"
 
     @classmethod
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "table"
 
-    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
+    def store_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
 
         import pyarrow as pa
         from pyarrow import feather

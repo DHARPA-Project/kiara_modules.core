@@ -101,7 +101,6 @@ class QueryTableGraphQL(KiaraModule):
     Examples:
         An example for a query could be:
 
-        ```
             {
               df(where: {
                 Language: {_eq: "German"}
@@ -113,7 +112,6 @@ class QueryTableGraphQL(KiaraModule):
                 }
               }
             }
-        ```
 
     """
 

@@ -8,11 +8,11 @@ from kiara.data import ValueSet
 from kiara.data.values import Value, ValueSchema
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
-from kiara.operations.save_value import SaveValueModuleConfig, SaveValueTypeModule
+from kiara.operations.store_value import StoreValueModuleConfig, StoreValueTypeModule
 from pydantic import Field
 
 
-class JsonSerializationConfig(SaveValueModuleConfig):
+class JsonSerializationConfig(StoreValueModuleConfig):
 
     options: int = Field(
         description="The options to use for the json serialization. Check https://github.com/ijl/orjson#quickstart for details.",
@@ -23,25 +23,25 @@ class JsonSerializationConfig(SaveValueModuleConfig):
     )
 
 
-class SaveScalarModuleConfig(ModuleTypeConfigSchema):
+class StoreScalarModuleConfig(ModuleTypeConfigSchema):
 
-    value_type: str = Field(description="The value type of the scalar to save.")
+    value_type: str = Field(description="The value type of the scalar to store.")
 
 
-class SaveBooleanModule(SaveValueTypeModule):
+class StoreScalarModule(StoreValueTypeModule):
 
-    _module_type_name = "save"
+    _module_type_name = "store"
 
     @classmethod
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
-        return ["boolean", "integer", "float", "string", "file_path", "folder_path"]
+        return ["boolean", "integer", "float", "string"]
 
-    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
+    def store_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
 
         data = value.get_value_data()
 
         load_config = {
-            "module_type": "generic.load_scalar",
+            "module_type": "generic.restore_scalar",
             "module_config": {"value_type": self.get_config_value("value_type")},
             "base_path_input_name": None,
             "inputs": {"scalar_data": data},
@@ -51,16 +51,16 @@ class SaveBooleanModule(SaveValueTypeModule):
         return load_config
 
 
-class LoadScalarModuleConfig(ModuleTypeConfigSchema):
+class RestoreScalarModuleConfig(ModuleTypeConfigSchema):
 
     value_type: str = Field(description="The value type of the scalar to load.")
 
 
-class LoadScalarModule(KiaraModule):
+class RestoreScalarModule(KiaraModule):
     """Utility module, only used internally."""
 
-    _module_type_name = "load_scalar"
-    _config_cls = LoadScalarModuleConfig
+    _module_type_name = "restore_scalar"
+    _config_cls = RestoreScalarModuleConfig
 
     def create_input_schema(
         self,
@@ -94,9 +94,9 @@ class LoadScalarModule(KiaraModule):
         outputs.set_value("value_item", data)
 
 
-class LoadFromJsonDictModule(KiaraModule):
+class RestoreFromJsonDictModule(KiaraModule):
 
-    _module_type_name = "load_from_json"
+    _module_type_name = "restore_from_json"
 
     def create_input_schema(
         self,

@@ -6,14 +6,14 @@ from kiara import KiaraModule
 from kiara.data.values import Value, ValueSchema
 from kiara.data.values.value_set import ValueSet
 from kiara.exceptions import KiaraProcessingException
-from kiara.operations.save_value import SaveValueTypeModule
+from kiara.operations.store_value import StoreValueTypeModule
 
 KIARA_METADATA = {"tags": ["bytes", "serialization"]}
 
 BYTES_SAVE_FILE_NAME = "bytes.bin"
 
 
-class SaveBytesTypeModule(SaveValueTypeModule):
+class SaveBytesTypeModule(StoreValueTypeModule):
 
     _module_type_name = "save"
 
@@ -21,7 +21,7 @@ class SaveBytesTypeModule(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "bytes"
 
-    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
+    def store_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
 
         path = os.path.join(base_path, BYTES_SAVE_FILE_NAME)
 

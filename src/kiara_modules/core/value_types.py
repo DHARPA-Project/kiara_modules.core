@@ -4,10 +4,9 @@
 """
 
 import datetime
-import os
+import json
 import pprint
 import typing
-from pathlib import Path
 
 from kiara import KiaraEntryPointItem
 from kiara.data.types import ValueType
@@ -335,68 +334,68 @@ class DateType(ValueType):
         return [str(data)]
 
 
-class FilePathType(ValueType):
-    """Represents a path to a local file."""
+# class FilePathType(ValueType):
+#     """Represents a path to a local file."""
+#
+#     @classmethod
+#     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+#         return [str]
+#
+#     def validate(cls, value: typing.Any) -> None:
+#
+#         if isinstance(value, Path):
+#             value = value.as_posix()
+#
+#         value = os.path.abspath(os.path.expanduser(value))
+#         assert isinstance(value, str)
+#
+#         if not os.path.exists(value):
+#             raise Exception(
+#                 f"Invalid file path value: no file exists for path '{value}'."
+#             )
+#         if not os.path.isfile(os.path.realpath(value)):
+#             raise Exception(
+#                 f"Invalid file path value: path '{value}' exists but does not point to a file."
+#             )
+#
+#     def pretty_print_as_renderables(
+#         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+#     ) -> typing.Any:
+#
+#         data: str = value.get_value_data()
+#         return [data]
 
-    @classmethod
-    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-        return [str]
 
-    def validate(cls, value: typing.Any) -> None:
-
-        if isinstance(value, Path):
-            value = value.as_posix()
-
-        value = os.path.abspath(os.path.expanduser(value))
-        assert isinstance(value, str)
-
-        if not os.path.exists(value):
-            raise Exception(
-                f"Invalid file path value: no file exists for path '{value}'."
-            )
-        if not os.path.isfile(os.path.realpath(value)):
-            raise Exception(
-                f"Invalid file path value: path '{value}' exists but does not point to a file."
-            )
-
-    def pretty_print_as_renderables(
-        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
-    ) -> typing.Any:
-
-        data: str = value.get_value_data()
-        return [data]
-
-
-class FolderPathType(ValueType):
-    """Represents a path to a local folder."""
-
-    @classmethod
-    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-        return [str]
-
-    def pretty_print_as_renderables(
-        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
-    ) -> typing.Any:
-
-        data: str = value.get_value_data()
-        return [data]
-
-    def validate(cls, value: typing.Any) -> None:
-
-        if isinstance(value, Path):
-            value = value.as_posix()
-
-        value = os.path.abspath(os.path.expanduser(value))
-        assert isinstance(value, str)
-
-        if not os.path.exists(value):
-            raise Exception(
-                f"Invalid folder path value: no folder exists for path '{value}'."
-            )
-        if not os.path.isdir(os.path.realpath(value)):
-            raise Exception(
-                f"Invalid file path value: path '{value}' exists but does not point to a file."
-            )
+# class FolderPathType(ValueType):
+#     """Represents a path to a local folder."""
+#
+#     @classmethod
+#     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+#         return [str]
+#
+#     def pretty_print_as_renderables(
+#         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+#     ) -> typing.Any:
+#
+#         data: str = value.get_value_data()
+#         return [data]
+#
+#     def validate(cls, value: typing.Any) -> None:
+#
+#         if isinstance(value, Path):
+#             value = value.as_posix()
+#
+#         value = os.path.abspath(os.path.expanduser(value))
+#         assert isinstance(value, str)
+#
+#         if not os.path.exists(value):
+#             raise Exception(
+#                 f"Invalid folder path value: no folder exists for path '{value}'."
+#             )
+#         if not os.path.isdir(os.path.realpath(value)):
+#             raise Exception(
+#                 f"Invalid file path value: path '{value}' exists but does not point to a file."
+#             )
 
 
 class FileType(ValueType):
@@ -475,8 +474,24 @@ class FileBundleType(ValueType):
         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
     ) -> typing.Any:
 
+        max_no_included_files = print_config.get("max_no_files", 40)
+
         data: KiaraFileBundle = value.get_value_data()
-        return [data.json(indent=2)]
+        pretty = data.dict(exclude={"included_files"})
+        files = list(data.included_files.keys())
+        if max_no_included_files >= 0:
+            if len(files) > max_no_included_files:
+                half = int((max_no_included_files - 1) / 2)
+                head = files[0:half]
+                tail = files[-1 * half :]  # noqa
+                files = (
+                    head
+                    + ["..... output skipped .....", "..... output skipped ....."]
+                    + tail
+                )
+        pretty["included_files"] = files
+        return [json.dumps(pretty, indent=2)]
+        # return [data.json(indent=2)]
 
 
 class RenderablesType(ValueType):

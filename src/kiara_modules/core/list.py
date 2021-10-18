@@ -5,21 +5,21 @@ from pathlib import Path
 from kiara import KiaraModule
 from kiara.data import ValueSet
 from kiara.data.values import Value, ValueSchema
-from kiara.operations.save_value import SaveValueTypeModule
+from kiara.operations.store_value import StoreValueTypeModule
 
 from kiara_modules.core.generic import JsonSerializationConfig
 
 
-class SaveDictModule(SaveValueTypeModule):
+class StoreDictModule(StoreValueTypeModule):
 
     _config_cls = JsonSerializationConfig
-    _module_type_name = "save"
+    _module_type_name = "store"
 
     @classmethod
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "list"
 
-    def save_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
+    def store_value(self, value: Value, base_path: str) -> typing.Dict[str, typing.Any]:
 
         import orjson
 
@@ -34,7 +34,7 @@ class SaveDictModule(SaveValueTypeModule):
         full_path.write_bytes(json_str)
 
         load_config = {
-            "module_type": "generic.load_from_json",
+            "module_type": "generic.restore_from_json",
             "base_path_input_name": "base_path",
             "inputs": {
                 "base_path": base_path,
