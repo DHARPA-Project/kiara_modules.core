@@ -9,7 +9,7 @@ from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.sample import SampleValueModule
-from kiara.operations.save_value import SaveValueTypeModule
+from kiara.operations.store_value import StoreValueTypeModule
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array.utils import map_with_module
@@ -24,7 +24,7 @@ ARRAY_SAVE_COLUM_NAME = "array"
 ARRAY_SAVE_FILE_NAME = "array.feather"
 
 
-class SaveArrayTypeModule(SaveValueTypeModule):
+class SaveArrayTypeModule(StoreValueTypeModule):
     """Save an Arrow array to a file.
 
     This module wraps the input array into an Arrow Table, and saves this table as a feather file.
@@ -39,7 +39,7 @@ class SaveArrayTypeModule(SaveValueTypeModule):
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
         return "array"
 
-    def save_value(self, value: Value, base_path: str):
+    def store_value(self, value: Value, base_path: str):
 
         import pyarrow as pa
         from pyarrow import feather
@@ -61,7 +61,7 @@ class SaveArrayTypeModule(SaveValueTypeModule):
         feather.write_feather(table, path)
 
         load_config = {
-            "module_type": "array.load",
+            "module_type": "array.restore",
             "inputs": {
                 "base_path": base_path,
                 "rel_path": ARRAY_SAVE_FILE_NAME,
