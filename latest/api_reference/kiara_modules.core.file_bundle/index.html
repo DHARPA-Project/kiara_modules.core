@@ -1123,22 +1123,20 @@ so they can be read by a subsequent process.</p>
 
         <details class="quote">
           <summary>Source code in <code>core/file_bundle.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 
     <span class="n">bundle</span><span class="p">:</span> <span class="n">KiaraFileBundle</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
     <span class="n">rel_path</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">bundle_name</span>
 
     <span class="n">target_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">)</span>
-    <span class="n">fb</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">copy_bundle</span><span class="p">(</span><span class="n">target_path</span><span class="p">,</span> <span class="n">is_onboarded</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fb</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">copy_bundle</span><span class="p">(</span><span class="n">target_path</span><span class="p">)</span>
 
-    <span class="c1"># # the following changes the input value, which is usually not allowed, but the file_bundle type is a special case</span>
-    <span class="c1"># bundle.included_files = fb.included_files</span>
-    <span class="c1"># bundle.is_onboarded = True</span>
-    <span class="c1"># bundle.path = fb.path</span>
-    <span class="c1"># for path, f in bundle.included_files.items():</span>
-    <span class="c1">#     f.is_onboarded = True</span>
+    <span class="c1"># the following changes the input value, which is usually not allowed, but the file_bundle type is a special case</span>
+    <span class="n">bundle</span><span class="o">.</span><span class="n">included_files</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">included_files</span>
+    <span class="n">bundle</span><span class="o">.</span><span class="n">is_onboarded</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">bundle</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">path</span>
+    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">bundle</span><span class="o">.</span><span class="n">included_files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">is_onboarded</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="n">load_config</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;file_bundle.load&quot;</span><span class="p">,</span>
@@ -1147,7 +1145,7 @@ so they can be read by a subsequent process.</p>
         <span class="s2">&quot;output_name&quot;</span><span class="p">:</span> <span class="s2">&quot;file_bundle&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">load_config</span><span class="p">,</span> <span class="n">fb</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">load_config</span>
 </code></pre></div>
         </details>
     </div>

@@ -1343,9 +1343,7 @@ local file is supported. Thus, requiring the config value 'local' for 'source_pr
 
         <details class="quote">
           <summary>Source code in <code>core/file.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
 
     <span class="n">file_obj</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
 
@@ -1359,7 +1357,11 @@ local file is supported. Thus, requiring the config value 'local' for 'source_pr
             <span class="sa">f</span><span class="s2">&quot;Can&#39;t save file, path already exists: </span><span class="si">{</span><span class="n">full_target</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
-    <span class="n">fm</span> <span class="o">=</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">copy_file</span><span class="p">(</span><span class="n">full_target</span><span class="p">,</span> <span class="n">is_onboarded</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fm</span> <span class="o">=</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">copy_file</span><span class="p">(</span><span class="n">full_target</span><span class="p">)</span>
+
+    <span class="c1"># the following changes the input value, which is usually not allowed, but the file type is a special case</span>
+    <span class="n">file_obj</span><span class="o">.</span><span class="n">is_onboarded</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">file_obj</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">path</span>
 
     <span class="n">load_config</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;file.load&quot;</span><span class="p">,</span>
@@ -1367,7 +1369,7 @@ local file is supported. Thus, requiring the config value 'local' for 'source_pr
         <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;base_path&quot;</span><span class="p">:</span> <span class="n">base_path</span><span class="p">,</span> <span class="s2">&quot;rel_path&quot;</span><span class="p">:</span> <span class="n">file_name</span><span class="p">},</span>
         <span class="s2">&quot;output_name&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">load_config</span><span class="p">,</span> <span class="n">fm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">load_config</span>
 </code></pre></div>
         </details>
     </div>
