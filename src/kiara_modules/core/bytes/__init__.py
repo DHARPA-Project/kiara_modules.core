@@ -13,9 +13,9 @@ KIARA_METADATA = {"tags": ["bytes", "serialization"]}
 BYTES_SAVE_FILE_NAME = "bytes.bin"
 
 
-class SaveBytesTypeModule(StoreValueTypeModule):
+class StoreBytesTypeModule(StoreValueTypeModule):
 
-    _module_type_name = "save"
+    _module_type_name = "store"
 
     @classmethod
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:

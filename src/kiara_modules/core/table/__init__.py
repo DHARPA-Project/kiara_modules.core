@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import base64
 import os
 import typing
 
@@ -9,10 +8,10 @@ from kiara.data.values import ValueSchema
 from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
+from kiara.operations.create_value import CreateValueModule, CreateValueModuleConfig
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.sample import SampleValueModule
 from kiara.operations.store_value import StoreValueModuleConfig, StoreValueTypeModule
-from kiara.operations.type_convert import ConvertValueModule, TypeConversionModuleConfig
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
@@ -44,7 +43,7 @@ class SaveArrowTableConfig(StoreValueModuleConfig):
     )
 
 
-class SaveArrowTable(StoreValueTypeModule):
+class StoreArrowTable(StoreValueTypeModule):
 
     _config_cls = SaveArrowTableConfig
     _module_type_name = "store"
@@ -635,7 +634,7 @@ class MapColumnModule(KiaraModule):
         outputs.set_value("array", pa.array(result_list))
 
 
-class TableConversionModuleConfig(TypeConversionModuleConfig):
+class TableConversionModuleConfig(CreateValueModuleConfig):
 
     ignore_errors: bool = Field(
         description="Whether to ignore convert errors and omit the failed items.",
@@ -643,7 +642,7 @@ class TableConversionModuleConfig(TypeConversionModuleConfig):
     )
 
 
-class TableConversionModule(ConvertValueModule):
+class ConvertToTableModule(CreateValueModule):
     """Convert an Arrow table.
 
     This module supportes two conversion targets currently:
@@ -656,41 +655,41 @@ class TableConversionModule(ConvertValueModule):
     _config_cls = TableConversionModuleConfig
 
     @classmethod
-    def _get_supported_value_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+    def get_target_value_type(cls) -> str:
         return "table"
 
-    def to_bytes(self, value: Value) -> bytes:
+    # def to_bytes(self, value: Value) -> bytes:
+    #
+    #     import pyarrow as pa
+    #
+    #     table_val: Value = value
+    #     table: pa.Table = table_val.get_value_data()
+    #
+    #     batches = table.to_batches()
+    #
+    #     sink = pa.BufferOutputStream()
+    #     writer = pa.ipc.new_stream(sink, batches[0].schema)
+    #
+    #     for batch in batches:
+    #         writer.write_batch(batch)
+    #     writer.close()
+    #
+    #     buf: pa.Buffer = sink.getvalue()
+    #     return memoryview(buf)
+    #
+    # def to_string(self, value: Value):
+    #
+    #     _bytes: bytes = self.to_bytes(value)
+    #     string = base64.b64encode(_bytes)
+    #     return string.decode()
 
-        import pyarrow as pa
+    # def from_bytes(self, value: Value):
+    #     raise NotImplementedError()
+    #
+    # def from_string(self, value: Value):
+    #     raise NotImplementedError()
 
-        table_val: Value = value
-        table: pa.Table = table_val.get_value_data()
-
-        batches = table.to_batches()
-
-        sink = pa.BufferOutputStream()
-        writer = pa.ipc.new_stream(sink, batches[0].schema)
-
-        for batch in batches:
-            writer.write_batch(batch)
-        writer.close()
-
-        buf: pa.Buffer = sink.getvalue()
-        return memoryview(buf)
-
-    def to_string(self, value: Value):
-
-        _bytes: bytes = self.to_bytes(value)
-        string = base64.b64encode(_bytes)
-        return string.decode()
-
-    def from_bytes(self, value: Value):
-        raise NotImplementedError()
-
-    def from_string(self, value: Value):
-        raise NotImplementedError()
-
-    def from_file(self, value: Value):
+    def from_csv_file(self, value: Value):
 
         from pyarrow import csv
 
@@ -698,7 +697,7 @@ class TableConversionModule(ConvertValueModule):
         imported_data = csv.read_csv(input_file.path)
         return imported_data
 
-    def from_file_bundle(self, value: Value):
+    def from_txt_file_bundle(self, value: Value):
 
         import pyarrow as pa
 

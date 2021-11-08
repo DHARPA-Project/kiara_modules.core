@@ -24,7 +24,7 @@ ARRAY_SAVE_COLUM_NAME = "array"
 ARRAY_SAVE_FILE_NAME = "array.feather"
 
 
-class SaveArrayTypeModule(StoreValueTypeModule):
+class StoreArrayTypeModule(StoreValueTypeModule):
     """Save an Arrow array to a file.
 
     This module wraps the input array into an Arrow Table, and saves this table as a feather file.
@@ -33,7 +33,7 @@ class SaveArrayTypeModule(StoreValueTypeModule):
     the array object from disk.
     """
 
-    _module_type_name = "save"
+    _module_type_name = "store"
 
     @classmethod
     def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:

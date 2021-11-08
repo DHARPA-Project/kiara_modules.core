@@ -44,7 +44,7 @@ class DataProfilerModule(KiaraModule):
                 "module_config": {"value_type": sup_type},
                 "doc": doc,
             }
-            all_profiles[f"{sup_type}.data_profile"] = op_config
+            all_profiles[f"profile.{sup_type}.data"] = op_config
 
         return all_profiles
 
