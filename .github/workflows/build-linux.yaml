@@ -177,7 +177,7 @@ jobs:
           auto-activate-base: false
           activate-environment: "anaconda-build-env"
       - name: install conda build packages
-        run: conda install anaconda-client conda-build
+        run: conda install -n anaconda-build-env anaconda-client conda-build
       - name: build conda package
         shell: bash -l {0}
         run: conda activate anaconda-build-env && cd ci/conda/ && ./build-conda-packages.sh "kiara_modules.core" "${GITHUB_REF#refs/*/}" false
