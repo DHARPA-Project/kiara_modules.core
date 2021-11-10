@@ -2,7 +2,11 @@
 Changelog
 =========
 
-## Version 0.2.3 (upcoming)
+## Version 0.3.1 (upcoming)
+
+## Version 0.3.0
+
+- update because of kiara package operation refactoring
 
 ## Version 0.2.2
 
