@@ -106,7 +106,7 @@ class RestoreFromJsonDictModule(KiaraModule):
 
         return {
             "base_path": {
-                "type": "folder_path",
+                "type": "string",
                 "doc": "The folder that contains the serialized dict.",
             },
             "file_name": {

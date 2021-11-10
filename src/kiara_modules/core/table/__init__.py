@@ -651,7 +651,7 @@ class ConvertToTableModule(CreateValueModule):
      - string: the base64-encoded byte-representation of the Table
     """
 
-    _module_type_name = "convert"
+    _module_type_name = "create"
     _config_cls = TableConversionModuleConfig
 
     @classmethod
@@ -697,7 +697,7 @@ class ConvertToTableModule(CreateValueModule):
         imported_data = csv.read_csv(input_file.path)
         return imported_data
 
-    def from_txt_file_bundle(self, value: Value):
+    def from_text_file_bundle(self, value: Value):
 
         import pyarrow as pa
 

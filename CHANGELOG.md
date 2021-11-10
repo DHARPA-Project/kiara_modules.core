@@ -2,7 +2,11 @@
 Changelog
 =========
 
-## Version 0.3.1 (upcoming)
+## Version 0.3.2 (upcoming)
+
+## Version 0.3.1
+
+- minor fix
 
 ## Version 0.3.0
 
