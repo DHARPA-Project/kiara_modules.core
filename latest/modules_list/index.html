@@ -300,8 +300,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#arraysave" class="md-nav__link">
-    array.save
+  <a href="#arraystore" class="md-nav__link">
+    array.store
   </a>
   
 </li>
@@ -328,8 +328,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bytessave" class="md-nav__link">
-    bytes.save
+  <a href="#bytesstore" class="md-nav__link">
+    bytes.store
   </a>
   
 </li>
@@ -356,8 +356,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dictsave" class="md-nav__link">
-    dict.save
+  <a href="#dictstore" class="md-nav__link">
+    dict.store
   </a>
   
 </li>
@@ -384,15 +384,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fileread_content" class="md-nav__link">
-    file.read_content
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filesave" class="md-nav__link">
-    file.save
+  <a href="#filestore" class="md-nav__link">
+    file.store
   </a>
   
 </li>
@@ -419,29 +412,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#file_bundlesave" class="md-nav__link">
-    file_bundle.save
+  <a href="#file_bundlestore" class="md-nav__link">
+    file_bundle.store
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#genericload_from_json" class="md-nav__link">
-    generic.load_from_json
+  <a href="#genericrestore_from_json" class="md-nav__link">
+    generic.restore_from_json
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#genericload_scalar" class="md-nav__link">
-    generic.load_scalar
+  <a href="#genericrestore_scalar" class="md-nav__link">
+    generic.restore_scalar
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#genericsave" class="md-nav__link">
-    generic.save
+  <a href="#genericstore" class="md-nav__link">
+    generic.store
   </a>
   
 </li>
@@ -461,8 +454,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#listsave" class="md-nav__link">
-    list.save
+  <a href="#liststore" class="md-nav__link">
+    list.store
   </a>
   
 </li>
@@ -601,8 +594,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tablesave" class="md-nav__link">
-    table.save
+  <a href="#tablestore" class="md-nav__link">
+    table.store
   </a>
   
 </li>
@@ -1089,8 +1082,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#arraysave" class="md-nav__link">
-    array.save
+  <a href="#arraystore" class="md-nav__link">
+    array.store
   </a>
   
 </li>
@@ -1117,8 +1110,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bytessave" class="md-nav__link">
-    bytes.save
+  <a href="#bytesstore" class="md-nav__link">
+    bytes.store
   </a>
   
 </li>
@@ -1145,8 +1138,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dictsave" class="md-nav__link">
-    dict.save
+  <a href="#dictstore" class="md-nav__link">
+    dict.store
   </a>
   
 </li>
@@ -1173,15 +1166,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fileread_content" class="md-nav__link">
-    file.read_content
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filesave" class="md-nav__link">
-    file.save
+  <a href="#filestore" class="md-nav__link">
+    file.store
   </a>
   
 </li>
@@ -1208,29 +1194,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#file_bundlesave" class="md-nav__link">
-    file_bundle.save
+  <a href="#file_bundlestore" class="md-nav__link">
+    file_bundle.store
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#genericload_from_json" class="md-nav__link">
-    generic.load_from_json
+  <a href="#genericrestore_from_json" class="md-nav__link">
+    generic.restore_from_json
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#genericload_scalar" class="md-nav__link">
-    generic.load_scalar
+  <a href="#genericrestore_scalar" class="md-nav__link">
+    generic.restore_scalar
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#genericsave" class="md-nav__link">
-    generic.save
+  <a href="#genericstore" class="md-nav__link">
+    generic.store
   </a>
   
 </li>
@@ -1250,8 +1236,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#listsave" class="md-nav__link">
-    list.save
+  <a href="#liststore" class="md-nav__link">
+    list.store
   </a>
   
 </li>
@@ -1390,8 +1376,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tablesave" class="md-nav__link">
-    table.save
+  <a href="#tablestore" class="md-nav__link">
+    table.store
   </a>
   
 </li>
@@ -1566,7 +1552,11 @@
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
 
-                              value = inputs.get_value_obj(&quot;value_item&quot;)        
+                              input_name = self.value_type                      
+                              if input_name == &quot;any&quot;:                           
+                                  input_name = &quot;value_item&quot;                     
+
+                              value = inputs.get_value_obj(input_name)          
                               if self.value_type != &quot;any&quot; and value.type_nam…   
                                   raise KiaraProcessingException(               
                                       f&quot;Can&#39;t extract metadata for value of …   
@@ -1577,7 +1567,7 @@
                               outputs.set_value(&quot;metadata_item_schema&quot;, self…   
                               metadata = self.extract_metadata(value)           
                               if isinstance(metadata, BaseModel):               
-                                  metadata = metadata.dict()                    
+                                  metadata = metadata.dict(exclude_none=True)   
 
                               # TODO: validate metadata?                        
                               outputs.set_value(&quot;metadata_item&quot;, metadata)      
@@ -1636,7 +1626,10 @@
                                       f&quot;Invalid sample size &#39;{sample_size}&#39;:…   
                                   )                                             
 
-                              value: Value = inputs.get_value_obj(&quot;value_ite…   
+                              input_name = self.get_value_type()                
+                              if input_name == &quot;any&quot;:                           
+                                  input_name = &quot;value_item&quot;                     
+                              value: Value = inputs.get_value_obj(input_name)   
 
                               func = getattr(self, f&quot;sample_{sample_type}&quot;)     
                               result = func(value=value, sample_size=sample_…   
@@ -1646,7 +1639,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="arraysave"><code>array.save</code><a class="headerlink" href="#arraysave" title="Permanent link">&para;</a></h2>
+<h2 id="arraystore"><code>array.store</code><a class="headerlink" href="#arraystore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           Save an Arrow array to a file.                        
 
@@ -1684,9 +1677,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    SaveArrayTypeModule                     
+                          class_name    StoreArrayTypeModule                    
                           module_name   kiara_modules.core.array                
-                          full_name     kiara_modules.core.array.SaveArrayTy…   
+                          full_name     kiara_modules.core.array.StoreArrayT…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -1694,10 +1687,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -1707,7 +1719,9 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -1720,7 +1734,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, serialization               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1771,7 +1785,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, msgpack, serialization      
+                          Tags         core, serialization, msgpack, bytes      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1834,7 +1848,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, msgpack, serialization      
+                          Tags         core, serialization, msgpack, bytes      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1890,7 +1904,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="bytessave"><code>bytes.save</code><a class="headerlink" href="#bytessave" title="Permanent link">&para;</a></h2>
+<h2 id="bytesstore"><code>bytes.store</code><a class="headerlink" href="#bytesstore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           -- n/a --                                             
 
@@ -1898,7 +1912,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, serialization               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1921,9 +1935,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    SaveBytesTypeModule                     
+                          class_name    StoreBytesTypeModule                    
                           module_name   kiara_modules.core.bytes                
-                          full_name     kiara_modules.core.bytes.SaveBytesTy…   
+                          full_name     kiara_modules.core.bytes.StoreBytesT…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -1931,10 +1945,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -1944,7 +1977,9 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -2152,7 +2187,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="dictsave"><code>dict.save</code><a class="headerlink" href="#dictsave" title="Permanent link">&para;</a></h2>
+<h2 id="dictstore"><code>dict.store</code><a class="headerlink" href="#dictstore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           -- n/a --                                             
 
@@ -2201,10 +2236,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -2214,14 +2268,16 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
 <h2 id="fileimport"><code>file.import</code><a class="headerlink" href="#fileimport" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
-                          -- n/a --                                             
+                          Import an external file into a kiara session.         
 
  Origin                                                                         
                           Authors   Markus Binsteiner (markus@frkl.io)          
@@ -2269,10 +2325,15 @@
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
 
-                              source: str = inputs.get_value_data(&quot;source&quot;)     
-
                               source_profile: str = self.get_config_value(&quot;s…   
                               source_type: str = self.get_config_value(&quot;sour…   
+
+                              source = inputs.get_value_data(source_profile)    
+
+                              if self.get_target_value_type() == &quot;any&quot;:         
+                                  output_key: str = &quot;value_item&quot;                
+                              else:                                             
+                                  output_key = self.get_target_value_type()     
 
                               func_name = f&quot;import_from__{source_profile}__{…   
                               if not hasattr(self, func_name):                  
@@ -2280,51 +2341,20 @@
                                       f&quot;Can&#39;t import &#39;{source_type}&#39; value: …   
                                   )                                             
 
-                              # allow_save = self.get_config_value(&quot;allow_sa…   
-                              # if allow_save:                                  
-                              #     save = inputs.get_value_data(&quot;save&quot;)        
-                              # else:                                           
-                              #     save = self.get_config_value(&quot;save_defau…   
-                              #                                                 
-                              # allow_aliases: typing.Optional[bool] = self.…   
-                              #     &quot;allow_aliases_input&quot;                       
-                              # )                                               
-                              # if allow_aliases is None:                       
-                              #     allow_aliases = allow_save                  
-                              #                                                 
-                              # if allow_aliases:                               
-                              #     aliases = inputs.get_value_data(&quot;aliases…   
-                              # else:                                           
-                              #     aliases = self.get_config_value(&quot;aliases…   
-                              #                                                 
-                              # if aliases and not save:                        
-                              #     raise KiaraProcessingException(             
-                              #         f&quot;Can&#39;t import file from &#39;{source}&#39;:…   
-                              #     )                                           
-                              #                                                 
-                              # if aliases is None:                             
-                              #     aliases = []                                
-
                               func = getattr(self, func_name)                   
                               # TODO: check signature?                          
 
                               result = func(source)                             
-                              schema = ValueSchema(                             
-                                  type=self.get_target_value_type(), doc=&quot;Im…   
-                              )                                                 
+                              # schema = ValueSchema(type=self.get_target_va…   
 
-                              value_lineage = ValueLineage.from_module_and_i…   
-                                  module=self, output_name=&quot;value_item&quot;, inp…   
-                              )                                                 
-                              value: Value = self._kiara.data_registry.regis…   
-                                  value_data=result, value_schema=schema, li…   
-                              )                                                 
+                              # value_lineage = ValueLineage.from_module_and…   
+                              #     module=self, output_name=output_key, inp…   
+                              # )                                               
+                              # value: Value = self._kiara.data_registry.reg…   
+                              #     value_data=result, value_schema=schema, …   
+                              # )                                               
 
-                              # if save:                                        
-                              #     value_saved = self._kiara.data_store.reg…   
-                              #     self._kiara.data_store.link_aliases(valu…   
-
-                              outputs.set_values(value_item=value)              
+                              outputs.set_value(output_key, result)             
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -2420,7 +2450,11 @@
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
 
-                              value = inputs.get_value_obj(&quot;value_item&quot;)        
+                              input_name = self.value_type                      
+                              if input_name == &quot;any&quot;:                           
+                                  input_name = &quot;value_item&quot;                     
+
+                              value = inputs.get_value_obj(input_name)          
                               if self.value_type != &quot;any&quot; and value.type_nam…   
                                   raise KiaraProcessingException(               
                                       f&quot;Can&#39;t extract metadata for value of …   
@@ -2431,7 +2465,7 @@
                               outputs.set_value(&quot;metadata_item_schema&quot;, self…   
                               metadata = self.extract_metadata(value)           
                               if isinstance(metadata, BaseModel):               
-                                  metadata = metadata.dict()                    
+                                  metadata = metadata.dict(exclude_none=True)   
 
                               # TODO: validate metadata?                        
                               outputs.set_value(&quot;metadata_item&quot;, metadata)      
@@ -2439,85 +2473,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="fileread_content"><code>file.read_content</code><a class="headerlink" href="#fileread_content" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code> Documentation                                                                  
-                          Import a file into the kiara data store.              
-
-                          This module will support multiple source types and    
-                          profiles in the future, but at the moment only        
-                          import from local file is supported. Thus,            
-                          requiring the config value &#39;local&#39; for                
-                          &#39;source_profile&#39;, and &#39;file_path&#39; for                 
-                          &#39;source_type&#39;.                                        
-
- Origin                                                                         
-                          Authors   Markus Binsteiner (markus@frkl.io)          
-
- Context                                                                        
-                          Tags         core                                     
-                          Labels       package: kiara_modules.core              
-                          References   source_repo:                             
-                                       https://github.com/DHARPA-Project/kia…   
-                                       documentation:                           
-                                       https://dharpa.org/kiara_modules.core/   
-                                       module_doc:                              
-                                       https://dharpa.org/kiara_modules.core…   
-                                       source_url:                              
-                                       https://github.com/DHARPA-Project/kia…   
-
- Module config                                                                  
-                          Field          Type      Description       Required   
-                         ─────────────────────────────────────────────────────  
-                          constants      object    Value constants   no         
-                                                   for this                     
-                                                   module.                      
-                          defaults       object    Value defaults    no         
-                                                   for this                     
-                                                   module.                      
-                          read_as_text   boolean   Whether to read   no         
-                                                   the file as                  
-                                                   text, or                     
-                                                   binary.                      
-
- Module config          -- no config --                                         
- Python class                                                                   
-                          class_name    ReadFileContentModule                   
-                          module_name   kiara_modules.core.file                 
-                          full_name     kiara_modules.core.file.ReadFileCont…   
-
- Processing source code  ─────────────────────────────────────────────────────  
-                          def process(self, inputs: ValueSet, outputs: Value…   
-
-                              as_text = self.get_config_value(&quot;read_as_text&quot;)   
-                              base_path = inputs.get_value_data(&quot;base_path&quot;)    
-                              file_name = inputs.get_value_data(&quot;file_name&quot;)    
-
-                              full_path = os.path.join(base_path, file_name)    
-
-                              if not os.path.exists(full_path):                 
-                                  raise KiaraProcessingException(               
-                                      f&quot;Can&#39;t read string value, path to fil…   
-                                  )                                             
-
-                              if not os.path.isfile(os.path.realpath(full_pa…   
-                                  raise KiaraProcessingException(               
-                                      f&quot;Can&#39;t read string value, path is not…   
-                                  )                                             
-
-                              if as_text:                                       
-                                  mode = &quot;r&quot;                                    
-                              else:                                             
-                                  mode = &quot;rb&quot;                                   
-
-                              with open(full_path, mode) as f:                  
-                                  content = f.read()                            
-
-                              outputs.set_value(&quot;value_item&quot;, content)          
-
-                         ─────────────────────────────────────────────────────  
-</code></pre></div>
-
-<h2 id="filesave"><code>file.save</code><a class="headerlink" href="#filesave" title="Permanent link">&para;</a></h2>
+<h2 id="filestore"><code>file.store</code><a class="headerlink" href="#filestore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           Save a file to disk.                                  
 
@@ -2548,9 +2504,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    SaveFileTypeModule                      
+                          class_name    StoreFileTypeModule                     
                           module_name   kiara_modules.core.file                 
-                          full_name     kiara_modules.core.file.SaveFileType…   
+                          full_name     kiara_modules.core.file.StoreFileTyp…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -2558,10 +2514,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -2571,7 +2546,9 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -2633,10 +2610,15 @@
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
 
-                              source: str = inputs.get_value_data(&quot;source&quot;)     
-
                               source_profile: str = self.get_config_value(&quot;s…   
                               source_type: str = self.get_config_value(&quot;sour…   
+
+                              source = inputs.get_value_data(source_profile)    
+
+                              if self.get_target_value_type() == &quot;any&quot;:         
+                                  output_key: str = &quot;value_item&quot;                
+                              else:                                             
+                                  output_key = self.get_target_value_type()     
 
                               func_name = f&quot;import_from__{source_profile}__{…   
                               if not hasattr(self, func_name):                  
@@ -2644,51 +2626,20 @@
                                       f&quot;Can&#39;t import &#39;{source_type}&#39; value: …   
                                   )                                             
 
-                              # allow_save = self.get_config_value(&quot;allow_sa…   
-                              # if allow_save:                                  
-                              #     save = inputs.get_value_data(&quot;save&quot;)        
-                              # else:                                           
-                              #     save = self.get_config_value(&quot;save_defau…   
-                              #                                                 
-                              # allow_aliases: typing.Optional[bool] = self.…   
-                              #     &quot;allow_aliases_input&quot;                       
-                              # )                                               
-                              # if allow_aliases is None:                       
-                              #     allow_aliases = allow_save                  
-                              #                                                 
-                              # if allow_aliases:                               
-                              #     aliases = inputs.get_value_data(&quot;aliases…   
-                              # else:                                           
-                              #     aliases = self.get_config_value(&quot;aliases…   
-                              #                                                 
-                              # if aliases and not save:                        
-                              #     raise KiaraProcessingException(             
-                              #         f&quot;Can&#39;t import file from &#39;{source}&#39;:…   
-                              #     )                                           
-                              #                                                 
-                              # if aliases is None:                             
-                              #     aliases = []                                
-
                               func = getattr(self, func_name)                   
                               # TODO: check signature?                          
 
                               result = func(source)                             
-                              schema = ValueSchema(                             
-                                  type=self.get_target_value_type(), doc=&quot;Im…   
-                              )                                                 
+                              # schema = ValueSchema(type=self.get_target_va…   
 
-                              value_lineage = ValueLineage.from_module_and_i…   
-                                  module=self, output_name=&quot;value_item&quot;, inp…   
-                              )                                                 
-                              value: Value = self._kiara.data_registry.regis…   
-                                  value_data=result, value_schema=schema, li…   
-                              )                                                 
+                              # value_lineage = ValueLineage.from_module_and…   
+                              #     module=self, output_name=output_key, inp…   
+                              # )                                               
+                              # value: Value = self._kiara.data_registry.reg…   
+                              #     value_data=result, value_schema=schema, …   
+                              # )                                               
 
-                              # if save:                                        
-                              #     value_saved = self._kiara.data_store.reg…   
-                              #     self._kiara.data_store.link_aliases(valu…   
-
-                              outputs.set_values(value_item=value)              
+                              outputs.set_value(output_key, result)             
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -2795,7 +2746,11 @@
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
 
-                              value = inputs.get_value_obj(&quot;value_item&quot;)        
+                              input_name = self.value_type                      
+                              if input_name == &quot;any&quot;:                           
+                                  input_name = &quot;value_item&quot;                     
+
+                              value = inputs.get_value_obj(input_name)          
                               if self.value_type != &quot;any&quot; and value.type_nam…   
                                   raise KiaraProcessingException(               
                                       f&quot;Can&#39;t extract metadata for value of …   
@@ -2806,7 +2761,7 @@
                               outputs.set_value(&quot;metadata_item_schema&quot;, self…   
                               metadata = self.extract_metadata(value)           
                               if isinstance(metadata, BaseModel):               
-                                  metadata = metadata.dict()                    
+                                  metadata = metadata.dict(exclude_none=True)   
 
                               # TODO: validate metadata?                        
                               outputs.set_value(&quot;metadata_item&quot;, metadata)      
@@ -2814,7 +2769,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="file_bundlesave"><code>file_bundle.save</code><a class="headerlink" href="#file_bundlesave" title="Permanent link">&para;</a></h2>
+<h2 id="file_bundlestore"><code>file_bundle.store</code><a class="headerlink" href="#file_bundlestore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           Save a file bundle to disk.                           
 
@@ -2845,9 +2800,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    SaveFileBundleType                      
+                          class_name    StoreFileBundleType                     
                           module_name   kiara_modules.core.file_bundle          
-                          full_name     kiara_modules.core.file_bundle.SaveF…   
+                          full_name     kiara_modules.core.file_bundle.Store…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -2855,10 +2810,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -2868,12 +2842,14 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="genericload_from_json"><code>generic.load_from_json</code><a class="headerlink" href="#genericload_from_json" title="Permanent link">&para;</a></h2>
+<h2 id="genericrestore_from_json"><code>generic.restore_from_json</code><a class="headerlink" href="#genericrestore_from_json" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           -- n/a --                                             
 
@@ -2902,9 +2878,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    LoadFromJsonDictModule                  
+                          class_name    RestoreFromJsonDictModule               
                           module_name   kiara_modules.core.generic              
-                          full_name     kiara_modules.core.generic.LoadFromJ…   
+                          full_name     kiara_modules.core.generic.RestoreFr…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -2933,7 +2909,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="genericload_scalar"><code>generic.load_scalar</code><a class="headerlink" href="#genericload_scalar" title="Permanent link">&para;</a></h2>
+<h2 id="genericrestore_scalar"><code>generic.restore_scalar</code><a class="headerlink" href="#genericrestore_scalar" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           Utility module, only used internally.                 
 
@@ -2965,9 +2941,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    LoadScalarModule                        
+                          class_name    RestoreScalarModule                     
                           module_name   kiara_modules.core.generic              
-                          full_name     kiara_modules.core.generic.LoadScala…   
+                          full_name     kiara_modules.core.generic.RestoreSc…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -2978,7 +2954,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="genericsave"><code>generic.save</code><a class="headerlink" href="#genericsave" title="Permanent link">&para;</a></h2>
+<h2 id="genericstore"><code>generic.store</code><a class="headerlink" href="#genericstore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           -- n/a --                                             
 
@@ -3009,9 +2985,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    SaveBooleanModule                       
+                          class_name    StoreScalarModule                       
                           module_name   kiara_modules.core.generic              
-                          full_name     kiara_modules.core.generic.SaveBoole…   
+                          full_name     kiara_modules.core.generic.StoreScal…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -3019,10 +2995,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -3032,7 +3027,9 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -3138,7 +3135,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="listsave"><code>list.save</code><a class="headerlink" href="#listsave" title="Permanent link">&para;</a></h2>
+<h2 id="liststore"><code>list.store</code><a class="headerlink" href="#liststore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           -- n/a --                                             
 
@@ -3177,9 +3174,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    SaveDictModule                          
+                          class_name    StoreDictModule                         
                           module_name   kiara_modules.core.list                 
-                          full_name     kiara_modules.core.list.SaveDictModu…   
+                          full_name     kiara_modules.core.list.StoreDictMod…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -3187,10 +3184,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -3200,7 +3216,9 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -3700,12 +3718,12 @@
                           defaults         object    Value           no         
                                                      defaults for               
                                                      this module.               
-                          source_type      string    The type of     yes        
-                                                     the source                 
+                          source_profile   string    The profile     yes        
+                                                     of the source              
                                                      value.                     
                           target_type      string    The type of     yes        
-                                                     the converted              
-                                                     value.                     
+                                                     the value to               
+                                                     convert to.                
                           allow_none_in…   boolean   Whether to      no         
                                                      allow &#39;none&#39;               
                                                      source                     
@@ -3723,20 +3741,24 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    TableConversionModule                   
+                          class_name    ConvertToTableModule                    
                           module_name   kiara_modules.core.table                
-                          full_name     kiara_modules.core.table.TableConver…   
+                          full_name     kiara_modules.core.table.ConvertToTa…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
 
-                              supported_types = self.get_supported_value_typ…   
-                              source_type: str = self.get_config_value(&quot;sour…   
+                              source_profile: str = self.get_config_value(&quot;s…   
+                              source_config: typing.Mapping[                    
+                                  str, typing.Mapping[str, typing.Any]          
+                              ] = self._kiara.type_mgmt.get_type_config_for_…   
+                              source_type = source_config[&quot;type&quot;]               
+
                               target_type: str = self.get_config_value(&quot;targ…   
 
                               allow_none: bool = self.get_config_value(&quot;allo…   
 
-                              source: Value = inputs.get_value_obj(&quot;value_it…   
+                              source: Value = inputs.get_value_obj(source_pr…   
                               if source_type != source.type_name:               
                                   raise KiaraProcessingException(               
                                       f&quot;Invalid type ({source.type_name}) of…   
@@ -3749,28 +3771,15 @@
                                   else:                                         
                                       raise KiaraProcessingException(&quot;No sou…   
 
-                              if source_type in supported_types:                
-                                  # means this is a &#39;to&#39; conversion             
+                              if not hasattr(self, f&quot;from_{source_profile}&quot;):   
+                                  raise Exception(                              
+                                      f&quot;Module &#39;{self._module_type_id}&#39; can&#39;…   
+                                  )                                             
 
-                                  if not hasattr(self, f&quot;to_{target_type}&quot;):    
-                                      # this can never happen, I think          
-                                      raise Exception(                          
-                                          f&quot;Module &#39;{self._module_type_id}&#39; …   
-                                      )                                         
-
-                                  func = getattr(self, f&quot;to_{target_type}&quot;)     
-                              elif target_type in supported_types:              
-                                  # menas this is a &#39;from&#39; conversion           
-                                  if not hasattr(self, f&quot;from_{source_type}&quot;…   
-                                      # this can never happen, I think          
-                                      raise Exception(                          
-                                          f&quot;Module &#39;{self._module_type_id}&#39; …   
-                                      )                                         
-
-                                  func = getattr(self, f&quot;from_{source_type}&quot;)   
+                              func = getattr(self, f&quot;from_{source_profile}&quot;)    
 
                               converted = func(source)                          
-                              outputs.set_value(&quot;value_item&quot;, converted)        
+                              outputs.set_value(target_type, converted)         
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -4250,7 +4259,11 @@
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
 
-                              value = inputs.get_value_obj(&quot;value_item&quot;)        
+                              input_name = self.value_type                      
+                              if input_name == &quot;any&quot;:                           
+                                  input_name = &quot;value_item&quot;                     
+
+                              value = inputs.get_value_obj(input_name)          
                               if self.value_type != &quot;any&quot; and value.type_nam…   
                                   raise KiaraProcessingException(               
                                       f&quot;Can&#39;t extract metadata for value of …   
@@ -4261,7 +4274,7 @@
                               outputs.set_value(&quot;metadata_item_schema&quot;, self…   
                               metadata = self.extract_metadata(value)           
                               if isinstance(metadata, BaseModel):               
-                                  metadata = metadata.dict()                    
+                                  metadata = metadata.dict(exclude_none=True)   
 
                               # TODO: validate metadata?                        
                               outputs.set_value(&quot;metadata_item&quot;, metadata)      
@@ -4280,7 +4293,6 @@
                           Examples: An example for a query could be:            
 
                           ┌─────────────────────────────────────────────────┐   
-                          │ ```                                             │   
                           │     {                                           │   
                           │       df(where: {                               │   
                           │         Language: {_eq: &quot;German&quot;}               │   
@@ -4292,7 +4304,6 @@
                           │         }                                       │   
                           │       }                                         │   
                           │     }                                           │   
-                          │ ```                                             │   
                           └─────────────────────────────────────────────────┘   
 
  Origin                                                                         
@@ -4412,6 +4423,8 @@
                               relation: duckdb.DuckDBPyRelation = duckdb.arr…   
                               result: duckdb.DuckDBPyResult = relation.query…   
 
+                              print(result.arrow())                             
+
                               outputs.set_value(&quot;query_result&quot;, result.arrow…   
 
                          ─────────────────────────────────────────────────────  
@@ -4468,7 +4481,10 @@
                                       f&quot;Invalid sample size &#39;{sample_size}&#39;:…   
                                   )                                             
 
-                              value: Value = inputs.get_value_obj(&quot;value_ite…   
+                              input_name = self.get_value_type()                
+                              if input_name == &quot;any&quot;:                           
+                                  input_name = &quot;value_item&quot;                     
+                              value: Value = inputs.get_value_obj(input_name)   
 
                               func = getattr(self, f&quot;sample_{sample_type}&quot;)     
                               result = func(value=value, sample_size=sample_…   
@@ -4478,7 +4494,7 @@
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
 
-<h2 id="tablesave"><code>table.save</code><a class="headerlink" href="#tablesave" title="Permanent link">&para;</a></h2>
+<h2 id="tablestore"><code>table.store</code><a class="headerlink" href="#tablestore" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code> Documentation                                                                  
                           -- n/a --                                             
 
@@ -4512,9 +4528,9 @@
 
  Module config          -- no config --                                         
  Python class                                                                   
-                          class_name    SaveArrowTable                          
+                          class_name    StoreArrowTable                         
                           module_name   kiara_modules.core.table                
-                          full_name     kiara_modules.core.table.SaveArrowTa…   
+                          full_name     kiara_modules.core.table.StoreArrowT…   
 
  Processing source code  ─────────────────────────────────────────────────────  
                           def process(self, inputs: ValueSet, outputs: Value…   
@@ -4522,10 +4538,29 @@
                               value_id: str = inputs.get_value_data(&quot;value_i…   
                               if not value_id:                                  
                                   raise KiaraProcessingException(&quot;No value i…   
-                              value_obj: Value = inputs.get_value_obj(&quot;value…   
+
+                              field_name = self.get_config_value(&quot;value_type…   
+                              if field_name == &quot;any&quot;:                           
+                                  field_name = &quot;value_item&quot;                     
+
+                              value_obj: Value = inputs.get_value_obj(field_…   
                               base_path: str = inputs.get_value_data(&quot;base_p…   
 
-                              load_config = self.save_value(value=value_obj,…   
+                              result = self.store_value(value=value_obj, bas…   
+                              if isinstance(result, typing.Mapping):            
+                                  load_config = result                          
+                                  result_value = value_obj                      
+                              elif isinstance(result, tuple):                   
+                                  load_config = result[0]                       
+                                  if result[1]:                                 
+                                      result_value = result[1]                  
+                                  else:                                         
+                                      result_value = value_obj                  
+                              else:                                             
+                                  raise KiaraProcessingException(               
+                                      f&quot;Invalid result type for &#39;store_value…   
+                                  )                                             
+
                               load_config[&quot;value_id&quot;] = value_id                
 
                               lc = LoadConfig(**load_config)                    
@@ -4535,7 +4570,9 @@
                                       f&quot;Invalid load config: base path &#39;{lc.…   
                                   )                                             
 
-                              outputs.set_values(load_config=lc)                
+                              outputs.set_values(                               
+                                  metadata=None, lineage=None, **{&quot;load_conf…   
+                              )                                                 
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>

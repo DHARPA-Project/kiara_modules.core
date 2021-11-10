@@ -553,16 +553,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.list.SaveDictModule" class="md-nav__link">
-    SaveDictModule
+  <a href="#kiara_modules.core.list.StoreDictModule" class="md-nav__link">
+    StoreDictModule
   </a>
   
-    <nav class="md-nav" aria-label="SaveDictModule">
+    <nav class="md-nav" aria-label="StoreDictModule">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kiara_modules.core.list.SaveDictModule.save_value" class="md-nav__link">
-    save_value()
+  <a href="#kiara_modules.core.list.StoreDictModule.store_value" class="md-nav__link">
+    store_value()
   </a>
   
 </li>
@@ -815,16 +815,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.list.SaveDictModule" class="md-nav__link">
-    SaveDictModule
+  <a href="#kiara_modules.core.list.StoreDictModule" class="md-nav__link">
+    StoreDictModule
   </a>
   
-    <nav class="md-nav" aria-label="SaveDictModule">
+    <nav class="md-nav" aria-label="StoreDictModule">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kiara_modules.core.list.SaveDictModule.save_value" class="md-nav__link">
-    save_value()
+  <a href="#kiara_modules.core.list.StoreDictModule.store_value" class="md-nav__link">
+    store_value()
   </a>
   
 </li>
@@ -912,15 +912,15 @@
 
       <p>Abstract method to implement by child classes, returns a description of the input schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[input_field_name]: {
-      "type": "[value_type]",
-      "doc<em>": "[a description of this input]",
-      "optional</em>': [boolean whether this input is optional or required (defaults to 'False')]
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[input_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this input]",
+          "optional*': [boolean whether this input is optional or required (defaults to 'False')]
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/list.py</code></summary>
@@ -959,14 +959,14 @@
 
       <p>Abstract method to implement by child classes, returns a description of the output schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[output_field_name]: {
-      "type": "[value_type]",
-      "doc*": "[a description of this output]"
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[output_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this output]"
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/list.py</code></summary>
@@ -1005,12 +1005,12 @@
 
 
 
-<h2 id="kiara_modules.core.list.SaveDictModule" class="doc doc-heading">
-        <code>SaveDictModule</code>
+<h2 id="kiara_modules.core.list.StoreDictModule" class="doc doc-heading">
+        <code>StoreDictModule</code>
 
 
 
-<a href="#kiara_modules.core.list.SaveDictModule" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#kiara_modules.core.list.StoreDictModule" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents ">
 
@@ -1033,11 +1033,11 @@
 
 
 
-<h3 id="kiara_modules.core.list.SaveDictModule.save_value" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
+<h3 id="kiara_modules.core.list.StoreDictModule.store_value" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
 
 
-<a href="#kiara_modules.core.list.SaveDictModule.save_value" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#kiara_modules.core.list.StoreDictModule.store_value" class="headerlink" title="Permanent link">&para;</a></h3>
 
     <div class="doc doc-contents ">
 
@@ -1045,7 +1045,7 @@
 
         <details class="quote">
           <summary>Source code in <code>core/list.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
 
     <span class="kn">import</span> <span class="nn">orjson</span>
 
@@ -1060,7 +1060,7 @@
     <span class="n">full_path</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
 
     <span class="n">load_config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;generic.load_from_json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;generic.restore_from_json&quot;</span><span class="p">,</span>
         <span class="s2">&quot;base_path_input_name&quot;</span><span class="p">:</span> <span class="s2">&quot;base_path&quot;</span><span class="p">,</span>
         <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;base_path&quot;</span><span class="p">:</span> <span class="n">base_path</span><span class="p">,</span>

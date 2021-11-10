@@ -624,6 +624,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#kiara_modules.core.table.__init__.ConvertToTableModule" class="md-nav__link">
+    ConvertToTableModule
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#kiara_modules.core.table.__init__.CutColumnModule" class="md-nav__link">
     CutColumnModule
   </a>
@@ -847,26 +854,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.__init__.SaveArrowTable" class="md-nav__link">
-    SaveArrowTable
-  </a>
-  
-    <nav class="md-nav" aria-label="SaveArrowTable">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.__init__.SaveArrowTable.save_value" class="md-nav__link">
-    save_value()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#kiara_modules.core.table.__init__.SaveArrowTableConfig" class="md-nav__link">
     SaveArrowTableConfig
   </a>
@@ -887,9 +874,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.__init__.TableConversionModule" class="md-nav__link">
-    TableConversionModule
+  <a href="#kiara_modules.core.table.__init__.StoreArrowTable" class="md-nav__link">
+    StoreArrowTable
   </a>
+  
+    <nav class="md-nav" aria-label="StoreArrowTable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.table.__init__.StoreArrowTable.store_value" class="md-nav__link">
+    store_value()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1038,6 +1038,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#kiara_modules.core.table.__init__.ConvertToTableModule" class="md-nav__link">
+    ConvertToTableModule
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#kiara_modules.core.table.__init__.CutColumnModule" class="md-nav__link">
     CutColumnModule
   </a>
@@ -1261,26 +1268,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.__init__.SaveArrowTable" class="md-nav__link">
-    SaveArrowTable
-  </a>
-  
-    <nav class="md-nav" aria-label="SaveArrowTable">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.__init__.SaveArrowTable.save_value" class="md-nav__link">
-    save_value()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#kiara_modules.core.table.__init__.SaveArrowTableConfig" class="md-nav__link">
     SaveArrowTableConfig
   </a>
@@ -1301,9 +1288,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.__init__.TableConversionModule" class="md-nav__link">
-    TableConversionModule
+  <a href="#kiara_modules.core.table.__init__.StoreArrowTable" class="md-nav__link">
+    StoreArrowTable
   </a>
+  
+    <nav class="md-nav" aria-label="StoreArrowTable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.table.__init__.StoreArrowTable.store_value" class="md-nav__link">
+    store_value()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1376,6 +1376,52 @@
 
 
 
+<h2 id="kiara_modules.core.table.__init__.ConvertToTableModule" class="doc doc-heading">
+        <code>ConvertToTableModule</code>
+
+
+
+<a href="#kiara_modules.core.table.__init__.ConvertToTableModule" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert an Arrow table.</p>
+<p>This module supportes two conversion targets currently:</p>
+<ul>
+<li>bytes: a memoryview of the byte-representation of the Table</li>
+<li>string: the base64-encoded byte-representation of the Table</li>
+</ul>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
 <h2 id="kiara_modules.core.table.__init__.CutColumnModule" class="doc doc-heading">
         <code>CutColumnModule</code>
 
@@ -1414,15 +1460,15 @@
 
       <p>Abstract method to implement by child classes, returns a description of the input schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[input_field_name]: {
-      "type": "[value_type]",
-      "doc<em>": "[a description of this input]",
-      "optional</em>': [boolean whether this input is optional or required (defaults to 'False')]
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[input_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this input]",
+          "optional*': [boolean whether this input is optional or required (defaults to 'False')]
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -1462,14 +1508,14 @@
 
       <p>Abstract method to implement by child classes, returns a description of the output schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[output_field_name]: {
-      "type": "[value_type]",
-      "doc*": "[a description of this output]"
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[output_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this output]"
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -1544,15 +1590,15 @@
 
       <p>Abstract method to implement by child classes, returns a description of the input schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[input_field_name]: {
-      "type": "[value_type]",
-      "doc<em>": "[a description of this input]",
-      "optional</em>': [boolean whether this input is optional or required (defaults to 'False')]
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[input_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this input]",
+          "optional*': [boolean whether this input is optional or required (defaults to 'False')]
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -1607,14 +1653,14 @@
 
       <p>Abstract method to implement by child classes, returns a description of the output schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[output_field_name]: {
-      "type": "[value_type]",
-      "doc*": "[a description of this output]"
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[output_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this output]"
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -1693,15 +1739,15 @@
 
       <p>Abstract method to implement by child classes, returns a description of the input schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[input_field_name]: {
-      "type": "[value_type]",
-      "doc<em>": "[a description of this input]",
-      "optional</em>': [boolean whether this input is optional or required (defaults to 'False')]
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[input_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this input]",
+          "optional*': [boolean whether this input is optional or required (defaults to 'False')]
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -1749,14 +1795,14 @@
 
       <p>Abstract method to implement by child classes, returns a description of the output schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[output_field_name]: {
-      "type": "[value_type]",
-      "doc*": "[a description of this output]"
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[output_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this output]"
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -1835,15 +1881,15 @@
 
       <p>Abstract method to implement by child classes, returns a description of the input schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[input_field_name]: {
-      "type": "[value_type]",
-      "doc<em>": "[a description of this input]",
-      "optional</em>': [boolean whether this input is optional or required (defaults to 'False')]
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[input_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this input]",
+          "optional*': [boolean whether this input is optional or required (defaults to 'False')]
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -1894,14 +1940,14 @@
 
       <p>Abstract method to implement by child classes, returns a description of the output schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[output_field_name]: {
-      "type": "[value_type]",
-      "doc*": "[a description of this output]"
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[output_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this output]"
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -2159,15 +2205,15 @@
 
       <p>Abstract method to implement by child classes, returns a description of the input schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[input_field_name]: {
-      "type": "[value_type]",
-      "doc<em>": "[a description of this input]",
-      "optional</em>': [boolean whether this input is optional or required (defaults to 'False')]
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[input_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this input]",
+          "optional*': [boolean whether this input is optional or required (defaults to 'False')]
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -2201,14 +2247,14 @@
 
       <p>Abstract method to implement by child classes, returns a description of the output schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[output_field_name]: {
-      "type": "[value_type]",
-      "doc*": "[a description of this output]"
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[output_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this output]"
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/table/__init__.py</code></summary>
@@ -2386,98 +2432,6 @@ of the original data, to adjust parameters before a full run.</p>
 
 
 
-<h2 id="kiara_modules.core.table.__init__.SaveArrowTable" class="doc doc-heading">
-        <code>SaveArrowTable</code>
-
-
-
-<a href="#kiara_modules.core.table.__init__.SaveArrowTable" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="kiara_modules.core.table.__init__.SaveArrowTable.save_value" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
-
-
-<a href="#kiara_modules.core.table.__init__.SaveArrowTable.save_value" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Save the value, and return the load config needed to load it again.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>core/table/__init__.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-
-    <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
-    <span class="kn">from</span> <span class="nn">pyarrow</span> <span class="kn">import</span> <span class="n">feather</span>
-
-    <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
-    <span class="n">full_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">DEFAULT_SAVE_TABLE_FILE_NAME</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">KiaraProcessingException</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Can&#39;t save table, file already exists: </span><span class="si">{</span><span class="n">full_path</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">full_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">compression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config_value</span><span class="p">(</span><span class="s2">&quot;compression&quot;</span><span class="p">)</span>
-
-    <span class="n">feather</span><span class="o">.</span><span class="n">write_feather</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">full_path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
-
-    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;table.load&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;base_path_input_name&quot;</span><span class="p">:</span> <span class="s2">&quot;base_path&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;base_path&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">full_path</span><span class="p">),</span>
-            <span class="s2">&quot;rel_path&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">full_path</span><span class="p">),</span>
-            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;feather&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;output_name&quot;</span><span class="p">:</span> <span class="s2">&quot;table&quot;</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">result</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
 <h2 id="kiara_modules.core.table.__init__.SaveArrowTableConfig" class="doc doc-heading">
         <code>SaveArrowTableConfig</code>
 
@@ -2543,21 +2497,15 @@ of the original data, to adjust parameters before a full run.</p>
 
 
 
-<h2 id="kiara_modules.core.table.__init__.TableConversionModule" class="doc doc-heading">
-        <code>TableConversionModule</code>
+<h2 id="kiara_modules.core.table.__init__.StoreArrowTable" class="doc doc-heading">
+        <code>StoreArrowTable</code>
 
 
 
-<a href="#kiara_modules.core.table.__init__.TableConversionModule" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#kiara_modules.core.table.__init__.StoreArrowTable" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents ">
 
-      <p>Convert an Arrow table.</p>
-<p>This module supportes two conversion targets currently:</p>
-<ul>
-<li>bytes: a memoryview of the byte-representation of the Table</li>
-<li>string: the base64-encoded byte-representation of the Table</li>
-</ul>
 
 
 
@@ -2573,8 +2521,57 @@ of the original data, to adjust parameters before a full run.</p>
 
 
 
+  <div class="doc doc-object doc-method">
 
 
+
+<h3 id="kiara_modules.core.table.__init__.StoreArrowTable.store_value" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
+
+
+<a href="#kiara_modules.core.table.__init__.StoreArrowTable.store_value" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Save the value, and return the load config needed to load it again.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>core/table/__init__.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+
+    <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+    <span class="kn">from</span> <span class="nn">pyarrow</span> <span class="kn">import</span> <span class="n">feather</span>
+
+    <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
+    <span class="n">full_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">DEFAULT_SAVE_TABLE_FILE_NAME</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">KiaraProcessingException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Can&#39;t save table, file already exists: </span><span class="si">{</span><span class="n">full_path</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">full_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">compression</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config_value</span><span class="p">(</span><span class="s2">&quot;compression&quot;</span><span class="p">)</span>
+
+    <span class="n">feather</span><span class="o">.</span><span class="n">write_feather</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">full_path</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;table.load&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;base_path_input_name&quot;</span><span class="p">:</span> <span class="s2">&quot;base_path&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;base_path&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">full_path</span><span class="p">),</span>
+            <span class="s2">&quot;rel_path&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">full_path</span><span class="p">),</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;feather&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;output_name&quot;</span><span class="p">:</span> <span class="s2">&quot;table&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 

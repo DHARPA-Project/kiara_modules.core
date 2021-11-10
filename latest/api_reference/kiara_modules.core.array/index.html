@@ -460,16 +460,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.array.__init__.SaveArrayTypeModule" class="md-nav__link">
-    SaveArrayTypeModule
+  <a href="#kiara_modules.core.array.__init__.StoreArrayTypeModule" class="md-nav__link">
+    StoreArrayTypeModule
   </a>
   
-    <nav class="md-nav" aria-label="SaveArrayTypeModule">
+    <nav class="md-nav" aria-label="StoreArrayTypeModule">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kiara_modules.core.array.__init__.SaveArrayTypeModule.save_value" class="md-nav__link">
-    save_value()
+  <a href="#kiara_modules.core.array.__init__.StoreArrayTypeModule.store_value" class="md-nav__link">
+    store_value()
   </a>
   
 </li>
@@ -965,16 +965,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.array.__init__.SaveArrayTypeModule" class="md-nav__link">
-    SaveArrayTypeModule
+  <a href="#kiara_modules.core.array.__init__.StoreArrayTypeModule" class="md-nav__link">
+    StoreArrayTypeModule
   </a>
   
-    <nav class="md-nav" aria-label="SaveArrayTypeModule">
+    <nav class="md-nav" aria-label="StoreArrayTypeModule">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kiara_modules.core.array.__init__.SaveArrayTypeModule.save_value" class="md-nav__link">
-    save_value()
+  <a href="#kiara_modules.core.array.__init__.StoreArrayTypeModule.store_value" class="md-nav__link">
+    store_value()
   </a>
   
 </li>
@@ -1111,15 +1111,15 @@ module will then be used to compute the array items of the result.</p>
 
       <p>Abstract method to implement by child classes, returns a description of the input schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[input_field_name]: {
-      "type": "[value_type]",
-      "doc<em>": "[a description of this input]",
-      "optional</em>': [boolean whether this input is optional or required (defaults to 'False')]
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[input_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this input]",
+          "optional*': [boolean whether this input is optional or required (defaults to 'False')]
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/array/__init__.py</code></summary>
@@ -1165,14 +1165,14 @@ module will then be used to compute the array items of the result.</p>
 
       <p>Abstract method to implement by child classes, returns a description of the output schema of this module.</p>
 <p>If returning a dictionary of dictionaries, the format of the return value is as follows (items with '*' are optional):</p>
-<p>{
-  "[output_field_name]: {
-      "type": "[value_type]",
-      "doc*": "[a description of this output]"
-  "[other_input_field_name]: {
-      "type: ...
-      ...
-  }</p>
+<p><code>{
+      "[output_field_name]: {
+          "type": "[value_type]",
+          "doc*": "[a description of this output]"
+      "[other_input_field_name]: {
+          "type: ...
+          ...
+      }</code></p>
 
         <details class="quote">
           <summary>Source code in <code>core/array/__init__.py</code></summary>
@@ -1464,12 +1464,12 @@ of the original data, to adjust parameters before a full run.</p>
 
 
 
-<h2 id="kiara_modules.core.array.__init__.SaveArrayTypeModule" class="doc doc-heading">
-        <code>SaveArrayTypeModule</code>
+<h2 id="kiara_modules.core.array.__init__.StoreArrayTypeModule" class="doc doc-heading">
+        <code>StoreArrayTypeModule</code>
 
 
 
-<a href="#kiara_modules.core.array.__init__.SaveArrayTypeModule" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#kiara_modules.core.array.__init__.StoreArrayTypeModule" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents ">
 
@@ -1496,11 +1496,11 @@ the array object from disk.</p>
 
 
 
-<h3 id="kiara_modules.core.array.__init__.SaveArrayTypeModule.save_value" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
+<h3 id="kiara_modules.core.array.__init__.StoreArrayTypeModule.store_value" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
 
 
-<a href="#kiara_modules.core.array.__init__.SaveArrayTypeModule.save_value" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#kiara_modules.core.array.__init__.StoreArrayTypeModule.store_value" class="headerlink" title="Permanent link">&para;</a></h3>
 
     <div class="doc doc-contents ">
 
@@ -1508,7 +1508,7 @@ the array object from disk.</p>
 
         <details class="quote">
           <summary>Source code in <code>core/array/__init__.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 
     <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
     <span class="kn">from</span> <span class="nn">pyarrow</span> <span class="kn">import</span> <span class="n">feather</span>
@@ -1530,7 +1530,7 @@ the array object from disk.</p>
     <span class="n">feather</span><span class="o">.</span><span class="n">write_feather</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
     <span class="n">load_config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;array.load&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;array.restore&quot;</span><span class="p">,</span>
         <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;base_path&quot;</span><span class="p">:</span> <span class="n">base_path</span><span class="p">,</span>
             <span class="s2">&quot;rel_path&quot;</span><span class="p">:</span> <span class="n">ARRAY_SAVE_FILE_NAME</span><span class="p">,</span>
