@@ -314,10 +314,10 @@ class SampleArrayModule(SampleValueModule):
         table = pa.Table.from_arrays([array], names=["column"])
         query = f"SELECT * FROM data USING SAMPLE {sample_size} PERCENT (bernoulli);"
 
-        relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
-        result: duckdb.DuckDBPyResult = relation.query("data", query)
+        connection = duckdb.connect(":memory:")
+        connection.register_arrow("data", table)
 
-        result_table: pa.Table = result.arrow()
+        result_table: pa.Table = connection.execute(query).fetch_arrow_table()
         return result_table.column("column")
 
     def sample_rows(self, value: Value, sample_size: int):
@@ -333,8 +333,8 @@ class SampleArrayModule(SampleValueModule):
         table = pa.Table.from_arrays([array], names=["column"])
         query = f"SELECT * FROM data USING SAMPLE {sample_size};"
 
-        relation: duckdb.DuckDBPyRelation = duckdb.arrow(table)
-        result: duckdb.DuckDBPyResult = relation.query("data", query)
+        connection = duckdb.connect(":memory:")
+        connection.register_arrow("data", table)
 
-        result_table: pa.Table = result.arrow()
+        result_table: pa.Table = connection.execute(query).fetch_arrow_table()
         return result_table.column("column")
