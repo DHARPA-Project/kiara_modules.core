@@ -222,9 +222,8 @@ class QueryTableSQL(KiaraModule):
 
         _table = inputs.get_value_data("table")
 
-        relation: duckdb.DuckDBPyRelation = duckdb.arrow(_table)
-        result: duckdb.DuckDBPyResult = relation.query(_relation_name, _query)
+        connection = duckdb.connect(":memory:")
+        connection.register_arrow(_relation_name, _table)
 
-        print(result.arrow())
-
-        outputs.set_value("query_result", result.arrow())
+        result_table = connection.execute(_query).fetch_arrow_table()
+        outputs.set_value("query_result", result_table)

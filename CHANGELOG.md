@@ -2,7 +2,11 @@
 Changelog
 =========
 
-## Version 0.3.2 (upcoming)
+## Version 0.3.3 (upcoming)
+
+## Version 0.3.2
+
+- fix duckdb & arrow versions, changed how queries are done
 
 ## Version 0.3.1
 

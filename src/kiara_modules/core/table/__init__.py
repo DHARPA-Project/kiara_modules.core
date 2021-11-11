@@ -643,7 +643,7 @@ class TableConversionModuleConfig(CreateValueModuleConfig):
 
 
 class ConvertToTableModule(CreateValueModule):
-    """Convert an Arrow table.
+    """Create an Arrow table from files, file_bundles, etc.
 
     This module supportes two conversion targets currently:
 
