@@ -799,6 +799,28 @@ class SampleTableModule(SampleValueModule):
         result_table: pa.Table = connection.execute(query).fetch_arrow_table()
         return result_table
 
+    def sample_rows_from_start(self, value: Value, sample_size: int):
+
+        import pyarrow as pa
+
+        table: pa.Table = value.get_value_data()
+
+        if sample_size >= len(table):
+            return table
+
+        return table.slice(0, sample_size)
+
+    def sample_rows_to_end(self, value: Value, sample_size: int):
+
+        import pyarrow as pa
+
+        table: pa.Table = value.get_value_data()
+
+        if sample_size >= len(table):
+            return table
+
+        return table.slice(len(table) - sample_size)
+
 
 # class SampleTableModule(KiaraModule):
 #     """Sample a table.

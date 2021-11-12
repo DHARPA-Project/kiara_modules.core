@@ -338,3 +338,27 @@ class SampleArrayModule(SampleValueModule):
 
         result_table: pa.Table = connection.execute(query).fetch_arrow_table()
         return result_table.column("column")
+
+    def sample_rows_from_start(self, value: Value, sample_size: int):
+
+        import pyarrow as pa
+
+        array: pa.Array = value.get_value_data()
+
+        if sample_size >= len(array):
+            return array
+
+        result_array = array.slice(0, sample_size)
+        return result_array
+
+    def sample_rows_to_end(self, value: Value, sample_size: int):
+
+        import pyarrow as pa
+
+        array: pa.Array = value.get_value_data()
+
+        if sample_size >= len(array):
+            return array
+
+        result_array = array.slice(len(array) - sample_size)
+        return result_array
