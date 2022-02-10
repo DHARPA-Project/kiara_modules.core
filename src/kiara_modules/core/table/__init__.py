@@ -393,12 +393,13 @@ class TableMetadataModule(ExtractMetadataModule):
         for name in table.schema.names:
             field = table.schema.field(name)
             md = field.metadata
-            if not md:
-                md = {}
             _type = field.type
+            if not md:
+                md = {
+                    "arrow_type_id": _type.id,
+                }
             _d = {
-                "arrow_type_name": str(_type),
-                "arrow_type_id": _type.id,
+                "type_name": str(_type),
                 "metadata": md,
             }
             table_schema[name] = _d

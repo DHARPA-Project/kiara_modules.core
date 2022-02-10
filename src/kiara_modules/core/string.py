@@ -13,7 +13,7 @@ from kiara.metadata.data import DeserializeConfig
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.serialize import SerializeValueModule
 from kiara.utils import StringYAML
-from kiara.utils.output import pretty_print_arrow_table
+from kiara.utils.output import ArrowTabularWrap
 from pydantic import Field
 from rich import box
 from rich.console import RenderableType, RenderGroup
@@ -35,9 +35,9 @@ def convert_to_renderable(
         if max_rows:
             half_lines = int(max_rows / 2)
 
+        atw = ArrowTabularWrap(data)
         result = [
-            pretty_print_arrow_table(
-                data,
+            atw.pretty_print(
                 rows_head=half_lines,
                 rows_tail=half_lines,
                 max_row_height=max_row_height,

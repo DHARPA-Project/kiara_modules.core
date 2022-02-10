@@ -11,13 +11,19 @@ import typing
 from kiara import KiaraEntryPointItem
 from kiara.data.types import ValueType
 from kiara.utils.class_loading import find_value_types_under
-from kiara.utils.output import pretty_print_arrow_table
+from kiara.utils.output import ArrowTabularWrap
 from rich.console import ConsoleRenderable, RichCast
 
-from kiara_modules.core.metadata_schemas import KiaraFile, KiaraFileBundle
+from kiara_modules.core.database.utils import SqliteTabularWrap
+from kiara_modules.core.metadata_schemas import (
+    KiaraDatabase,
+    KiaraFile,
+    KiaraFileBundle,
+)
 
 if typing.TYPE_CHECKING:
     from kiara.data.values import Value
+
 
 value_types: KiaraEntryPointItem = (
     find_value_types_under,
@@ -255,9 +261,9 @@ class TableType(ValueType):
         if max_rows:
             half_lines = int(max_rows / 2)
 
+        atw = ArrowTabularWrap(value.get_value_data())
         result = [
-            pretty_print_arrow_table(
-                value.get_value_data(),
+            atw.pretty_print(
                 rows_head=half_lines,
                 rows_tail=half_lines,
                 max_row_height=max_row_height,
@@ -286,9 +292,9 @@ class ArrayType(ValueType):
         import pyarrow as pa
 
         temp_table = pa.Table.from_arrays(arrays=[array], names=["array"])
+        atw = ArrowTabularWrap(temp_table)
         result = [
-            pretty_print_arrow_table(
-                temp_table,
+            atw.pretty_print(
                 rows_head=half_lines,
                 rows_tail=half_lines,
                 max_row_height=max_row_height,
@@ -334,68 +340,53 @@ class DateType(ValueType):
         return [str(data)]
 
 
-# class FilePathType(ValueType):
-#     """Represents a path to a local file."""
-#
-#     @classmethod
-#     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-#         return [str]
-#
-#     def validate(cls, value: typing.Any) -> None:
-#
-#         if isinstance(value, Path):
-#             value = value.as_posix()
-#
-#         value = os.path.abspath(os.path.expanduser(value))
-#         assert isinstance(value, str)
-#
-#         if not os.path.exists(value):
-#             raise Exception(
-#                 f"Invalid file path value: no file exists for path '{value}'."
-#             )
-#         if not os.path.isfile(os.path.realpath(value)):
-#             raise Exception(
-#                 f"Invalid file path value: path '{value}' exists but does not point to a file."
-#             )
-#
-#     def pretty_print_as_renderables(
-#         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
-#     ) -> typing.Any:
-#
-#         data: str = value.get_value_data()
-#         return [data]
+class DatabaseType(ValueType):
+    """A database, containing one or several tables.
 
+    This is backed by sqlite databases.
+    """
 
-# class FolderPathType(ValueType):
-#     """Represents a path to a local folder."""
-#
-#     @classmethod
-#     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-#         return [str]
-#
-#     def pretty_print_as_renderables(
-#         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
-#     ) -> typing.Any:
-#
-#         data: str = value.get_value_data()
-#         return [data]
-#
-#     def validate(cls, value: typing.Any) -> None:
-#
-#         if isinstance(value, Path):
-#             value = value.as_posix()
-#
-#         value = os.path.abspath(os.path.expanduser(value))
-#         assert isinstance(value, str)
-#
-#         if not os.path.exists(value):
-#             raise Exception(
-#                 f"Invalid folder path value: no folder exists for path '{value}'."
-#             )
-#         if not os.path.isdir(os.path.realpath(value)):
-#             raise Exception(
-#                 f"Invalid file path value: path '{value}' exists but does not point to a file."
-#             )
+    @classmethod
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        return [KiaraDatabase]
+
+    def parse_value(self, value: typing.Any) -> typing.Any:
+
+        if isinstance(value, str):
+            return KiaraDatabase(db_file_path=value)
+
+        return value
+
+    def pretty_print_as_renderables(
+        self, value: "Value", print_config: typing.Mapping[str, typing.Any]
+    ) -> typing.Any:
+
+        max_rows = print_config.get("max_no_rows")
+        max_row_height = print_config.get("max_row_height")
+        max_cell_length = print_config.get("max_cell_length")
+
+        half_lines: typing.Optional[int] = None
+        if max_rows:
+            half_lines = int(max_rows / 2)
+
+        db: KiaraDatabase = value.get_value_data()
+
+        from sqlalchemy import inspect
+
+        inspector = inspect(db.get_sqlalchemy_engine())
+        result: typing.List[typing.Any] = []
+        for table_name in inspector.get_table_names():
+            atw = SqliteTabularWrap(db=db, table_name=table_name)
+            pretty = atw.pretty_print(
+                rows_head=half_lines,
+                rows_tail=half_lines,
+                max_row_height=max_row_height,
+                max_cell_length=max_cell_length,
+            )
+            result.append(f"[b]Table[/b]: [i]{table_name}[/i]")
+            result.append(pretty)
+
+        return result
 
 
 class FileType(ValueType):
@@ -406,7 +397,7 @@ class FileType(ValueType):
 
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-        return [FileType]
+        return [KiaraFile]
 
     @classmethod
     def get_supported_hash_types(cls) -> typing.Iterable[str]:
@@ -456,7 +447,7 @@ class FileBundleType(ValueType):
 
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-        return [FileBundleType]
+        return [KiaraFileBundle]
 
     @classmethod
     def get_supported_hash_types(cls) -> typing.Iterable[str]:
