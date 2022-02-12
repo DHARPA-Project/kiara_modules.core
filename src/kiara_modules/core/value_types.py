@@ -374,7 +374,7 @@ class DatabaseType(ValueType):
         from sqlalchemy import inspect
 
         inspector = inspect(db.get_sqlalchemy_engine())
-        result: typing.List[typing.Any] = []
+        result: typing.List[typing.Any] = [""]
         for table_name in inspector.get_table_names():
             atw = SqliteTabularWrap(db=db, table_name=table_name)
             pretty = atw.pretty_print(

@@ -117,11 +117,11 @@ class KiaraDatabase(MetadataModel):
         if self._cached_engine is not None:
             return self._cached_engine
 
-        from sqlalchemy import create_engine, text
+        from sqlalchemy import create_engine
 
         self._cached_engine = create_engine(self.db_url, future=True)
-        with self._cached_engine.connect() as con:
-            con.execute(text("PRAGMA query_only = ON"))
+        # with self._cached_engine.connect() as con:
+        #     con.execute(text("PRAGMA query_only = ON"))
 
         return self._cached_engine
 
@@ -131,6 +131,15 @@ class KiaraDatabase(MetadataModel):
 
         if not database_exists(self.db_url):
             create_database(self.db_url)
+
+    def execute_sql(self, sql_script: str):
+
+        self.create_if_not_exists()
+        conn = self.get_sqlalchemy_engine().raw_connection()
+        cursor = conn.cursor()
+        cursor.executescript(sql_script)
+        conn.commit()
+        conn.close()
 
     def copy_database_file(self, target: str):
 

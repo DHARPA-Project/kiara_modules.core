@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS {{ table_name }} (
+{% for line in column_info %}{{ line }}{% if not loop.last %},{% endif %}
+{%  endfor -%}
+);
+
+{% for index in index_columns -%}
+CREATE INDEX IF NOT EXISTS {{ index }}_idx ON {{ table_name }}({{ index }});
+{%  endfor %}

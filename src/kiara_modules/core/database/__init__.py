@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.engine import Inspector
 
 from kiara_modules.core.database.utils import create_sqlite_table_from_file
+from kiara_modules.core.defaults import DEFAULT_DB_CHUNK_SIZE
 from kiara_modules.core.metadata_schemas import (
     ColumnSchema,
     KiaraDatabase,
@@ -40,6 +41,9 @@ class DatabaseConversionModuleConfig(CreateValueModuleConfig):
     )
 
 
+DEFAULT_TABLE_NAME = "data"
+
+
 class ConvertToDatabaseModule(CreateValueModule):
     """Create a database from files, file_bundles, etc."""
 
@@ -49,6 +53,54 @@ class ConvertToDatabaseModule(CreateValueModule):
     @classmethod
     def get_target_value_type(cls) -> str:
         return "database"
+
+    def from_table(self, value: Value):
+
+        import pyarrow as pa
+        from sqlalchemy import MetaData, Table
+
+        from kiara_modules.core.table.utils import create_sqlite_schema_from_arrow_table
+
+        table: pa.Table = value.get_value_data()
+        # maybe we could check the values lineage, to find the best table name?
+        table_name = value.id.replace("-", "_")
+
+        index_columns = []
+        for cn in table.column_names:
+            if cn.lower() == "id":
+                index_columns.append(cn)
+
+        sql_schema: str = create_sqlite_schema_from_arrow_table(
+            table=table, table_name=table_name, index_columns=index_columns
+        )
+
+        db = KiaraDatabase.create_in_temp_dir()
+        db.execute_sql(sql_schema)
+
+        nodes_column_map: typing.Dict[str, typing.Any] = {}
+
+        for batch in table.to_batches(DEFAULT_DB_CHUNK_SIZE):
+            batch_dict = batch.to_pydict()
+
+            for k, v in nodes_column_map.items():
+                if k in batch_dict.keys():
+                    _data = batch_dict.pop(k)
+                    if v in batch_dict.keys():
+                        raise Exception("Duplicate column name after mapping: {v}")
+                    batch_dict[v] = _data
+
+            data = [dict(zip(batch_dict, t)) for t in zip(*batch_dict.values())]
+
+            engine = db.get_sqlalchemy_engine()
+
+            _metadata_obj = MetaData()
+            sqlite_table = Table(table_name, _metadata_obj, autoload_with=engine)
+
+            with engine.connect() as conn:
+                with conn.begin():
+                    conn.execute(sqlite_table.insert(), data)
+
+        return db
 
     def from_csv_file(self, value: Value):
 
@@ -323,7 +375,7 @@ class BaseStoreDatabaseTypeModule(StoreValueTypeModule):
         return (load_config, new_db)
 
 
-class StoreDatabaseTypeModule(StoreValueTypeModule):
+class StoreDatabaseTypeModule(BaseStoreDatabaseTypeModule):
     """Save an sqlite database to a file."""
 
     _module_type_name = "store"
