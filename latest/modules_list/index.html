@@ -1582,7 +1582,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1675,7 +1675,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1742,7 +1742,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1808,7 +1808,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         array, core                              
+                          Tags         core, array                              
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1888,7 +1888,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, serialization               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1939,7 +1939,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         msgpack, core, bytes, serialization      
+                          Tags         core, msgpack, serialization, bytes      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2002,7 +2002,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         msgpack, core, bytes, serialization      
+                          Tags         core, msgpack, serialization, bytes      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2066,7 +2066,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, bytes, serialization               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -4980,12 +4980,10 @@
                                   )                                             
 
                               _table = inputs.get_value_data(&quot;table&quot;)           
+                              rel_from_arrow = duckdb.arrow(_table)             
+                              result: duckdb.DuckDBPyResult = rel_from_arrow…   
 
-                              connection = duckdb.connect(&quot;:memory:&quot;)           
-                              connection.register_arrow(_relation_name, _tab…   
-
-                              result_table = connection.execute(_query).fetc…   
-                              outputs.set_value(&quot;query_result&quot;, result_table)   
+                              outputs.set_value(&quot;query_result&quot;, result.fetch…   
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
