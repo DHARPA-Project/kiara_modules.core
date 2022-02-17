@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import typing
 
 from kiara import KiaraModule
@@ -221,9 +222,7 @@ class QueryTableSQL(KiaraModule):
             )
 
         _table = inputs.get_value_data("table")
+        rel_from_arrow = duckdb.arrow(_table)
+        result: duckdb.DuckDBPyResult = rel_from_arrow.query(_relation_name, _query)
 
-        connection = duckdb.connect(":memory:")
-        connection.register_arrow(_relation_name, _table)
-
-        result_table = connection.execute(_query).fetch_arrow_table()
-        outputs.set_value("query_result", result_table)
+        outputs.set_value("query_result", result.fetch_arrow_table())

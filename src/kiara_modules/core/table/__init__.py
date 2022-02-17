@@ -776,10 +776,10 @@ class SampleTableModule(SampleValueModule):
 
         query = f"SELECT * FROM data USING SAMPLE {sample_size} PERCENT (bernoulli);"
 
-        connection = duckdb.connect(":memory:")
-        connection.register_arrow("data", table)
+        rel_from_arrow = duckdb.arrow(table)
+        result: duckdb.DuckDBPyResult = rel_from_arrow.query("data", query)
 
-        result_table: pa.Table = connection.execute(query).fetch_arrow_table()
+        result_table: pa.Table = result.fetch_arrow_table()
         return result_table
 
     def sample_rows(self, value: Value, sample_size: int):
@@ -794,10 +794,10 @@ class SampleTableModule(SampleValueModule):
 
         query = f"SELECT * FROM data USING SAMPLE {sample_size};"
 
-        connection = duckdb.connect(":memory:")
-        connection.register_arrow("data", table)
+        rel_from_arrow = duckdb.arrow(table)
+        result: duckdb.DuckDBPyResult = rel_from_arrow.query("data", query)
 
-        result_table: pa.Table = connection.execute(query).fetch_arrow_table()
+        result_table: pa.Table = result.fetch_arrow_table()
         return result_table
 
     def sample_rows_from_start(self, value: Value, sample_size: int):
