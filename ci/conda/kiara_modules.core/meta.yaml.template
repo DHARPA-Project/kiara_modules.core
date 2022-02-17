@@ -22,11 +22,11 @@ requirements:
   run:
     - python
     - kiara>=0.3.0
-    - python-duckdb==0.2.8
+    - python-duckdb>=0.3.0
     - msgpack-python>=1.0.0,<2.0.0
     - orjson>=3.5.0
     - vaex-arrow
-    - vaex-core>=4.0.0,<5.0
+    - vaex-core>=4.8.0,<5.0
     # - vaex-graphql
 about:
   home: https://github.com/DHARPA-Project/kiara_modules.core
