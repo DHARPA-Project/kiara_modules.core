@@ -374,8 +374,64 @@
   
   
     <li class="md-nav__item">
+      <a href="../kiara_modules.core.database/" class="md-nav__link">
+        ➜ database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kiara_modules.core.database.query/" class="md-nav__link">
+        ➜ database.query
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kiara_modules.core.database.utils/" class="md-nav__link">
+        ➜ database.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../kiara_modules.core.date/" class="md-nav__link">
         ➜ date
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kiara_modules.core.defaults/" class="md-nav__link">
+        ➜ defaults
       </a>
     </li>
   
@@ -626,6 +682,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../kiara_modules.core.table.utils/" class="md-nav__link">
+        ➜ table.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../kiara_modules.core.value/" class="md-nav__link">
         ➜ value
       </a>
@@ -717,6 +787,26 @@
           <li class="md-nav__item">
   <a href="#kiara_modules.core.value_types.BytesType.calculate_value_hash" class="md-nav__link">
     calculate_value_hash()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kiara_modules.core.value_types.DatabaseType" class="md-nav__link">
+    DatabaseType
+  </a>
+  
+    <nav class="md-nav" aria-label="DatabaseType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.value_types.DatabaseType.parse_value" class="md-nav__link">
+    parse_value()
   </a>
   
 </li>
@@ -1019,6 +1109,26 @@
           <li class="md-nav__item">
   <a href="#kiara_modules.core.value_types.BytesType.calculate_value_hash" class="md-nav__link">
     calculate_value_hash()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kiara_modules.core.value_types.DatabaseType" class="md-nav__link">
+    DatabaseType
+  </a>
+  
+    <nav class="md-nav" aria-label="DatabaseType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.value_types.DatabaseType.parse_value" class="md-nav__link">
+    parse_value()
   </a>
   
 </li>
@@ -1421,6 +1531,114 @@
           <div class="codehilite"><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">calculate_value_hash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">hash_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="kiara_modules.core.value_types.DatabaseType" class="doc doc-heading">
+        <code>DatabaseType</code>
+
+
+
+<a href="#kiara_modules.core.value_types.DatabaseType" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>A database, containing one or several tables.</p>
+<p>This is backed by sqlite databases.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="kiara_modules.core.value_types.DatabaseType.parse_value" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">parse_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+
+
+<a href="#kiara_modules.core.value_types.DatabaseType.parse_value" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Parse a value into a supported python type.</p>
+<p>This exists to make it easier to do trivial conversions (e.g. from a date string to a datetime object).
+If you choose to overwrite this method, make 100% sure that you don't change the meaning of the value, and try to
+avoid adding or removing information from the data (e.g. by changing the resolution of a date).</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>v</code></td>
+        <td><code></code></td>
+        <td><p>the value</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Any</code></td>
+      <td><p>'None', if no parsing was done and the original value should be used, otherwise return the parsed Python object</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>core/value_types.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">parse_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">KiaraDatabase</span><span class="p">(</span><span class="n">db_file_path</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">value</span>
 </code></pre></div>
         </details>
     </div>

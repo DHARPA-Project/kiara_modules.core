@@ -460,8 +460,64 @@
   
   
     <li class="md-nav__item">
+      <a href="api_reference/kiara_modules.core.database/" class="md-nav__link">
+        ➜ database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api_reference/kiara_modules.core.database.query/" class="md-nav__link">
+        ➜ database.query
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api_reference/kiara_modules.core.database.utils/" class="md-nav__link">
+        ➜ database.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="api_reference/kiara_modules.core.date/" class="md-nav__link">
         ➜ date
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api_reference/kiara_modules.core.defaults/" class="md-nav__link">
+        ➜ defaults
       </a>
     </li>
   
@@ -712,6 +768,20 @@
   
   
     <li class="md-nav__item">
+      <a href="api_reference/kiara_modules.core.table.utils/" class="md-nav__link">
+        ➜ table.utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="api_reference/kiara_modules.core.value/" class="md-nav__link">
         ➜ value
       </a>
@@ -866,6 +936,12 @@
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#bytesmsgpackfrom_value"><code>bytes.msgpack.from_value</code></a>: -- n/a --</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#bytesmsgpackto_value"><code>bytes.msgpack.to_value</code></a>: -- n/a --</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#bytesstore"><code>bytes.store</code></a>: -- n/a --</li>
+<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#databasecreate"><code>database.create</code></a>: Create a database from files, file_bundles, etc.</li>
+<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#databaseinfo"><code>database.info</code></a>: Extract extended metadata (like tables, schemas) from a database object.</li>
+<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#databaseload"><code>database.load</code></a>: -- n/a --</li>
+<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#databasemetadata"><code>database.metadata</code></a>: Extract basic metadata from a database object.</li>
+<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#databasequerysql"><code>database.query.sql</code></a>: Execute a sql query against an (Arrow) table.</li>
+<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#databasestore"><code>database.store</code></a>: Save an sqlite database to a file.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#dateextract_from_string"><code>date.extract_from_string</code></a>: Extract a date object from a string.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#daterange_check"><code>date.range_check</code></a>: Check whether a date falls within a specified date range.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#devdummy"><code>dev.dummy</code></a>: Module that simulates processing, but uses hard-coded outputs as a result.</li>
@@ -892,7 +968,7 @@
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#stringmatch_regex"><code>string.match_regex</code></a>: Match a string using a regular expression.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#stringreplace"><code>string.replace</code></a>: Replace a string if it matches a key in a mapping dictionary.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#stringserialize"><code>string.serialize</code></a>: -- n/a --</li>
-<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#tableconvert"><code>table.convert</code></a>: Convert an Arrow table.</li>
+<li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#tablecreate"><code>table.create</code></a>: Create an Arrow table from files, file_bundles, etc.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#tablecut_column"><code>table.cut_column</code></a>: Cut off one column from a table, returning an array.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#tableexport"><code>table.export</code></a>: Export a table object to disk.</li>
 <li><a href="https://dharpa.org/kiara_modules.core/latest/modules_list/#tablefilterwith_mask"><code>table.filter.with_mask</code></a>: Filter a table using a mask array.</li>
@@ -927,6 +1003,7 @@
 <li><code>table</code>: A table.</li>
 <li><code>array</code>: An Apache arrow array.</li>
 <li><code>date</code>: A date.</li>
+<li><code>database</code>: A database, containing one or several tables.</li>
 <li><code>file</code>: A representation of a file.</li>
 <li><code>file_bundle</code>: A representation of a set of files (folder, archive, etc.).</li>
 <li><code>renderables</code>: A list of renderable objects, used in the 'rich' Python library, to print to the terminal or in Jupyter.</li>
@@ -935,6 +1012,8 @@
 <ul>
 <li><code>table</code>: Describes properties for the 'table' data type.</li>
 <li><code>array</code>: Describes properties fo the 'array' type.</li>
+<li><code>database</code>: -- n/a --</li>
+<li><code>database_info</code>: -- n/a --</li>
 <li><code>file</code>: Describes properties for the 'file' value type.</li>
 <li><code>file_bundle</code>: Describes properties for the 'file_bundle' value type.</li>
 </ul>
