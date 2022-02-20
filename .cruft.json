@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/DHARPA-Project/kiara_modules.project_template.git",
-  "commit": "c9eccba6b10d26aae21d09ef7f280f53d102685b",
+  "commit": "6ca7eff7b722cabf64b49d9bc104bdf762f8a339",
   "checkout": null,
   "context": {
     "cookiecutter": {
