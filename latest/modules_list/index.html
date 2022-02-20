@@ -580,6 +580,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tableexport_table" class="md-nav__link">
+    table.export_table
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tablefilterwith_mask" class="md-nav__link">
     table.filter.with_mask
   </a>
@@ -1474,6 +1481,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tableexport_table" class="md-nav__link">
+    table.export_table
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tablefilterwith_mask" class="md-nav__link">
     table.filter.with_mask
   </a>
@@ -1888,7 +1902,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, serialization, bytes               
+                          Tags         bytes, serialization, core               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1939,7 +1953,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, msgpack, serialization, bytes      
+                          Tags         bytes, serialization, core, msgpack      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2002,7 +2016,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, msgpack, serialization, bytes      
+                          Tags         bytes, serialization, core, msgpack      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2066,7 +2080,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         core, serialization, bytes               
+                          Tags         bytes, serialization, core               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -4476,6 +4490,86 @@
                                   &quot;output_name&quot;: &quot;table&quot;,                       
                               }                                                 
                               outputs.set_value(&quot;load_config&quot;, result)          
+
+                         ─────────────────────────────────────────────────────  
+</code></pre></div>
+
+<h2 id="tableexport_table"><code>table.export_table</code><a class="headerlink" href="#tableexport_table" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code> Documentation                                                                  
+                          -- n/a --                                             
+
+ Origin                                                                         
+                          Authors   Markus Binsteiner (markus@frkl.io)          
+
+ Context                                                                        
+                          Tags         core                                     
+                          Labels       package: kiara_modules.core              
+                          References   source_repo:                             
+                                       https://github.com/DHARPA-Project/kia…   
+                                       documentation:                           
+                                       https://dharpa.org/kiara_modules.core/   
+                                       module_doc:                              
+                                       https://dharpa.org/kiara_modules.core…   
+                                       source_url:                              
+                                       https://github.com/DHARPA-Project/kia…   
+
+ Module config                                                                  
+                          Field            Type     Description      Required   
+                         ─────────────────────────────────────────────────────  
+                          constants        object   Value            no         
+                                                    constants for               
+                                                    this module.                
+                          defaults         object   Value defaults   no         
+                                                    for this                    
+                                                    module.                     
+                          target_profile   string   The name of      yes        
+                                                    the target                  
+                                                    profile. Used               
+                                                    to distinguish              
+                                                    different                   
+                                                    target formats              
+                                                    for the same                
+                                                    data type.                  
+                          source_type      string   The type of      yes        
+                                                    the source                  
+                                                    data that is                
+                                                    going to be                 
+                                                    exported.                   
+
+ Module config          -- no config --                                         
+ Python class                                                                   
+                          class_name    ExportTableModule                       
+                          module_name   kiara_modules.core.table                
+                          full_name     kiara_modules.core.table.ExportTable…   
+
+ Processing source code  ─────────────────────────────────────────────────────  
+                          def process(self, inputs: ValueSet, outputs: Value…   
+
+                              target_profile: str = self.get_config_value(&quot;t…   
+                              source_type: str = self.get_config_value(&quot;sour…   
+
+                              source = inputs.get_value_data(source_type)       
+
+                              func_name = f&quot;export_as__{target_profile}&quot;        
+                              if not hasattr(self, func_name):                  
+                                  raise Exception(                              
+                                      f&quot;Can&#39;t export &#39;{source_type}&#39; value: …   
+                                  )                                             
+
+                              func = getattr(self, func_name)                   
+                              # TODO: check signature?                          
+
+                              result = func(source)                             
+                              # schema = ValueSchema(type=self.get_target_va…   
+
+                              # value_lineage = ValueLineage.from_module_and…   
+                              #     module=self, output_name=output_key, inp…   
+                              # )                                               
+                              # value: Value = self._kiara.data_registry.reg…   
+                              #     value_data=result, value_schema=schema, …   
+                              # )                                               
+
+                              outputs.set_value(&quot;export_details&quot;, result)       
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>

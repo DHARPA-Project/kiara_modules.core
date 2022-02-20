@@ -722,8 +722,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.utils.create_sqlite_schema_from_arrow_table" class="md-nav__link">
-    create_sqlite_schema_from_arrow_table()
+  <a href="#kiara_modules.core.table.utils.create_sqlite_schema_data_from_arrow_table" class="md-nav__link">
+    create_sqlite_schema_data_from_arrow_table()
   </a>
   
 </li>
@@ -818,8 +818,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.table.utils.create_sqlite_schema_from_arrow_table" class="md-nav__link">
-    create_sqlite_schema_from_arrow_table()
+  <a href="#kiara_modules.core.table.utils.create_sqlite_schema_data_from_arrow_table" class="md-nav__link">
+    create_sqlite_schema_data_from_arrow_table()
   </a>
   
 </li>
@@ -867,11 +867,11 @@
 
 
 
-<h2 id="kiara_modules.core.table.utils.create_sqlite_schema_from_arrow_table" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">create_sqlite_schema_from_arrow_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">column_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_column_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">schema_template_str</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h2 id="kiara_modules.core.table.utils.create_sqlite_schema_data_from_arrow_table" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">create_sqlite_schema_data_from_arrow_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">column_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_column_info</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
-<a href="#kiara_modules.core.table.utils.create_sqlite_schema_from_arrow_table" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#kiara_modules.core.table.utils.create_sqlite_schema_data_from_arrow_table" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents ">
 
@@ -895,12 +895,6 @@
         <td><em>required</em></td>
       </tr>
       <tr>
-        <td><code>table_name</code></td>
-        <td><code>str</code></td>
-        <td><p>the table name that should be used within the database</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
         <td><code>column_map</code></td>
         <td><code>Optional[Mapping[str, str]]</code></td>
         <td><p>a map that contains column names that should be changed in the new table</p></td>
@@ -918,48 +912,24 @@
         <td><p>a list of extra schema instructions per column name (after mapping)</p></td>
         <td><code>None</code></td>
       </tr>
-      <tr>
-        <td><code>extra_schema</code></td>
-        <td><code>Optional[Iterable[str]]</code></td>
-        <td><p>a list of lines to append to the created sql statement string</p></td>
-        <td><code>None</code></td>
-      </tr>
-      <tr>
-        <td><code>schema_template_str</code></td>
-        <td><code>str</code></td>
-        <td><p>a different base template (must use the same template variables than original one)</p></td>
-        <td><code>None</code></td>
-      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>core/table/utils.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">create_sqlite_schema_from_arrow_table</span><span class="p">(</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">create_sqlite_schema_data_from_arrow_table</span><span class="p">(</span>
     <span class="n">table</span><span class="p">:</span> <span class="s2">&quot;pa.Table&quot;</span><span class="p">,</span>
-    <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">column_map</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">index_columns</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">extra_column_info</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">extra_schema</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">schema_template_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Create a sql schema statement from an Arrow table object.</span>
 
 <span class="sd">    Arguments:</span>
 <span class="sd">        table: the Arrow table object</span>
-<span class="sd">        table_name: the table name that should be used within the database</span>
 <span class="sd">        column_map: a map that contains column names that should be changed in the new table</span>
 <span class="sd">        index_columns: a list of column names (after mapping) to create indexes for</span>
 <span class="sd">        extra_column_info: a list of extra schema instructions per column name (after mapping)</span>
-<span class="sd">        extra_schema: a list of lines to append to the created sql statement string</span>
-<span class="sd">        schema_template_str: a different base template (must use the same template variables than original one)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">schema_template_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">template_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">TEMPLATES_FOLDER</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;sqlite_schama.sql.j2&quot;</span>
-        <span class="n">schema_template_str</span> <span class="o">=</span> <span class="n">template_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
-
-    <span class="n">template</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">BaseLoader</span><span class="p">())</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">schema_template_str</span><span class="p">)</span>
 
     <span class="n">columns</span> <span class="o">=</span> <span class="n">convert_arrow_column_types_to_sqlite</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">)</span>
 
@@ -969,7 +939,10 @@
     <span class="k">if</span> <span class="n">extra_column_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">extra_column_info</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="n">temp</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">temp</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">index_columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">index_columns</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">column_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -978,17 +951,16 @@
             <span class="n">new_key</span> <span class="o">=</span> <span class="n">cn</span>
         <span class="n">temp_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="n">extra_column_info</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">temp_data</span><span class="p">[</span><span class="s2">&quot;extra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extra_column_info</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span>
+            <span class="n">temp_data</span><span class="p">[</span><span class="s2">&quot;extra_column_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extra_column_info</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">temp_data</span><span class="p">[</span><span class="s2">&quot;extra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">temp_data</span><span class="p">[</span><span class="s2">&quot;extra_column_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">index_columns</span><span class="p">:</span>
+            <span class="n">temp_data</span><span class="p">[</span><span class="s2">&quot;create_index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">temp</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_data</span>
 
     <span class="n">columns</span> <span class="o">=</span> <span class="n">temp</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">columns</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Resulting table schema has no columns.&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">index_columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">index_columns</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">ic</span> <span class="ow">in</span> <span class="n">index_columns</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ic</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -996,23 +968,7 @@
                     <span class="sa">f</span><span class="s2">&quot;Can&#39;t create schema, requested index column name not available: </span><span class="si">{</span><span class="n">ic</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">extra_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">extra_schema</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">column_data</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
-        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">column_data</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="n">column_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extra&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">column_data</span><span class="p">[</span><span class="s1">&#39;extra&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extra_schema</span><span class="p">)</span>
-
-    <span class="n">rendered</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-        <span class="n">table_name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">column_info</span><span class="o">=</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_columns</span><span class="o">=</span><span class="n">index_columns</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">rendered</span>
+    <span class="k">return</span> <span class="n">columns</span>
 </code></pre></div>
         </details>
     </div>
