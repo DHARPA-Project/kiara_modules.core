@@ -9,7 +9,8 @@ import pprint
 import typing
 
 from kiara import KiaraEntryPointItem
-from kiara.data.types import ValueType
+from kiara.data.types import ValueType, ValueTypeConfigSchema
+from kiara.data.types.core import AnyType, ComplexModelType
 from kiara.utils.class_loading import find_value_types_under
 from kiara.utils.output import ArrowTabularWrap
 from rich.console import ConsoleRenderable, RichCast
@@ -31,10 +32,14 @@ value_types: KiaraEntryPointItem = (
 )
 
 
-class BytesType(ValueType):
+class BytesType(AnyType):
     """An array of bytes."""
 
     _value_type_name = "bytes"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return bytes
 
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
@@ -62,8 +67,14 @@ class BytesType(ValueType):
     #     }
 
 
-class StringType(ValueType):
+class StringType(AnyType):
     """A string."""
+
+    _value_type_name = "string"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return str
 
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
@@ -82,8 +93,14 @@ class StringType(ValueType):
         return [data]
 
 
-class BooleanType(ValueType):
+class BooleanType(AnyType):
     "A boolean."
+
+    _value_type_name = "boolean"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return bool
 
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
@@ -109,8 +126,14 @@ class BooleanType(ValueType):
         return [str(data)]
 
 
-class IntegerType(ValueType):
+class IntegerType(AnyType):
     """An integer."""
+
+    _value_type_name = "integer"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return int
 
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
@@ -135,8 +158,14 @@ class IntegerType(ValueType):
         return [str(data)]
 
 
-class FloatType(ValueType):
+class FloatType(AnyType):
     "A float."
+
+    _value_type_name = "float"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return float
 
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
@@ -155,8 +184,14 @@ class FloatType(ValueType):
         return [str(data)]
 
 
-class DictType(ValueType):
+class DictType(AnyType):
     """A dict-like object."""
+
+    _value_type_name = "dict"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return dict
 
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_type: str) -> str:
@@ -179,8 +214,14 @@ class DictType(ValueType):
         return [pprint.pformat(data)]
 
 
-class ListType(ValueType):
+class ListType(AnyType):
     """A list-like object."""
+
+    _value_type_name = "list"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return list
 
     @classmethod
     def calculate_value_hash(self, value: typing.Any, hash_type: str) -> str:
@@ -202,11 +243,19 @@ class ListType(ValueType):
         return [pprint.pformat(data)]
 
 
-class TableType(ValueType):
+class TableType(AnyType):
     """A table.
 
     Internally, this is backed by the [Apache Arrow](https://arrow.apache.org) [``Table``](https://arrow.apache.org/docs/python/generated/pyarrow.Table.html) class.
     """
+
+    _value_type_name = "table"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        import pyarrow as pa
+
+        return pa.Table
 
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
@@ -273,8 +322,43 @@ class TableType(ValueType):
         return result
 
 
-class ArrayType(ValueType):
+class ArrayType(AnyType):
     """An Apache arrow array."""
+
+    _value_type_name = "array"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        import pyarrow as pa
+
+        return pa.Array
+
+    @classmethod
+    def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
+        import pyarrow as pa
+
+        return [pa.ChunkedArray, pa.Table]
+
+    def parse_value(self, value: typing.Any) -> typing.Any:
+
+        import pyarrow as pa
+
+        if isinstance(value, pa.Table):
+            if len(value.columns) != 1:
+                raise Exception(
+                    f"Invalid type, only Arrow Arrays or single-column Tables allowed. This value is a table with {len(value.columns)} columns."
+                )
+            return value.column(0)
+
+    def validate(cls, value: typing.Any) -> None:
+        import pyarrow as pa
+
+        if isinstance(value, pa.ChunkedArray):
+            return value
+        else:
+            raise Exception(
+                f"invalid type '{type(value).__name__}', must be '{pa.Array.__name__}'."
+            )
 
     def pretty_print_as_renderables(
         self, value: "Value", print_config: typing.Mapping[str, typing.Any]
@@ -304,12 +388,18 @@ class ArrayType(ValueType):
         return result
 
 
-class DateType(ValueType):
+class DateType(AnyType):
     """A date.
 
     Internally, this will always be represented as a Python ``datetime`` object. Iff provided as input, it can also
     be as string, in which case the [``dateutils.parser.parse``](https://dateutil.readthedocs.io/en/stable/parser.html#dateutil.parser.parse) method will be used to parse the string into a datetime object.
     """
+
+    _value_type_name = "date"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return datetime.datetime
 
     @classmethod
     def calculate_value_hash(cls, value: typing.Any, hash_typpe: str) -> str:
@@ -340,19 +430,26 @@ class DateType(ValueType):
         return [str(data)]
 
 
-class DatabaseType(ValueType):
+class DatabaseType(ComplexModelType[KiaraDatabase]):
     """A database, containing one or several tables.
 
     This is backed by sqlite databases.
     """
 
+    _value_type_name = "database"
+
+    @classmethod
+    def backing_model_type(self) -> typing.Type[KiaraDatabase]:
+        return KiaraDatabase
+
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
-        return [KiaraDatabase]
+        return [KiaraDatabase, str]
 
     def parse_value(self, value: typing.Any) -> typing.Any:
 
         if isinstance(value, str):
+            # TODO: check path exists
             return KiaraDatabase(db_file_path=value)
 
         return value
@@ -389,11 +486,17 @@ class DatabaseType(ValueType):
         return result
 
 
-class FileType(ValueType):
+class FileType(AnyType):
     """A representation of a file.
 
     It is recommended to 'onboard' files before working with them, otherwise metadata consistency can not be guaranteed.
     """
+
+    _value_type_name = "file"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return KiaraFile
 
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
@@ -439,11 +542,17 @@ class FileType(ValueType):
             ]
 
 
-class FileBundleType(ValueType):
+class FileBundleType(AnyType):
     """A representation of a set of files (folder, archive, etc.).
 
     It is recommended to 'onboard' files before working with them, otherwise metadata consistency can not be guaranteed.
     """
+
+    _value_type_name = "file_bundle"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return KiaraFileBundle
 
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
@@ -485,12 +594,22 @@ class FileBundleType(ValueType):
         # return [data.json(indent=2)]
 
 
-class RenderablesType(ValueType):
+class RenderablesType(ValueType[object, ValueTypeConfigSchema]):
     """A list of renderable objects, used in the 'rich' Python library, to print to the terminal or in Jupyter.
 
     Internally, the result list items can be either a string, a 'rich.console.ConsoleRenderable', or a 'rich.console.RichCast'.
     """
 
+    _value_type_name = "renderables"
+
+    @classmethod
+    def backing_python_type(cls) -> typing.Type:
+        return object
+
     @classmethod
     def candidate_python_types(cls) -> typing.Optional[typing.Iterable[typing.Type]]:
         return [str, ConsoleRenderable, RichCast]
+
+    @classmethod
+    def type_config_cls(cls) -> typing.Type[ValueTypeConfigSchema]:
+        return ValueTypeConfigSchema

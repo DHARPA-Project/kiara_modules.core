@@ -9,6 +9,7 @@ from kiara.defaults import NO_VALUE_ID_MARKER
 from kiara.exceptions import KiaraProcessingException
 from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.create_value import CreateValueModule, CreateValueModuleConfig
+from kiara.operations.data_export import DataExportModule
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.sample import SampleValueModule
 from kiara.operations.store_value import StoreValueModuleConfig, StoreValueTypeModule
@@ -20,6 +21,9 @@ from kiara_modules.core.metadata_schemas import (
     KiaraFileBundle,
     TableMetadata,
 )
+
+if typing.TYPE_CHECKING:
+    import pyarrow as pa
 
 DEFAULT_SAVE_TABLE_FILE_NAME = "table.feather"
 
@@ -641,6 +645,20 @@ class TableConversionModuleConfig(CreateValueModuleConfig):
         description="Whether to ignore convert errors and omit the failed items.",
         default=False,
     )
+
+
+class ExportTableModule(DataExportModule):
+    @classmethod
+    def get_source_value_type(cls) -> str:
+        return "table"
+
+    def export_as__csv_file(self, value: "pa.Table"):
+
+        import pyarrow.csv as csv
+
+        csv.write_csv(value, "tips.csv")
+
+        return {"path": "tips.csv"}
 
 
 class ConvertToTableModule(CreateValueModule):

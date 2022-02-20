@@ -59,7 +59,9 @@ class ConvertToDatabaseModule(CreateValueModule):
         import pyarrow as pa
         from sqlalchemy import MetaData, Table
 
-        from kiara_modules.core.table.utils import create_sqlite_schema_from_arrow_table
+        from kiara_modules.core.table.utils import (
+            create_sqlite_schema_data_from_arrow_table,
+        )
 
         table: pa.Table = value.get_value_data()
         # maybe we could check the values lineage, to find the best table name?
@@ -70,12 +72,16 @@ class ConvertToDatabaseModule(CreateValueModule):
             if cn.lower() == "id":
                 index_columns.append(cn)
 
-        sql_schema: str = create_sqlite_schema_from_arrow_table(
-            table=table, table_name=table_name, index_columns=index_columns
+        column_info: typing.Dict[
+            str, typing.Dict[str, typing.Any]
+        ] = create_sqlite_schema_data_from_arrow_table(
+            table=table, index_columns=index_columns
         )
 
-        db = KiaraDatabase.create_in_temp_dir()
-        db.execute_sql(sql_schema)
+        init_sql = KiaraDatabase.create_table_init_sql(
+            table_name=table_name, column_attrs=column_info
+        )
+        db = KiaraDatabase.create_in_temp_dir(init_sql=init_sql)
 
         nodes_column_map: typing.Dict[str, typing.Any] = {}
 

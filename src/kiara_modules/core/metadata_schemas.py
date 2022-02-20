@@ -16,16 +16,21 @@ import os.path
 import shutil
 import tempfile
 import typing
+from pathlib import Path
 
+from jinja2 import BaseLoader, Environment
 from kiara import KiaraEntryPointItem
 from kiara.defaults import DEFAULT_EXCLUDE_FILES
 from kiara.metadata import MetadataModel
 from kiara.utils import log_message
 from kiara.utils.class_loading import find_metadata_schemas_under
 from pydantic import BaseModel, Field, PrivateAttr, validator
+from sqlalchemy import inspect
+
+from kiara_modules.core.defaults import TEMPLATES_FOLDER
 
 if typing.TYPE_CHECKING:
-    from sqlalchemy.engine import Engine
+    from sqlalchemy.engine import Engine, Inspector
 
 metadata_schemas: KiaraEntryPointItem = (
     find_metadata_schemas_under,
@@ -82,7 +87,7 @@ class KiaraDatabase(MetadataModel):
     _metadata_key: typing.ClassVar[str] = "database"
 
     @classmethod
-    def create_in_temp_dir(cls):
+    def create_in_temp_dir(cls, init_sql: typing.Optional[str] = None):
 
         temp_f = tempfile.mkdtemp()
         db_path = os.path.join(temp_f, "db.sqlite")
@@ -92,13 +97,65 @@ class KiaraDatabase(MetadataModel):
 
         atexit.register(cleanup)
 
-        db = KiaraDatabase(db_file_path=db_path)
+        db = cls(db_file_path=db_path)
         db.create_if_not_exists()
+
+        if init_sql:
+            db.execute_sql(sql_script=init_sql, invalidate=True)
 
         return db
 
+    @classmethod
+    def create_table_init_sql(
+        cls,
+        table_name: str,
+        column_attrs: typing.Mapping[str, typing.Mapping[str, typing.Any]],
+        extra_schema: typing.Optional[typing.Iterable[str]] = None,
+        schema_template_str: typing.Optional[str] = None,
+    ):
+        """Create an sql script to initialize a table.
+
+        Arguments:
+            column_attrs: a map with the column name as key, and column details ('type', 'extra_column_info', 'create_index') as values
+        """
+
+        if schema_template_str is None:
+            template_path = Path(TEMPLATES_FOLDER) / "sqlite_schama.sql.j2"
+            schema_template_str = template_path.read_text()
+
+        template = Environment(loader=BaseLoader()).from_string(schema_template_str)
+
+        edges_columns = []
+        edge_indexes = []
+        lines = []
+        for cn, details in column_attrs.items():
+            cn_type = details.get("type", "ANY")
+            cn_extra = details.get("extra_column_info", None)
+
+            line = f"    {cn}    {cn_type}"
+            if cn_extra:
+                line = f"{line}    {cn_extra}"
+
+            edges_columns.append(line)
+            if details.get("create_index", False):
+                edge_indexes.append(cn)
+            lines.append(line)
+
+        if extra_schema is None:
+            extra_schema = []
+
+        lines.extend(extra_schema)
+
+        rendered = template.render(
+            table_name=table_name, column_info=lines, index_columns=edge_indexes
+        )
+        return rendered
+
     db_file_path: str = Field(description="The path to the sqlite database file.")
     _cached_engine = PrivateAttr(default=None)
+    _cached_inspector = PrivateAttr(default=None)
+    _table_names = PrivateAttr(default=None)
+    _table_schemas = PrivateAttr(default=None)
 
     @validator("db_file_path", allow_reuse=True)
     def ensure_absolute_path(cls, path: str):
@@ -132,7 +189,13 @@ class KiaraDatabase(MetadataModel):
         if not database_exists(self.db_url):
             create_database(self.db_url)
 
-    def execute_sql(self, sql_script: str):
+    def execute_sql(self, sql_script: str, invalidate: bool = False):
+        """Execute an sql script.
+
+        Arguments:
+          sql_script: the sql script
+          invalidate: whether to invalidate cached values within this object
+        """
 
         self.create_if_not_exists()
         conn = self.get_sqlalchemy_engine().raw_connection()
@@ -140,6 +203,11 @@ class KiaraDatabase(MetadataModel):
         cursor.executescript(sql_script)
         conn.commit()
         conn.close()
+
+        if invalidate:
+            self._cached_inspector = None
+            self._table_names = None
+            self._table_schemas = None
 
     def copy_database_file(self, target: str):
 
@@ -149,6 +217,47 @@ class KiaraDatabase(MetadataModel):
 
         new_db = KiaraDatabase(db_file_path=target)
         return new_db
+
+    def get_sqlalchemy_inspector(self) -> "Inspector":
+
+        if self._cached_inspector is not None:
+            return self._cached_inspector
+
+        self._cached_inspector = inspect(self.get_sqlalchemy_engine())
+        return self._cached_inspector
+
+    @property
+    def table_names(self) -> typing.Iterable[str]:
+        if self._table_names is not None:
+            return self._table_names
+
+        self._table_names = self.get_sqlalchemy_inspector().get_table_names()
+        return self._table_names
+
+    def get_schema_for_table(self, table_name: str):
+
+        if self._table_schemas is not None:
+            if table_name not in self._table_schemas.keys():
+                raise Exception(
+                    f"Can't get table schema, database does not contain table with name '{table_name}'."
+                )
+            return self._table_schemas[table_name]
+
+        ts: typing.Dict[str, typing.Dict[str, typing.Any]] = {}
+        inspector = self.get_sqlalchemy_inspector()
+        for tn in inspector.get_table_names():
+            columns = self.get_sqlalchemy_inspector().get_columns(tn)
+            ts[tn] = {}
+            for c in columns:
+                ts[tn][c["name"]] = c
+
+        self._table_schemas = ts
+        if table_name not in self._table_schemas.keys():
+            raise Exception(
+                f"Can't get table schema, database does not contain table with name '{table_name}'."
+            )
+
+        return self._table_schemas[table_name]
 
 
 class KiaraDatabaseInfo(MetadataModel):
