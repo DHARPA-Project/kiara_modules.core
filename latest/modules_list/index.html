@@ -1902,7 +1902,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, bytes               
+                          Tags         bytes, core, serialization               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1953,7 +1953,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, msgpack, bytes      
+                          Tags         bytes, core, serialization, msgpack      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2016,7 +2016,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, msgpack, bytes      
+                          Tags         bytes, core, serialization, msgpack      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2080,7 +2080,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         serialization, core, bytes               
+                          Tags         bytes, core, serialization               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2329,12 +2329,16 @@
                                        https://github.com/DHARPA-Project/kia…   
 
  Module config                                                                  
-                          Field       Type     Description           Required   
+                          Field        Type     Description          Required   
                          ─────────────────────────────────────────────────────  
-                          constants   object   Value constants for   no         
-                                               this module.                     
-                          defaults    object   Value defaults for    no         
-                                               this module.                     
+                          constants    object   Value constants      no         
+                                                for this module.                
+                          defaults     object   Value defaults for   no         
+                                                this module.                    
+                          value_type   string   The type of the      no         
+                                                value to be stored              
+                                                (if database                    
+                                                sub-type).                      
 
  Module config          -- no config --                                         
  Python class                                                                   

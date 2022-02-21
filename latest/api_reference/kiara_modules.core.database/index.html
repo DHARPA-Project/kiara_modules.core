@@ -428,26 +428,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule" class="md-nav__link">
-    BaseStoreDatabaseTypeModule
-  </a>
-  
-    <nav class="md-nav" aria-label="BaseStoreDatabaseTypeModule">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule.store_value" class="md-nav__link">
-    store_value()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#kiara_modules.core.database.__init__.ConvertToDatabaseModule" class="md-nav__link">
     ConvertToDatabaseModule
   </a>
@@ -489,6 +469,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#kiara_modules.core.database.__init__.LoadDatabaseConfig" class="md-nav__link">
+    LoadDatabaseConfig
+  </a>
+  
+    <nav class="md-nav" aria-label="LoadDatabaseConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.database.__init__.LoadDatabaseConfig.value_type" class="md-nav__link">
+    value_type
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#kiara_modules.core.database.__init__.LoadDatabaseModule" class="md-nav__link">
     LoadDatabaseModule
   </a>
@@ -519,6 +519,19 @@
   <a href="#kiara_modules.core.database.__init__.StoreDatabaseTypeModule" class="md-nav__link">
     StoreDatabaseTypeModule
   </a>
+  
+    <nav class="md-nav" aria-label="StoreDatabaseTypeModule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.database.__init__.StoreDatabaseTypeModule.store_value" class="md-nav__link">
+    store_value()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -934,26 +947,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule" class="md-nav__link">
-    BaseStoreDatabaseTypeModule
-  </a>
-  
-    <nav class="md-nav" aria-label="BaseStoreDatabaseTypeModule">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule.store_value" class="md-nav__link">
-    store_value()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#kiara_modules.core.database.__init__.ConvertToDatabaseModule" class="md-nav__link">
     ConvertToDatabaseModule
   </a>
@@ -995,6 +988,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#kiara_modules.core.database.__init__.LoadDatabaseConfig" class="md-nav__link">
+    LoadDatabaseConfig
+  </a>
+  
+    <nav class="md-nav" aria-label="LoadDatabaseConfig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.database.__init__.LoadDatabaseConfig.value_type" class="md-nav__link">
+    value_type
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#kiara_modules.core.database.__init__.LoadDatabaseModule" class="md-nav__link">
     LoadDatabaseModule
   </a>
@@ -1025,6 +1038,19 @@
   <a href="#kiara_modules.core.database.__init__.StoreDatabaseTypeModule" class="md-nav__link">
     StoreDatabaseTypeModule
   </a>
+  
+    <nav class="md-nav" aria-label="StoreDatabaseTypeModule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiara_modules.core.database.__init__.StoreDatabaseTypeModule.store_value" class="md-nav__link">
+    store_value()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1131,89 +1157,6 @@
 
 
 
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h2 id="kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule" class="doc doc-heading">
-        <code>BaseStoreDatabaseTypeModule</code>
-
-
-
-<a href="#kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Save an sqlite database to a file.</p>
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule.store_value" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
-
-
-<a href="#kiara_modules.core.database.__init__.BaseStoreDatabaseTypeModule.store_value" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Save the value, and return the load config needed to load it again.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>core/database/__init__.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-
-    <span class="n">database</span><span class="p">:</span> <span class="n">KiaraDatabase</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
-
-    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">DEFAULT_DATABASE_SAVE_FILE_NAME</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">KiaraProcessingException</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Can&#39;t write file, path already exists: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-    <span class="n">new_db</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">copy_database_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-
-    <span class="n">load_config</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;database.load&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;base_path&quot;</span><span class="p">:</span> <span class="n">base_path</span><span class="p">,</span>
-            <span class="s2">&quot;rel_path&quot;</span><span class="p">:</span> <span class="n">DEFAULT_DATABASE_SAVE_FILE_NAME</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;output_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">load_config</span><span class="p">,</span> <span class="n">new_db</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
 
 
 
@@ -1417,6 +1360,71 @@
 
 
 
+<h2 id="kiara_modules.core.database.__init__.LoadDatabaseConfig" class="doc doc-heading">
+        <code>LoadDatabaseConfig</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
+  </span>
+
+<a href="#kiara_modules.core.database.__init__.LoadDatabaseConfig" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="kiara_modules.core.database.__init__.LoadDatabaseConfig.value_type" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">value_type</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
+  </span>
+
+<a href="#kiara_modules.core.database.__init__.LoadDatabaseConfig.value_type" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The type of the value to be stored (if database sub-type).</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
 <h2 id="kiara_modules.core.database.__init__.LoadDatabaseModule" class="doc doc-heading">
         <code>LoadDatabaseModule</code>
 
@@ -1520,9 +1528,14 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span>
     <span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">ValueSchema</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span>
 <span class="p">]:</span>
+    <span class="n">value_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config_value</span><span class="p">(</span><span class="s2">&quot;value_type&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value_type</span> <span class="o">!=</span> <span class="s2">&quot;database&quot;</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; (as &#39;</span><span class="si">{</span><span class="n">value_type</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
     <span class="n">outputs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;database&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">,</span> <span class="s2">&quot;doc&quot;</span><span class="p">:</span> <span class="s2">&quot;The database value object.&quot;</span><span class="p">}</span>
+        <span class="s2">&quot;database&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">value_type</span><span class="p">,</span> <span class="s2">&quot;doc&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;The database value object</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">}</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">outputs</span>
 </code></pre></div>
@@ -1570,6 +1583,55 @@
 
 
 
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="kiara_modules.core.database.__init__.StoreDatabaseTypeModule.store_value" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">)</span></code>
+
+
+<a href="#kiara_modules.core.database.__init__.StoreDatabaseTypeModule.store_value" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Save the value, and return the load config needed to load it again.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>core/database/__init__.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">store_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">base_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+    <span class="n">value_type</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">type_name</span>
+    <span class="c1"># TODO: assert type inherits from database</span>
+
+    <span class="n">database</span><span class="p">:</span> <span class="n">KiaraDatabase</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_value_data</span><span class="p">()</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">DEFAULT_DATABASE_SAVE_FILE_NAME</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">KiaraProcessingException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Can&#39;t write file, path already exists: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">new_db</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">copy_database_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">load_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;module_type&quot;</span><span class="p">:</span> <span class="s2">&quot;database.load&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;module_config&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;value_type&quot;</span><span class="p">:</span> <span class="n">value_type</span><span class="p">},</span>
+        <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;base_path&quot;</span><span class="p">:</span> <span class="n">base_path</span><span class="p">,</span>
+            <span class="s2">&quot;rel_path&quot;</span><span class="p">:</span> <span class="n">DEFAULT_DATABASE_SAVE_FILE_NAME</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;output_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">load_config</span><span class="p">,</span> <span class="n">new_db</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
