@@ -23,7 +23,7 @@ from kiara import KiaraEntryPointItem
 from kiara.defaults import DEFAULT_EXCLUDE_FILES
 from kiara.metadata import MetadataModel
 from kiara.utils import log_message
-from kiara.utils.class_loading import find_metadata_schemas_under
+from kiara.utils.class_loading import find_metadata_models_under
 from pydantic import BaseModel, Field, PrivateAttr, validator
 from sqlalchemy import inspect
 
@@ -32,9 +32,9 @@ from kiara_modules.core.defaults import TEMPLATES_FOLDER
 if typing.TYPE_CHECKING:
     from sqlalchemy.engine import Engine, Inspector
 
-metadata_schemas: KiaraEntryPointItem = (
-    find_metadata_schemas_under,
-    ["kiara_modules.core.metadata_schemas"],
+metadata_models: KiaraEntryPointItem = (
+    find_metadata_models_under,
+    ["kiara_modules.core.metadata_models"],
 )
 
 
