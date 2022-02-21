@@ -16,9 +16,7 @@ import os.path
 import shutil
 import tempfile
 import typing
-from pathlib import Path
 
-from jinja2 import BaseLoader, Environment
 from kiara import KiaraEntryPointItem
 from kiara.defaults import DEFAULT_EXCLUDE_FILES
 from kiara.metadata import MetadataModel
@@ -26,8 +24,6 @@ from kiara.utils import log_message
 from kiara.utils.class_loading import find_metadata_models_under
 from pydantic import BaseModel, Field, PrivateAttr, validator
 from sqlalchemy import inspect
-
-from kiara_modules.core.defaults import TEMPLATES_FOLDER
 
 if typing.TYPE_CHECKING:
     from sqlalchemy.engine import Engine, Inspector
@@ -104,52 +100,6 @@ class KiaraDatabase(MetadataModel):
             db.execute_sql(sql_script=init_sql, invalidate=True)
 
         return db
-
-    @classmethod
-    def create_table_init_sql(
-        cls,
-        table_name: str,
-        column_attrs: typing.Mapping[str, typing.Mapping[str, typing.Any]],
-        extra_schema: typing.Optional[typing.Iterable[str]] = None,
-        schema_template_str: typing.Optional[str] = None,
-    ):
-        """Create an sql script to initialize a table.
-
-        Arguments:
-            column_attrs: a map with the column name as key, and column details ('type', 'extra_column_info', 'create_index') as values
-        """
-
-        if schema_template_str is None:
-            template_path = Path(TEMPLATES_FOLDER) / "sqlite_schama.sql.j2"
-            schema_template_str = template_path.read_text()
-
-        template = Environment(loader=BaseLoader()).from_string(schema_template_str)
-
-        edges_columns = []
-        edge_indexes = []
-        lines = []
-        for cn, details in column_attrs.items():
-            cn_type = details.get("type", "ANY")
-            cn_extra = details.get("extra_column_info", None)
-
-            line = f"    {cn}    {cn_type}"
-            if cn_extra:
-                line = f"{line}    {cn_extra}"
-
-            edges_columns.append(line)
-            if details.get("create_index", False):
-                edge_indexes.append(cn)
-            lines.append(line)
-
-        if extra_schema is None:
-            extra_schema = []
-
-        lines.extend(extra_schema)
-
-        rendered = template.render(
-            table_name=table_name, column_info=lines, index_columns=edge_indexes
-        )
-        return rendered
 
     db_file_path: str = Field(description="The path to the sqlite database file.")
     _cached_engine = PrivateAttr(default=None)

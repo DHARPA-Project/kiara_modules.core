@@ -2,12 +2,17 @@
 #  Copyright (c) 2022, University of Luxembourg / DHARPA project
 #
 #  Mozilla Public License, version 2.0 (see LICENSE or https://www.mozilla.org/en-US/MPL/2.0/)
+
 import typing
+from pathlib import Path
 from typing import Iterable, Optional
 
+from jinja2 import BaseLoader, Environment
 from kiara.utils.output import DictTabularWrap, TabularWrap
+from pydantic import BaseModel, Field
 from sqlite_utils.cli import insert_upsert_implementation
 
+from kiara_modules.core.defaults import TEMPLATES_FOLDER
 from kiara_modules.core.metadata_models import KiaraDatabase, KiaraFile
 
 
@@ -134,3 +139,71 @@ class SqliteTabularWrap(TabularWrap):
                     result_dict[cn].append(r[i])
 
         return result_dict
+
+
+class SqliteColumnAttributes(BaseModel):
+
+    data_type: str = Field(
+        description="The type of the data in this column.", default="ANY"
+    )
+    extra_column_info: typing.List[str] = Field(
+        description="Additional init information for the column.", default_factory=list
+    )
+    create_index: bool = Field(
+        description="Whether to create an index for this column or not.", default=False
+    )
+
+
+class SqliteTableSchema(BaseModel):
+
+    columns: typing.Dict[str, SqliteColumnAttributes] = Field(
+        description="The table columns and their attributes."
+    )
+    extra_schema: typing.List[str] = Field(
+        description="Extra schema information for this table.", default_factory=list
+    )
+    column_map: typing.Dict[str, str] = Field(
+        description="A dictionary describing how to map incoming data column names. Values in this dict point to keys in this models 'columns' attribute.",
+        default_factory=dict,
+    )
+
+
+def create_table_init_sql(
+    table_name: str,
+    table_schema: SqliteTableSchema,
+    schema_template_str: typing.Optional[str] = None,
+):
+    """Create an sql script to initialize a table.
+
+    Arguments:
+        column_attrs: a map with the column name as key, and column details ('type', 'extra_column_info', 'create_index') as values
+    """
+
+    if schema_template_str is None:
+        template_path = Path(TEMPLATES_FOLDER) / "sqlite_schama.sql.j2"
+        schema_template_str = template_path.read_text()
+
+    template = Environment(loader=BaseLoader()).from_string(schema_template_str)
+
+    edges_columns = []
+    edge_indexes = []
+    lines = []
+    for cn, details in table_schema.columns.items():
+        cn_type = details.data_type
+        cn_extra = details.extra_column_info
+
+        line = f"    {cn}    {cn_type}"
+        if cn_extra:
+            line = f"{line}    {' '.join(cn_extra)}"
+
+        edges_columns.append(line)
+        if details.create_index:
+            edge_indexes.append(cn)
+        lines.append(line)
+
+    lines.extend(table_schema.extra_schema)
+
+    rendered = template.render(
+        table_name=table_name, column_info=lines, index_columns=edge_indexes
+    )
+    return rendered

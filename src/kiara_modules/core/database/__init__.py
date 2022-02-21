@@ -19,7 +19,11 @@ from kiara.utils import find_free_id, log_message
 from pydantic import BaseModel, Field
 from sqlalchemy.engine import Inspector
 
-from kiara_modules.core.database.utils import create_sqlite_table_from_file
+from kiara_modules.core.database.utils import (
+    SqliteTableSchema,
+    create_sqlite_table_from_file,
+    create_table_init_sql,
+)
 from kiara_modules.core.defaults import DEFAULT_DB_CHUNK_SIZE
 from kiara_modules.core.metadata_models import (
     ColumnSchema,
@@ -72,15 +76,14 @@ class ConvertToDatabaseModule(CreateValueModule):
             if cn.lower() == "id":
                 index_columns.append(cn)
 
-        column_info: typing.Dict[
-            str, typing.Dict[str, typing.Any]
-        ] = create_sqlite_schema_data_from_arrow_table(
+        column_info: SqliteTableSchema = create_sqlite_schema_data_from_arrow_table(
             table=table, index_columns=index_columns
         )
 
-        init_sql = KiaraDatabase.create_table_init_sql(
-            table_name=table_name, column_attrs=column_info
+        init_sql = create_table_init_sql(
+            table_name=table_name, table_schema=column_info
         )
+
         db = KiaraDatabase.create_in_temp_dir(init_sql=init_sql)
 
         nodes_column_map: typing.Dict[str, typing.Any] = {}

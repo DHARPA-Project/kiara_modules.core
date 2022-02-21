@@ -5,6 +5,8 @@
 
 import typing
 
+from kiara_modules.core.database import SqliteTableSchema
+
 if typing.TYPE_CHECKING:
     import pyarrow as pa
 
@@ -44,7 +46,7 @@ def convert_arrow_column_types_to_sqlite(
     for column_name in table.column_names:
         field = table.field(column_name)
         sqlite_type = convert_arraw_type_to_sqlite(str(field.type))
-        result[column_name] = {"type": sqlite_type}
+        result[column_name] = {"data_type": sqlite_type}
 
     return result
 
@@ -53,8 +55,10 @@ def create_sqlite_schema_data_from_arrow_table(
     table: "pa.Table",
     column_map: typing.Optional[typing.Mapping[str, str]] = None,
     index_columns: typing.Optional[typing.Iterable[str]] = None,
-    extra_column_info: typing.Optional[typing.Mapping[str, str]] = None,
-) -> typing.Dict[str, typing.Dict[str, typing.Any]]:
+    extra_column_info: typing.Optional[
+        typing.Mapping[str, typing.Iterable[str]]
+    ] = None,
+) -> SqliteTableSchema:
     """Create a sql schema statement from an Arrow table object.
 
     Arguments:
@@ -86,7 +90,7 @@ def create_sqlite_schema_data_from_arrow_table(
         if new_key in extra_column_info.keys():
             temp_data["extra_column_info"] = extra_column_info[new_key]
         else:
-            temp_data["extra_column_info"] = ""
+            temp_data["extra_column_info"] = [""]
         if cn in index_columns:
             temp_data["create_index"] = True
         temp[new_key] = temp_data
@@ -101,4 +105,4 @@ def create_sqlite_schema_data_from_arrow_table(
                     f"Can't create schema, requested index column name not available: {ic}"
                 )
 
-    return columns
+    return SqliteTableSchema(columns=columns, column_map=column_map)
