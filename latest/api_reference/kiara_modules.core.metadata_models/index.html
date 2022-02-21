@@ -713,13 +713,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kiara_modules.core.metadata_models.KiaraDatabase.create_table_init_sql" class="md-nav__link">
-    create_table_init_sql()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#kiara_modules.core.metadata_models.KiaraDatabase.execute_sql" class="md-nav__link">
     execute_sql()
   </a>
@@ -1293,13 +1286,6 @@
           <li class="md-nav__item">
   <a href="#kiara_modules.core.metadata_models.KiaraDatabase.db_file_path" class="md-nav__link">
     db_file_path
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kiara_modules.core.metadata_models.KiaraDatabase.create_table_init_sql" class="md-nav__link">
-    create_table_init_sql()
   </a>
   
 </li>
@@ -1965,97 +1951,6 @@ it is recommended to create a metadata model, because it is much easier overall.
 
 
 
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="kiara_modules.core.metadata_models.KiaraDatabase.create_table_init_sql" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">create_table_init_sql</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">column_attrs</span><span class="p">,</span> <span class="n">extra_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">schema_template_str</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
-  </span>
-
-<a href="#kiara_modules.core.metadata_models.KiaraDatabase.create_table_init_sql" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Create an sql script to initialize a table.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>column_attrs</code></td>
-        <td><code>Mapping[str, Mapping[str, Any]]</code></td>
-        <td><p>a map with the column name as key, and column details ('type', 'extra_column_info', 'create_index') as values</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>core/metadata_models.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">create_table_init_sql</span><span class="p">(</span>
-    <span class="bp">cls</span><span class="p">,</span>
-    <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">column_attrs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]],</span>
-    <span class="n">extra_schema</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">schema_template_str</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create an sql script to initialize a table.</span>
-
-<span class="sd">    Arguments:</span>
-<span class="sd">        column_attrs: a map with the column name as key, and column details (&#39;type&#39;, &#39;extra_column_info&#39;, &#39;create_index&#39;) as values</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">schema_template_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">template_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">TEMPLATES_FOLDER</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;sqlite_schama.sql.j2&quot;</span>
-        <span class="n">schema_template_str</span> <span class="o">=</span> <span class="n">template_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
-
-    <span class="n">template</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">BaseLoader</span><span class="p">())</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">schema_template_str</span><span class="p">)</span>
-
-    <span class="n">edges_columns</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">edge_indexes</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">details</span> <span class="ow">in</span> <span class="n">column_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">cn_type</span> <span class="o">=</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;ANY&quot;</span><span class="p">)</span>
-        <span class="n">cn_extra</span> <span class="o">=</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extra_column_info&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">cn</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">cn_type</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="n">cn_extra</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">cn_extra</span><span class="si">}</span><span class="s2">&quot;</span>
-
-        <span class="n">edges_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;create_index&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="n">edge_indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">extra_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">extra_schema</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extra_schema</span><span class="p">)</span>
-
-    <span class="n">rendered</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-        <span class="n">table_name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">column_info</span><span class="o">=</span><span class="n">lines</span><span class="p">,</span> <span class="n">index_columns</span><span class="o">=</span><span class="n">edge_indexes</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">rendered</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
 
 
 
