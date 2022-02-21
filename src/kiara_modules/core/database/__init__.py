@@ -12,6 +12,7 @@ from kiara import KiaraModule
 from kiara.data import Value, ValueSet
 from kiara.data.values import ValueSchema
 from kiara.exceptions import KiaraProcessingException
+from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations.create_value import CreateValueModule, CreateValueModuleConfig
 from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.store_value import StoreValueTypeModule
@@ -358,10 +359,19 @@ class DatabaseInfoMetadataModule(BaseDatabaseInfoMetadataModule):
         return "database_info"
 
 
-class BaseStoreDatabaseTypeModule(StoreValueTypeModule):
+class StoreDatabaseTypeModule(StoreValueTypeModule):
     """Save an sqlite database to a file."""
 
+    _module_type_name = "store"
+
+    @classmethod
+    def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
+        return "database"
+
     def store_value(self, value: Value, base_path: str):
+
+        value_type = value.type_name
+        # TODO: assert type inherits from database
 
         database: KiaraDatabase = value.get_value_data()
 
@@ -375,6 +385,7 @@ class BaseStoreDatabaseTypeModule(StoreValueTypeModule):
 
         load_config = {
             "module_type": "database.load",
+            "module_config": {"value_type": value_type},
             "inputs": {
                 "base_path": base_path,
                 "rel_path": DEFAULT_DATABASE_SAVE_FILE_NAME,
@@ -384,19 +395,18 @@ class BaseStoreDatabaseTypeModule(StoreValueTypeModule):
         return (load_config, new_db)
 
 
-class StoreDatabaseTypeModule(BaseStoreDatabaseTypeModule):
-    """Save an sqlite database to a file."""
+class LoadDatabaseConfig(ModuleTypeConfigSchema):
 
-    _module_type_name = "store"
-
-    @classmethod
-    def retrieve_supported_types(cls) -> typing.Union[str, typing.Iterable[str]]:
-        return "database"
+    value_type: str = Field(
+        description="The type of the value to be stored (if database sub-type).",
+        default="database",
+    )
 
 
 class LoadDatabaseModule(KiaraModule):
 
     _module_type_name = "load"
+    _config_cls = LoadDatabaseConfig
 
     def create_input_schema(
         self,
@@ -420,9 +430,14 @@ class LoadDatabaseModule(KiaraModule):
     ) -> typing.Mapping[
         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
     ]:
+        value_type = self.get_config_value("value_type")
+        if value_type != "database":
+            msg = f" (as '{value_type}')"
+        else:
+            msg = ""
 
         outputs: typing.Mapping[str, typing.Any] = {
-            "database": {"type": "database", "doc": "The database value object."}
+            "database": {"type": value_type, "doc": f"The database value object{msg}."}
         }
         return outputs
 
