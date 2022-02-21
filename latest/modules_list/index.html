@@ -342,6 +342,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#databaseexport_network_data" class="md-nav__link">
+    database.export_network_data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#databaseinfo" class="md-nav__link">
     database.info
   </a>
@@ -1243,6 +1250,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#databaseexport_network_data" class="md-nav__link">
+    database.export_network_data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#databaseinfo" class="md-nav__link">
     database.info
   </a>
@@ -1902,7 +1916,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         bytes, core, serialization               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -1953,7 +1967,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         bytes, core, serialization, msgpack      
+                          Tags         core, serialization, msgpack, bytes      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2016,7 +2030,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         bytes, core, serialization, msgpack      
+                          Tags         core, serialization, msgpack, bytes      
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2080,7 +2094,7 @@
                           Authors   Markus Binsteiner (markus@frkl.io)          
 
  Context                                                                        
-                          Tags         bytes, core, serialization               
+                          Tags         core, serialization, bytes               
                           Labels       package: kiara_modules.core              
                           References   source_repo:                             
                                        https://github.com/DHARPA-Project/kia…   
@@ -2242,6 +2256,93 @@
 
                               converted = func(source)                          
                               outputs.set_value(target_type, converted)         
+
+                         ─────────────────────────────────────────────────────  
+</code></pre></div>
+
+<h2 id="databaseexport_network_data"><code>database.export_network_data</code><a class="headerlink" href="#databaseexport_network_data" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code> Documentation                                                                  
+                          -- n/a --                                             
+
+ Origin                                                                         
+                          Authors   Markus Binsteiner (markus@frkl.io)          
+
+ Context                                                                        
+                          Tags         core                                     
+                          Labels       package: kiara_modules.core              
+                          References   source_repo:                             
+                                       https://github.com/DHARPA-Project/kia…   
+                                       documentation:                           
+                                       https://dharpa.org/kiara_modules.core/   
+                                       module_doc:                              
+                                       https://dharpa.org/kiara_modules.core…   
+                                       source_url:                              
+                                       https://github.com/DHARPA-Project/kia…   
+
+ Module config                                                                  
+                          Field            Type     Description      Required   
+                         ─────────────────────────────────────────────────────  
+                          constants        object   Value            no         
+                                                    constants for               
+                                                    this module.                
+                          defaults         object   Value defaults   no         
+                                                    for this                    
+                                                    module.                     
+                          target_profile   string   The name of      yes        
+                                                    the target                  
+                                                    profile. Used               
+                                                    to distinguish              
+                                                    different                   
+                                                    target formats              
+                                                    for the same                
+                                                    data type.                  
+                          source_type      string   The type of      yes        
+                                                    the source                  
+                                                    data that is                
+                                                    going to be                 
+                                                    exported.                   
+
+ Module config          -- no config --                                         
+ Python class                                                                   
+                          class_name    ExportNetworkDataModule                 
+                          module_name   kiara_modules.core.database             
+                          full_name     kiara_modules.core.database.ExportNe…   
+
+ Processing source code  ─────────────────────────────────────────────────────  
+                          def process(self, inputs: ValueSet, outputs: Value…   
+
+                              target_profile: str = self.get_config_value(&quot;t…   
+                              source_type: str = self.get_config_value(&quot;sour…   
+
+                              source = inputs.get_value_data(source_type)       
+
+                              func_name = f&quot;export_as__{target_profile}&quot;        
+                              if not hasattr(self, func_name):                  
+                                  raise Exception(                              
+                                      f&quot;Can&#39;t export &#39;{source_type}&#39; value: …   
+                                  )                                             
+
+                              base_path = inputs.get_value_data(&quot;base_path&quot;)    
+                              if base_path is None:                             
+                                  base_path = os.getcwd()                       
+                              name = inputs.get_value_data(&quot;name&quot;)              
+
+                              func = getattr(self, func_name)                   
+                              # TODO: check signature?                          
+
+                              base_path = os.path.abspath(base_path)            
+                              os.makedirs(base_path, exist_ok=True)             
+                              result = func(value=source, base_path=base_pat…   
+                              # schema = ValueSchema(type=self.get_target_va…   
+
+                              # value_lineage = ValueLineage.from_module_and…   
+                              #     module=self, output_name=output_key, inp…   
+                              # )                                               
+                              # value: Value = self._kiara.data_registry.reg…   
+                              #     value_data=result, value_schema=schema, …   
+                              # )                                               
+
+                              outputs.set_value(&quot;export_details&quot;, result)       
 
                          ─────────────────────────────────────────────────────  
 </code></pre></div>
@@ -4560,10 +4661,17 @@
                                       f&quot;Can&#39;t export &#39;{source_type}&#39; value: …   
                                   )                                             
 
+                              base_path = inputs.get_value_data(&quot;base_path&quot;)    
+                              if base_path is None:                             
+                                  base_path = os.getcwd()                       
+                              name = inputs.get_value_data(&quot;name&quot;)              
+
                               func = getattr(self, func_name)                   
                               # TODO: check signature?                          
 
-                              result = func(source)                             
+                              base_path = os.path.abspath(base_path)            
+                              os.makedirs(base_path, exist_ok=True)             
+                              result = func(value=source, base_path=base_pat…   
                               # schema = ValueSchema(type=self.get_target_va…   
 
                               # value_lineage = ValueLineage.from_module_and…   
