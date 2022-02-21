@@ -10,7 +10,7 @@ from kiara.module_config import ModuleTypeConfigSchema
 from kiara.operations import Operation
 from pydantic import Field
 
-from kiara_modules.core.metadata_schemas import KiaraFile
+from kiara_modules.core.metadata_models import KiaraFile
 
 
 class DataProfilerModuleConfig(ModuleTypeConfigSchema):

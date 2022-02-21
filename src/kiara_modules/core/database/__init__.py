@@ -21,7 +21,7 @@ from sqlalchemy.engine import Inspector
 
 from kiara_modules.core.database.utils import create_sqlite_table_from_file
 from kiara_modules.core.defaults import DEFAULT_DB_CHUNK_SIZE
-from kiara_modules.core.metadata_schemas import (
+from kiara_modules.core.metadata_models import (
     ColumnSchema,
     KiaraDatabase,
     KiaraDatabaseInfo,

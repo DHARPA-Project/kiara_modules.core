@@ -8,7 +8,7 @@ from typing import Iterable, Optional
 from kiara.utils.output import DictTabularWrap, TabularWrap
 from sqlite_utils.cli import insert_upsert_implementation
 
-from kiara_modules.core.metadata_schemas import KiaraDatabase, KiaraFile
+from kiara_modules.core.metadata_models import KiaraDatabase, KiaraFile
 
 
 def create_sqlite_table_from_file(

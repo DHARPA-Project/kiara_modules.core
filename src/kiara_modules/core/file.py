@@ -11,7 +11,7 @@ from kiara.operations.extract_metadata import ExtractMetadataModule
 from kiara.operations.store_value import StoreValueTypeModule
 from pydantic import BaseModel
 
-from kiara_modules.core.metadata_schemas import KiaraFile
+from kiara_modules.core.metadata_models import KiaraFile
 
 
 class DefaultFileImportModule(FileImportModule):

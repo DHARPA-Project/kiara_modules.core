@@ -16,11 +16,7 @@ from kiara.operations.store_value import StoreValueModuleConfig, StoreValueTypeM
 from pydantic import BaseModel, Field
 
 from kiara_modules.core.array import map_with_module
-from kiara_modules.core.metadata_schemas import (
-    KiaraFile,
-    KiaraFileBundle,
-    TableMetadata,
-)
+from kiara_modules.core.metadata_models import KiaraFile, KiaraFileBundle, TableMetadata
 
 if typing.TYPE_CHECKING:
     import pyarrow as pa

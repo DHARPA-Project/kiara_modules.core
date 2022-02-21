@@ -16,11 +16,7 @@ from kiara.utils.output import ArrowTabularWrap
 from rich.console import ConsoleRenderable, RichCast
 
 from kiara_modules.core.database.utils import SqliteTabularWrap
-from kiara_modules.core.metadata_schemas import (
-    KiaraDatabase,
-    KiaraFile,
-    KiaraFileBundle,
-)
+from kiara_modules.core.metadata_models import KiaraDatabase, KiaraFile, KiaraFileBundle
 
 if typing.TYPE_CHECKING:
     from kiara.data.values import Value

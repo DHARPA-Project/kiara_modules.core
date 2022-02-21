@@ -11,7 +11,7 @@ from kiara.module_config import ModuleTypeConfigSchema
 from pydantic import Field
 from sqlalchemy import create_engine
 
-from kiara_modules.core.metadata_schemas import KiaraDatabase
+from kiara_modules.core.metadata_models import KiaraDatabase
 
 
 class QueryDatabaseSQLModuleConfig(ModuleTypeConfigSchema):
