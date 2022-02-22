@@ -21,7 +21,7 @@ requirements:
     - setuptools_scm_git_archive
   run:
     - python
-    - kiara>=0.3.2
+    - kiara>=0.3.3
     - python-duckdb>=0.3.0
     - msgpack-python>=1.0.0,<2.0.0
     - orjson>=3.5.0
