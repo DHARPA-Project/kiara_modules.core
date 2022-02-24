@@ -10,6 +10,9 @@ theme:
     - navigation.instant
     - navigation.tracking
 
+extra_css:
+  - stylesheets/extra.css
+
 markdown_extensions:
 - attr_list
 - admonition
@@ -19,12 +22,14 @@ markdown_extensions:
     permalink: true
 - pymdownx.snippets:
     base_path: docs
+- pymdownx.highlight
+- pymdownx.superfences
 
-nav:
-- Home: index.md
-- Usage: usage.md
-- Included modules: modules_list.md
-- Included pipelines: pipelines_list.md
+#nav:
+#- Home: index.md
+#- Usage: usage.md
+#- Included modules: modules_list.md
+#- Included pipelines: pipelines_list.md
 
 extra:
   version:
@@ -35,10 +40,16 @@ plugins:
 - mknotebooks
 - mkdocstrings:
     default_handler: python
+    handlers:
+      python:
+        selection:
+          docstring_style: google
+        import:
+        - https://dharpa.org/kiara/latest/objects.inv
     watch:
       - "src"
-- frkl-docgen:
-    main_module: "kiara_modules.core"
+    enable_inventory: true
+
 - macros:
    modules:
      - kiara.doc.mkdocs_macros_cli
@@ -46,4 +57,9 @@ plugins:
 
 - gen-files:
     scripts:
-      - scripts/documentation/gen_module_doc.py
+      - scripts/documentation/gen_info_pages.py
+      - scripts/documentation/gen_api_doc_pages.py
+
+- literate-nav:
+    nav_file: SUMMARY.md
+- section-index
