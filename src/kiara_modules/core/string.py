@@ -234,38 +234,38 @@ class ReplaceStringModule(KiaraModule):
         outputs.set_value("text", result)
 
 
-class MagicModuleConfig(ModuleTypeConfigSchema):
-
-    source_id: str = Field(description="The id of the source value.")
-    target_type: str = Field(description="The target type.")
-
-
-class MagicModule(KiaraModule):
-    def create_input_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-
-        return {
-            "description": {
-                "type": "string",
-                "doc": "The description of the value, and where it comes from.",
-                "default": DEFAULT_NO_DESC_VALUE,
-            }
-        }
-
-    def create_output_schema(
-        self,
-    ) -> typing.Mapping[
-        str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
-    ]:
-
-        return {"value_item": {"type": self.get_config_value("target_type")}}
-
-    def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
-
-        pass
+# class MagicModuleConfig(ModuleTypeConfigSchema):
+#
+#     source_id: str = Field(description="The id of the source value.")
+#     target_type: str = Field(description="The target type.")
+#
+#
+# class MagicModule(KiaraModule):
+#     def create_input_schema(
+#         self,
+#     ) -> typing.Mapping[
+#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+#     ]:
+#
+#         return {
+#             "description": {
+#                 "type": "string",
+#                 "doc": "The description of the value, and where it comes from.",
+#                 "default": DEFAULT_NO_DESC_VALUE,
+#             }
+#         }
+#
+#     def create_output_schema(
+#         self,
+#     ) -> typing.Mapping[
+#         str, typing.Union[ValueSchema, typing.Mapping[str, typing.Any]]
+#     ]:
+#
+#         return {"value_item": {"type": self.get_config_value("target_type")}}
+#
+#     def process(self, inputs: ValueSet, outputs: ValueSet) -> None:
+#
+#         pass
 
 
 class SerializeStringModule(SerializeValueModule):

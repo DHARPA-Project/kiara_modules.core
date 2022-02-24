@@ -64,7 +64,7 @@ def create_sqlite_schema_data_from_arrow_table(
     Arguments:
         table: the Arrow table object
         column_map: a map that contains column names that should be changed in the new table
-        index_columns: a list of column names (after mapping) to create indexes for
+        index_columns: a list of column names (after mapping) to create module_indexes for
         extra_column_info: a list of extra schema instructions per column name (after mapping)
     """
 
