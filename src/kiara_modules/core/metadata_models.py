@@ -20,6 +20,7 @@ import typing
 from kiara import KiaraEntryPointItem
 from kiara.defaults import DEFAULT_EXCLUDE_FILES
 from kiara.metadata import MetadataModel
+from kiara.metadata.core_models import HashedMetadataModel
 from kiara.utils import log_message
 from kiara.utils.class_loading import find_metadata_models_under
 from pydantic import BaseModel, Field, PrivateAttr, validator
@@ -47,7 +48,7 @@ class ColumnSchema(BaseModel):
     )
 
 
-class TableMetadata(MetadataModel):
+class TableMetadata(HashedMetadataModel):
     """Describes properties for the 'table' data type."""
 
     _metadata_key: typing.ClassVar[str] = "table"
@@ -63,8 +64,20 @@ class TableMetadata(MetadataModel):
         description="The tables size in bytes.", default=None
     )
 
+    def _obj_to_hash(self) -> typing.Any:
 
-class ArrayMetadata(MetadataModel):
+        return {
+            "column_names": self.column_names,
+            "column_schemas": {k: v.dict() for k, v in self.column_schema.items()},
+            "rows": self.rows,
+            "size": self.size,
+        }
+
+    def get_category_alias(self) -> str:
+        return "instance.metadata.table"
+
+
+class ArrayMetadata(HashedMetadataModel):
     """Describes properties fo the 'array' type."""
 
     _metadata_key: typing.ClassVar[str] = "array"
@@ -73,6 +86,12 @@ class ArrayMetadata(MetadataModel):
     size: int = Field(
         description="Total number of bytes consumed by the elements of the array."
     )
+
+    def _obj_to_hash(self) -> typing.Any:
+        return {"length": self.length, "size": self.size}
+
+    def get_category_alias(self) -> str:
+        return "instance.metadata.array"
 
 
 log = logging.getLogger("kiara")
@@ -106,6 +125,12 @@ class KiaraDatabase(MetadataModel):
     _cached_inspector = PrivateAttr(default=None)
     _table_names = PrivateAttr(default=None)
     _table_schemas = PrivateAttr(default=None)
+
+    def get_id(self) -> str:
+        return self.db_file_path
+
+    def get_category_alias(self) -> str:
+        return "instance.metadata.database"
 
     @validator("db_file_path", allow_reuse=True)
     def ensure_absolute_path(cls, path: str):
@@ -210,7 +235,7 @@ class KiaraDatabase(MetadataModel):
         return self._table_schemas[table_name]
 
 
-class KiaraDatabaseInfo(MetadataModel):
+class KiaraDatabaseInfo(HashedMetadataModel):
 
     _metadata_key: typing.ClassVar[str] = "database_info"
 
@@ -224,6 +249,17 @@ class KiaraDatabaseInfo(MetadataModel):
         description="Information about the tables within this database."
     )
     size: int = Field(description="The size of the database file.")
+
+    def _obj_to_hash(self) -> typing.Any:
+        return {
+            "table_names": self.table_names,
+            "view_names": self.view_names,
+            "tables": self.tables,
+            "size": self.size,
+        }
+
+    def get_category_alias(self) -> str:
+        return "instance.metadata.database_info"
 
 
 class KiaraFile(MetadataModel):
@@ -312,6 +348,12 @@ class KiaraFile(MetadataModel):
         description="Whether the file is imported into the kiara data store.",
         default=False,
     )
+
+    def get_id(self) -> str:
+        return self.path
+
+    def get_category_alias(self) -> str:
+        return "instance.metadata.file"
 
     def copy_file(
         self, target: str, incl_orig_path: bool = False, is_onboarded: bool = False
@@ -555,6 +597,12 @@ class KiaraFileBundle(MetadataModel):
         description="Whether this bundle is imported into the kiara data store.",
         default=False,
     )
+
+    def get_id(self) -> str:
+        return self.path
+
+    def get_category_alias(self) -> str:
+        return "instance.metadata.file_bundle"
 
     def get_relative_path(self, file: KiaraFile):
 
