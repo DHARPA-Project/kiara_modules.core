@@ -11877,7 +11877,7 @@ it is recommended to create a metadata model, because it is much easier overall.
 
 <h3 id="kiara_modules.core.metadata_models.ArrayMetadata" class="doc doc-heading">
         <code>
-ArrayMetadata            (<a title="kiara.metadata.MetadataModel" href="https://dharpa.org/kiara/latest/reference/kiara/metadata/__init__/#kiara.metadata.MetadataModel">MetadataModel</a>)
+ArrayMetadata            (<span title="kiara.metadata.core_models.HashedMetadataModel">HashedMetadataModel</span>)
         </code>
 
 
@@ -11893,7 +11893,7 @@ ArrayMetadata            (<a title="kiara.metadata.MetadataModel" href="https://
 
         <details class="quote">
           <summary>Source code in <code>core/metadata_models.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ArrayMetadata</span><span class="p">(</span><span class="n">MetadataModel</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ArrayMetadata</span><span class="p">(</span><span class="n">HashedMetadataModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Describes properties fo the &#39;array&#39; type.&quot;&quot;&quot;</span>
 
     <span class="n">_metadata_key</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;array&quot;</span>
@@ -11902,6 +11902,12 @@ ArrayMetadata            (<a title="kiara.metadata.MetadataModel" href="https://
     <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Total number of bytes consumed by the elements of the array.&quot;</span>
     <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_obj_to_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_category_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;instance.metadata.array&quot;</span>
 </code></pre></div>
         </details>
 
@@ -11958,6 +11964,7 @@ ArrayMetadata            (<a title="kiara.metadata.MetadataModel" href="https://
     </div>
 
   </div>
+
 
 
 
@@ -12259,6 +12266,12 @@ KiaraDatabase            (<a title="kiara.metadata.MetadataModel" href="https://
     <span class="n">_table_names</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_table_schemas</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_file_path</span>
+
+    <span class="k">def</span> <span class="nf">get_category_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;instance.metadata.database&quot;</span>
+
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;db_file_path&quot;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ensure_absolute_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 
@@ -12480,6 +12493,8 @@ KiaraDatabase            (<a title="kiara.metadata.MetadataModel" href="https://
 
 
 
+
+
   </div>
 
     </div>
@@ -12494,7 +12509,7 @@ KiaraDatabase            (<a title="kiara.metadata.MetadataModel" href="https://
 
 <h3 id="kiara_modules.core.metadata_models.KiaraDatabaseInfo" class="doc doc-heading">
         <code>
-KiaraDatabaseInfo            (<a title="kiara.metadata.MetadataModel" href="https://dharpa.org/kiara/latest/reference/kiara/metadata/__init__/#kiara.metadata.MetadataModel">MetadataModel</a>)
+KiaraDatabaseInfo            (<span title="kiara.metadata.core_models.HashedMetadataModel">HashedMetadataModel</span>)
         </code>
 
 
@@ -12509,7 +12524,7 @@ KiaraDatabaseInfo            (<a title="kiara.metadata.MetadataModel" href="http
 
         <details class="quote">
           <summary>Source code in <code>core/metadata_models.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">KiaraDatabaseInfo</span><span class="p">(</span><span class="n">MetadataModel</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">KiaraDatabaseInfo</span><span class="p">(</span><span class="n">HashedMetadataModel</span><span class="p">):</span>
 
     <span class="n">_metadata_key</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;database_info&quot;</span>
 
@@ -12523,6 +12538,17 @@ KiaraDatabaseInfo            (<a title="kiara.metadata.MetadataModel" href="http
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Information about the tables within this database.&quot;</span>
     <span class="p">)</span>
     <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The size of the database file.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_obj_to_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;table_names&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_names</span><span class="p">,</span>
+            <span class="s2">&quot;view_names&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_names</span><span class="p">,</span>
+            <span class="s2">&quot;tables&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">,</span>
+            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_category_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;instance.metadata.database_info&quot;</span>
 </code></pre></div>
         </details>
 
@@ -12625,6 +12651,7 @@ KiaraDatabaseInfo            (<a title="kiara.metadata.MetadataModel" href="http
     </div>
 
   </div>
+
 
 
 
@@ -12751,6 +12778,12 @@ KiaraFile            (<a title="kiara.metadata.MetadataModel" href="https://dhar
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the file is imported into the kiara data store.&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+
+    <span class="k">def</span> <span class="nf">get_category_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;instance.metadata.file&quot;</span>
 
     <span class="k">def</span> <span class="nf">copy_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">incl_orig_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">is_onboarded</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -13051,6 +13084,8 @@ KiaraFile            (<a title="kiara.metadata.MetadataModel" href="https://dhar
     </div>
 
   </div>
+
+
 
 
 
@@ -13374,6 +13409,12 @@ KiaraFileBundle            (<a title="kiara.metadata.MetadataModel" href="https:
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this bundle is imported into the kiara data store.&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+
+    <span class="k">def</span> <span class="nf">get_category_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;instance.metadata.file_bundle&quot;</span>
 
     <span class="k">def</span> <span class="nf">get_relative_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">KiaraFile</span><span class="p">):</span>
 
@@ -13744,6 +13785,8 @@ KiaraFileBundle            (<a title="kiara.metadata.MetadataModel" href="https:
 
 
 
+
+
   </div>
 
     </div>
@@ -13758,7 +13801,7 @@ KiaraFileBundle            (<a title="kiara.metadata.MetadataModel" href="https:
 
 <h3 id="kiara_modules.core.metadata_models.TableMetadata" class="doc doc-heading">
         <code>
-TableMetadata            (<a title="kiara.metadata.MetadataModel" href="https://dharpa.org/kiara/latest/reference/kiara/metadata/__init__/#kiara.metadata.MetadataModel">MetadataModel</a>)
+TableMetadata            (<span title="kiara.metadata.core_models.HashedMetadataModel">HashedMetadataModel</span>)
         </code>
 
 
@@ -13774,7 +13817,7 @@ TableMetadata            (<a title="kiara.metadata.MetadataModel" href="https://
 
         <details class="quote">
           <summary>Source code in <code>core/metadata_models.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TableMetadata</span><span class="p">(</span><span class="n">MetadataModel</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TableMetadata</span><span class="p">(</span><span class="n">HashedMetadataModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Describes properties for the &#39;table&#39; data type.&quot;&quot;&quot;</span>
 
     <span class="n">_metadata_key</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;table&quot;</span>
@@ -13789,6 +13832,18 @@ TableMetadata            (<a title="kiara.metadata.MetadataModel" href="https://
     <span class="n">size</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The tables size in bytes.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_obj_to_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;column_names&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">,</span>
+            <span class="s2">&quot;column_schemas&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_schema</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="s2">&quot;rows&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span>
+            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_category_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;instance.metadata.table&quot;</span>
 </code></pre></div>
         </details>
 
@@ -13890,6 +13945,7 @@ TableMetadata            (<a title="kiara.metadata.MetadataModel" href="https://
     </div>
 
   </div>
+
 
 
 
