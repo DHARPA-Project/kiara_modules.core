@@ -26,7 +26,9 @@ if operation_types:
     types.append("operation_type")
 
 type_details = generate_pages_and_summary_for_types(
-    kiara=kiara, types=types, limit_to_package="kiara_modules.core"
+    kiara=kiara,
+    types=types,
+    limit_to_package="kiara_modules.core",
 )
 
 summary_content = []
